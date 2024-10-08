@@ -3,9 +3,8 @@ package org.example.trackit.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.trackit.entity.parts.CertificationStatus;
+import org.example.trackit.entity.enums.CertificationStatus;
 import org.example.trackit.entity.parts.Equipment;
-import org.example.trackit.entity.parts.EquipmentType;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -15,11 +14,8 @@ import java.time.Period;
 @Setter
 public class CertifiedEquipment extends Equipment {
 
-    @Enumerated(EnumType.STRING) //TODO: нужно ли?
-    private EquipmentType type;
-
     @Enumerated(EnumType.STRING)
-    private CertificationStatus certificationStatus; // Enum для статусов
+    private CertificationStatus certificationStatus;
 
     private LocalDate certificationDate;
 

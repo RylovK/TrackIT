@@ -4,5 +4,5 @@ import jakarta.persistence.Entity;
 import org.example.trackit.entity.parts.Equipment;
 
 @Entity
-public class NonCertifiedEquipment extends Equipment {
+public class BasicEquipment extends Equipment {
 }

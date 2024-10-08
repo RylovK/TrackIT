@@ -12,7 +12,7 @@ import java.util.Set;
 public class PartNumber {
 
     @Id
-    private Integer partNumber;
+    private int partNumber;
 
     @OneToMany(mappedBy = "partNumber", cascade = CascadeType.ALL)
     private Set<Equipment> equipmentList;
