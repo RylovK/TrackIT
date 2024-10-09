@@ -2,7 +2,7 @@ package org.example.trackit.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.trackit.entity.enums.CertificationStatus;
+import org.example.trackit.entity.properties.CertificationStatus;
 
 import java.time.LocalDate;
 import java.time.Period;

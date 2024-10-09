@@ -1,25 +1,22 @@
-package org.example.trackit.entity.parts;
+package org.example.trackit.dto;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
+import org.example.trackit.entity.Equipment;
 
 import java.util.Set;
-
-@Entity
 @Getter
 @Setter
-@ToString
-public class PartNumber {
+public class PartNumberDTO {
 
-    @Id
     private String partNumber;
 
-    @OneToMany(mappedBy = "partNumber", cascade = CascadeType.ALL)
     private Set<Equipment> equipmentList;
 
     private String description;
 
     private String photo;
+
 }

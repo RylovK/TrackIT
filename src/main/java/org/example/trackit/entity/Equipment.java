@@ -1,18 +1,20 @@
-package org.example.trackit.entity.parts;
+package org.example.trackit.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.trackit.entity.enums.AllocationStatus;
-import org.example.trackit.entity.enums.HealthStatus;
+import org.example.trackit.entity.properties.AllocationStatus;
+import org.example.trackit.entity.properties.HealthStatus;
+import org.example.trackit.entity.properties.Job;
+import org.example.trackit.entity.properties.PartNumber;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Equipment {
 
         @Id
@@ -40,6 +42,16 @@ public class Equipment {
 
         private LocalDateTime allocationStatusLastModified;
 
+        public Equipment() {
+                healthStatus = HealthStatus.RONG;
+                allocationStatus = AllocationStatus.ON_BASE;
+                allocationStatusLastModified = LocalDateTime.now();
+        }
+
+        public Equipment(PartNumber partNumber, String serialNumber) {
+                this.partNumber = partNumber;
+                this.serialNumber = serialNumber;
+        }
 
         public void setAllocationStatus(AllocationStatus status) {
                 if (status == AllocationStatus.ON_BASE)
@@ -48,3 +60,4 @@ public class Equipment {
                 this.allocationStatus = status;
         }
 }
+

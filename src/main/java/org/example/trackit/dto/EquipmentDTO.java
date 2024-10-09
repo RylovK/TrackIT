@@ -3,29 +3,26 @@ package org.example.trackit.dto;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import org.example.trackit.entity.enums.AllocationStatus;
-import org.example.trackit.entity.enums.HealthStatus;
-import org.example.trackit.entity.parts.Job;
-import org.example.trackit.entity.parts.PartNumber;
+import org.example.trackit.entity.properties.AllocationStatus;
+import org.example.trackit.entity.properties.HealthStatus;
+import org.example.trackit.entity.properties.Job;
 
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@ToString
 public class EquipmentDTO {
 
+    private int id;
+
     @NotEmpty
-    private PartNumber partNumber;
+    private String partNumber;
 
     @NotEmpty
     private String serialNumber;
 
-    @NotEmpty
     private HealthStatus healthStatus;
 
-    @NotEmpty
     private AllocationStatus allocationStatus;
 
     private Job job;

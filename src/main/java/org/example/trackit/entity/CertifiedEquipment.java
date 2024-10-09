@@ -3,8 +3,7 @@ package org.example.trackit.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.trackit.entity.enums.CertificationStatus;
-import org.example.trackit.entity.parts.Equipment;
+import org.example.trackit.entity.properties.CertificationStatus;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -15,11 +14,11 @@ import java.time.Period;
 public class CertifiedEquipment extends Equipment {
 
     @Enumerated(EnumType.STRING)
-    private CertificationStatus certificationStatus;
+    private CertificationStatus certificationStatus = CertificationStatus.EXPIRED;
 
     private LocalDate certificationDate;
 
-    private Period certificationPeriod;//in month
+    private Period certificationPeriod = Period.ofMonths(12);//in month
 
     private LocalDate nextCertificationDate;
 
