@@ -1,10 +1,13 @@
 package org.example.trackit.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.trackit.entity.enums.CertificationStatus;
 
 import java.time.LocalDate;
 import java.time.Period;
-
+@Setter
+@Getter
 public class CertifiedEquipmentDTO extends EquipmentDTO {
 
     private CertificationStatus certificationStatus; // Enum для статусов

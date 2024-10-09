@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
-public abstract class Equipment {
+public class Equipment {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,8 @@ public abstract class Equipment {
         private String serialNumber;
 
         @Enumerated(EnumType.STRING)
-        @NotEmpty
         private HealthStatus healthStatus;
 
-        @NotEmpty
         private AllocationStatus allocationStatus;
 
         @ManyToOne(fetch = FetchType.EAGER)

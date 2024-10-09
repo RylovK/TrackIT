@@ -1,6 +1,9 @@
 package org.example.trackit.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.example.trackit.entity.enums.AllocationStatus;
 import org.example.trackit.entity.enums.HealthStatus;
 import org.example.trackit.entity.parts.Job;
@@ -8,6 +11,9 @@ import org.example.trackit.entity.parts.PartNumber;
 
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
+@ToString
 public class EquipmentDTO {
 
     @NotEmpty
