@@ -1,9 +1,11 @@
 package org.example.trackit.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.example.trackit.entity.properties.AllocationStatus;
 import org.example.trackit.entity.properties.HealthStatus;
 import org.example.trackit.entity.properties.Job;
@@ -22,7 +24,9 @@ public class Equipment {
         private int id;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn(name = "partNumber_id")
+        @JoinColumn(name = "part_number_id")
+        @ToString.Exclude
+        @JsonBackReference
         private PartNumber partNumber;
 
         @NotEmpty
@@ -51,6 +55,9 @@ public class Equipment {
         public Equipment(PartNumber partNumber, String serialNumber) {
                 this.partNumber = partNumber;
                 this.serialNumber = serialNumber;
+                healthStatus = HealthStatus.RONG;
+                allocationStatus = AllocationStatus.ON_BASE;
+                allocationStatusLastModified = LocalDateTime.now();
         }
 
         public void setAllocationStatus(AllocationStatus status) {

@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface PartNumberRepository extends JpaRepository<PartNumber, Integer> {
 
-    Optional<PartNumber> findByPartNumber(String partNumber);
+    Optional<PartNumber> findByNumber(String number);
 }

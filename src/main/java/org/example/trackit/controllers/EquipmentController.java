@@ -4,8 +4,13 @@ import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
+import org.example.trackit.entity.properties.AllocationStatus;
+import org.example.trackit.entity.properties.HealthStatus;
+import org.example.trackit.entity.properties.Job;
 import org.example.trackit.services.EquipmentService;
 import org.example.trackit.util.EquipmentValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,13 +23,23 @@ import java.util.List;
 @AllArgsConstructor
 public class EquipmentController {
 
+    //////////////////////////////////TODO: validation
+    /*добавить метод редактирования, удаления*/
+
     private final EquipmentService equipmentService;
     private final EquipmentValidator equipmentValidator;
 
     @GetMapping
-    public ResponseEntity<List<EquipmentDTO>> getAllEquipment() {
-        List<EquipmentDTO> dtoList = equipmentService.findAllEquipment();
-        return ResponseEntity.ok(dtoList);
+    public ResponseEntity<Page<EquipmentDTO>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "25") int size,
+                                                              @RequestParam(required = false) String partNumber,
+                                                              @RequestParam(required = false) String serialNumber,
+                                                              @RequestParam(required = false) HealthStatus healthStatus,
+                                                              @RequestParam(required = false) AllocationStatus allocationStatus,
+                                                              @RequestParam(required = false) String jobName) {
+        Page<EquipmentDTO> dtoPage = equipmentService.findAllEquipment
+                (partNumber, serialNumber, healthStatus, allocationStatus, jobName, PageRequest.of(page, size));
+        return ResponseEntity.ok(dtoPage);
     }
 
     @GetMapping("/{id}")
@@ -35,7 +50,7 @@ public class EquipmentController {
         }
         return new ResponseEntity<>(equipmentDTO, HttpStatus.OK);
     }
-//////////////////////////////////TODO: validation
+
     @PostMapping
     public ResponseEntity<EquipmentDTO> createEquipment(@RequestBody EquipmentDTO equipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validate(equipmentDTO, bindingResult);
@@ -47,8 +62,9 @@ public class EquipmentController {
     }
 
     @GetMapping("/certified")
-    public ResponseEntity<List<CertifiedEquipmentDTO>> getAllCertifiedEquipment() {
-        List<CertifiedEquipmentDTO> allCertifiedEquipment= equipmentService.findAllCertifiedEquipment();
+    public ResponseEntity<Page<CertifiedEquipmentDTO>> getAllCertifiedEquipment(@RequestParam(defaultValue = "0") int page,
+                                                                                @RequestParam(defaultValue = "25") int size) {
+        Page<CertifiedEquipmentDTO> allCertifiedEquipment = equipmentService.findAllCertifiedEquipment(PageRequest.of(page, size));
         return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
     }
 

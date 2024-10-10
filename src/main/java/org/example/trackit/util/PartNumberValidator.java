@@ -24,7 +24,7 @@ public class PartNumberValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         PartNumberDTO partNumberDTO = (PartNumberDTO) target;
-        Optional<PartNumber> founded = partNumberService.findPartNumberByPartNumber(partNumberDTO.getPartNumber());
+        Optional<PartNumber> founded = partNumberService.findPartNumberByNumber(partNumberDTO.getNumber());
         if (founded.isPresent()) {
             errors.rejectValue("partNumber", "duplicate", "Part number already exists");
         }

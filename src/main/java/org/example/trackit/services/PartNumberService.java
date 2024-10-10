@@ -23,8 +23,8 @@ public class PartNumberService {
         List<PartNumber> partNumbers = partNumberRepository.findAll();
         return partNumbers.stream().map(partNumberMapper::toDTO).toList();
     }
-    public Optional<PartNumber> findPartNumberByPartNumber(String number) {
-        return partNumberRepository.findByPartNumber(number);
+    public Optional<PartNumber> findPartNumberByNumber(String number) {
+        return partNumberRepository.findByNumber(number);
     }
 
     public PartNumberDTO createPartNumber(PartNumberDTO partNumberDTO) {
