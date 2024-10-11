@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class EquipmentController {
 
     //////////////////////////////////TODO: validation
-    /*добавить метод редактирования, удаления*/
+    /*добавить метод редактирования, удаления    swagger*/
 
     private final EquipmentService equipmentService;
     private final EquipmentValidator equipmentValidator;
@@ -61,6 +61,9 @@ public class EquipmentController {
 
     @PatchMapping
     public ResponseEntity<EquipmentDTO> updateEquipment(@RequestBody EquipmentDTO equipmentDTO, BindingResult bindingResult) {//TODO:обработать ошибки, добавить @Valid
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//TODO:создать настраиваемый ответ с сообщением об ошибке
+        }
         EquipmentDTO updated = equipmentService.save(equipmentDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }

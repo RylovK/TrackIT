@@ -3,7 +3,7 @@ package org.example.trackit.services;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.transaction.Transactional;
+
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
@@ -19,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -27,7 +29,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class EquipmentService {
 
     private final EquipmentRepository equipmentRepository;
@@ -61,6 +63,7 @@ public class EquipmentService {
         return page.map(equipmentMapper::toDTO);
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public EquipmentDTO save(EquipmentDTO equipmentDTO) {
         Optional<PartNumber> partNumber = partNumberService.findPartNumberByNumber(equipmentDTO.getPartNumber());
         if (partNumber.isEmpty()) {
@@ -108,6 +111,7 @@ public class EquipmentService {
         Page<CertifiedEquipment> page = equipmentRepository.findAllCertifiedEquipment(spec, pageable);
         return page.map(certifiedEquipmentMapper::toDTO);
     }
+
     public Optional<Equipment> findByPartNumberAndSerialNumber(@NotEmpty String partNumber, String serialNumber) {
         return equipmentRepository.findByPartNumberAndSerialNumber(partNumber, serialNumber);
     }
