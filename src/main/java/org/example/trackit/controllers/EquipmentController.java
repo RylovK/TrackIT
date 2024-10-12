@@ -1,23 +1,20 @@
 package org.example.trackit.controllers;
 
 import lombok.AllArgsConstructor;
-import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.properties.AllocationStatus;
-import org.example.trackit.entity.properties.CertificationStatus;
 import org.example.trackit.entity.properties.HealthStatus;
 import org.example.trackit.services.EquipmentService;
 import org.example.trackit.util.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/equipment")
+@RequestMapping("/")
 @AllArgsConstructor
 public class EquipmentController {
 
@@ -67,31 +64,14 @@ public class EquipmentController {
         EquipmentDTO updated = equipmentService.save(equipmentDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
-
-    @GetMapping("/certified")
-    public ResponseEntity<Page<CertifiedEquipmentDTO>> getAllCertifiedEquipment(@RequestParam(defaultValue = "0") int page,
-                                                                                @RequestParam(defaultValue = "25") int size,
-                                                                                @RequestParam(required = false) String partNumber,
-                                                                                @RequestParam(required = false) String serialNumber,
-                                                                                @RequestParam(required = false) HealthStatus healthStatus,
-                                                                                @RequestParam(required = false) AllocationStatus allocationStatus,
-                                                                                @RequestParam(required = false) String jobName,
-                                                                                @RequestParam(required = false) CertificationStatus certificationStatus,
-                                                                                @RequestParam(defaultValue = "nextCertificationDate") String sortBy,
-                                                                                @RequestParam(defaultValue = "asc") String sortDirection) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
-        Page<CertifiedEquipmentDTO> allCertifiedEquipment = equipmentService.
-                findAllCertifiedEquipment(partNumber, serialNumber, healthStatus, allocationStatus, jobName, certificationStatus, pageRequest);
-        return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
+    @DeleteMapping
+    public ResponseEntity<Void> deleteEquipment(@PathVariable int id) {
+        boolean deleted = equipmentService.deleteEquipmentById(id);
+        if (!deleted)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/certified")
-    public ResponseEntity<CertifiedEquipmentDTO> createCertifiedEquipment(@RequestBody CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
-        equipmentValidator.validate(equipmentDTO, bindingResult);
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//TODO:создать настраиваемый ответ с сообщением об ошибке
-        }
-        CertifiedEquipmentDTO createdEquipment = (CertifiedEquipmentDTO) equipmentService.save(equipmentDTO);
-        return new ResponseEntity<>(createdEquipment, HttpStatus.CREATED);
-    }
+
+
 }

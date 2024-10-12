@@ -50,15 +50,15 @@ public class EquipmentDTO {
         return partNumberDTO.getDescription();
     }
 
-    public void setDescription(String description) {
-        this.partNumberDTO.setDescription(description);
-    }
+//    public void setDescription(String description) {
+//        this.partNumberDTO.setDescription(description);
+//    }
 
     public String getPhoto() {
         return partNumberDTO.getPhoto();
     }
 
-    public void setPhoto(String photo) {
-        partNumberDTO.setPhoto(photo);
-    }
+//    public void setPhoto(String photo) {
+//        partNumberDTO.setPhoto(photo);
+//    }
 }

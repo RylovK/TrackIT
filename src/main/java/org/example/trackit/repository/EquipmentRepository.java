@@ -20,4 +20,6 @@ public interface EquipmentRepository extends JpaRepository<Equipment, Integer>, 
     Optional<Equipment> findByPartNumberAndSerialNumber(@Param("partNumber") String partNumber, @Param("serialNumber") String serialNumber);
 
     Page<CertifiedEquipment> findAllCertifiedEquipment(Specification<CertifiedEquipment> spec, Pageable pageable);
+
+    Optional<Equipment> findCertifiedEquipmentById(Integer id);
 }

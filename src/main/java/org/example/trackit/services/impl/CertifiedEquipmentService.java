@@ -1,15 +1,11 @@
-package org.example.trackit.services;
+package org.example.trackit.services.impl;
 
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
-
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
-import org.example.trackit.Mapper.EquipmentMapper;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
-import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
@@ -19,7 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -30,55 +25,11 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
-public class EquipmentService {
+public class CertifiedEquipmentService {
 
     private final EquipmentRepository equipmentRepository;
-    private final EquipmentMapper equipmentMapper;
     private final CertifiedEquipmentMapper certifiedEquipmentMapper;
     private final PartNumberService partNumberService;
-
-    public Page<EquipmentDTO> findAllEquipment
-            (String partNumber, String serialNumber, HealthStatus healthStatus,
-             AllocationStatus allocationStatus, String jobName, Pageable pageable) {
-        Specification<Equipment> spec = (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            if (partNumber != null) {
-                predicates.add(criteriaBuilder.like(root.get("partNumber"), "%" + partNumber + "%"));
-            }
-            if (serialNumber != null) {
-                predicates.add(criteriaBuilder.like(root.get("serialNumber"), "%" + serialNumber + "%"));
-            }
-            if (healthStatus != null) {
-                predicates.add(criteriaBuilder.equal(root.get("healthStatus"), healthStatus));
-            }
-            if (allocationStatus != null) {
-                predicates.add(criteriaBuilder.equal(root.get("allocationStatus"), allocationStatus));
-            }
-            if (jobName != null && !jobName.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.join("job").get("jobName"), jobName));
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
-        Page<Equipment> page = equipmentRepository.findAll(spec, pageable);
-        return page.map(equipmentMapper::toDTO);
-    }
-
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public EquipmentDTO save(EquipmentDTO equipmentDTO) {
-        Optional<PartNumber> partNumber = partNumberService.findPartNumberByNumber(equipmentDTO.getPartNumber());
-        if (partNumber.isEmpty()) {
-            throw new PartNumberNotFoundException("PartNumber does not exist");
-        }
-        Equipment equipment = new Equipment(partNumber.get(), equipmentDTO.getSerialNumber());
-        partNumber.get().getEquipmentList().add(equipment);
-        equipmentRepository.save(equipment);
-        return equipmentMapper.toDTO(equipment);
-    }
-
-    public EquipmentDTO findEquipmentById(int id) {
-        Optional<Equipment> byId = equipmentRepository.findById(id);
-        return byId.map(equipmentMapper::toDTO).orElse(null);//TODO:сделать exception?
-    }
 
     public Page<CertifiedEquipmentDTO> findAllCertifiedEquipment
             (String partNumber, String serialNumber, HealthStatus healthStatus,
@@ -112,7 +63,29 @@ public class EquipmentService {
         return page.map(certifiedEquipmentMapper::toDTO);
     }
 
-    public Optional<Equipment> findByPartNumberAndSerialNumber(@NotEmpty String partNumber, String serialNumber) {
-        return equipmentRepository.findByPartNumberAndSerialNumber(partNumber, serialNumber);
+    public CertifiedEquipmentDTO findCertifiedEquipmentById(Integer id) {
+        Optional<Equipment> founded = equipmentRepository.findCertifiedEquipmentById(id);
+        if (founded.isEmpty()) {
+            return null;
+        }
+        CertifiedEquipment result = (CertifiedEquipment) founded.get();
+        return certifiedEquipmentMapper.toDTO(result);
+    }
+    @Transactional
+    public CertifiedEquipmentDTO save(CertifiedEquipmentDTO dto) {
+        Optional<PartNumber> partNumber = partNumberService.findPartNumberByNumber(dto.getPartNumber());
+        if (partNumber.isEmpty()) {
+            throw new PartNumberNotFoundException("PartNumber does not exist");
+        }
+        CertifiedEquipment equipment;
+        if(dto.getNextCertificationDate() == null) {
+            equipment = new CertifiedEquipment(partNumber.get(), dto.getSerialNumber());
+
+        } else {
+            equipment = new CertifiedEquipment(partNumber.get(), dto.getSerialNumber(), dto.getCertificationDate(), dto.getCertificationPeriod(),dto.getFileCertificate());
+        }
+        partNumber.get().getEquipmentList().add(equipment);
+        equipmentRepository.save(equipment);
+        return certifiedEquipmentMapper.toDTO(equipment);
     }
 }
