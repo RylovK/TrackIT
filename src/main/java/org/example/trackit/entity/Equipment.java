@@ -38,7 +38,7 @@ public class Equipment {
         private AllocationStatus allocationStatus;
 
         @ManyToOne(fetch = FetchType.EAGER)
-        @JoinColumn
+        @JoinColumn(name = "job_id", unique = true)
         private Job job;
 
         //@CreationTimestamp TODO:раскомментировать после миграции в бд

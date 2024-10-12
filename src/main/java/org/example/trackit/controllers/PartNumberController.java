@@ -2,7 +2,7 @@ package org.example.trackit.controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.PartNumberDTO;
-import org.example.trackit.services.impl.PartNumberService;
+import org.example.trackit.services.PartNumberService;
 import org.example.trackit.util.PartNumberValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -9,7 +9,10 @@ import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
+import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.EquipmentRepository;
+import org.example.trackit.services.CertifiedEquipmentService;
+import org.example.trackit.services.PartNumberService;
 import org.example.trackit.util.exceptions.PartNumberNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,9 +28,10 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
-public class CertifiedEquipmentService {
+public class CertifiedEquipmentServiceImpl implements CertifiedEquipmentService {
 
     private final EquipmentRepository equipmentRepository;
+    private final CertifiedEquipmentRepository certifiedEquipmentRepository;
     private final CertifiedEquipmentMapper certifiedEquipmentMapper;
     private final PartNumberService partNumberService;
 
@@ -59,17 +63,13 @@ public class CertifiedEquipmentService {
             };
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
-        Page<CertifiedEquipment> page = equipmentRepository.findAllCertifiedEquipment(spec, pageable);
+        Page<CertifiedEquipment> page = certifiedEquipmentRepository.findAll(spec, pageable);
         return page.map(certifiedEquipmentMapper::toDTO);
     }
 
     public CertifiedEquipmentDTO findCertifiedEquipmentById(Integer id) {
-        Optional<Equipment> founded = equipmentRepository.findCertifiedEquipmentById(id);
-        if (founded.isEmpty()) {
-            return null;
-        }
-        CertifiedEquipment result = (CertifiedEquipment) founded.get();
-        return certifiedEquipmentMapper.toDTO(result);
+        Optional<CertifiedEquipment> founded = certifiedEquipmentRepository.findCertifiedEquipmentById(id);
+        return founded.map(certifiedEquipmentMapper::toDTO).orElse(null);
     }
     @Transactional
     public CertifiedEquipmentDTO save(CertifiedEquipmentDTO dto) {
@@ -87,5 +87,10 @@ public class CertifiedEquipmentService {
         partNumber.get().getEquipmentList().add(equipment);
         equipmentRepository.save(equipment);
         return certifiedEquipmentMapper.toDTO(equipment);
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        return false;
     }
 }

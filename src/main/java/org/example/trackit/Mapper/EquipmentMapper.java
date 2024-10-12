@@ -1,7 +1,9 @@
 package org.example.trackit.Mapper;
 import org.example.trackit.dto.EquipmentDTO;
+import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.Equipment;
+import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
 import org.mapstruct.Mapper;
 
@@ -19,7 +21,7 @@ public interface EquipmentMapper {
                 dto.setSerialNumber(equipment.getSerialNumber());
                 dto.setHealthStatus(equipment.getHealthStatus());
                 dto.setAllocationStatus(equipment.getAllocationStatus());
-                dto.setJob(equipment.getJob());
+                dto.setJob(new JobDTO(equipment.getJob().getJobName()));
                 dto.setCreatedAt(equipment.getCreatedAt());
                 dto.setAllocationStatusLastModified(equipment.getAllocationStatusLastModified());
 
@@ -41,7 +43,10 @@ public interface EquipmentMapper {
                 entity.setSerialNumber(equipmentDTO.getSerialNumber());
                 entity.setHealthStatus(equipmentDTO.getHealthStatus());
                 entity.setAllocationStatus(equipmentDTO.getAllocationStatus());
-                entity.setJob(equipmentDTO.getJob());
+                Job job = new Job();
+                job.setJobName(equipmentDTO.getJob().getJobName());
+                entity.setJob(job);
+
                 entity.setAllocationStatusLastModified(equipmentDTO.getAllocationStatusLastModified());
 
                 PartNumber partNumber = new PartNumber();

@@ -42,6 +42,9 @@ dependencies {
     implementation group: 'org.mapstruct', name: 'mapstruct', version: '1.6.2'
     annotationProcessor group: 'org.mapstruct', name: 'mapstruct-processor', version: '1.6.2'
 
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
+
+
 
 }
 

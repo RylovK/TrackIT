@@ -3,7 +3,7 @@ package org.example.trackit.util;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
-import org.example.trackit.services.impl.PartNumberService;
+import org.example.trackit.services.PartNumberService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

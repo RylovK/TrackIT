@@ -23,6 +23,7 @@ public class CertifiedEquipment extends Equipment {
 
     private LocalDate nextCertificationDate; //TODO:автоматическая установка
 
+    @Setter
     private String fileCertificate;
 
     public CertifiedEquipment(PartNumber partNumber, String serialNumber, LocalDate certificationDate, Period certificationPeriod, String fileCertificate) {
@@ -49,4 +50,15 @@ public class CertifiedEquipment extends Equipment {
         certificationStatus = CertificationStatus.EXPIRED;
         certificationPeriod = Period.ofMonths(12);
     }
+
+    public void setCertificationDate(LocalDate certificationDate) {
+        this.certificationDate = certificationDate;
+        this.nextCertificationDate = certificationDate.plus(certificationPeriod);
+    }
+
+    public void setCertificationPeriod(Period certificationPeriod) {
+        this.certificationPeriod = certificationPeriod;
+        this.nextCertificationDate = certificationDate.plus(certificationPeriod);
+    }
+
 }

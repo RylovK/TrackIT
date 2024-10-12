@@ -5,7 +5,7 @@ import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.entity.properties.AllocationStatus;
 import org.example.trackit.entity.properties.CertificationStatus;
 import org.example.trackit.entity.properties.HealthStatus;
-import org.example.trackit.services.impl.CertifiedEquipmentService;
+import org.example.trackit.services.CertifiedEquipmentService;
 import org.example.trackit.util.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,8 +41,8 @@ public class CertifiedEquipmentController {
         return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<CertifiedEquipmentDTO> getCertifiedEquipmentById(@RequestParam Integer id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<CertifiedEquipmentDTO> getCertifiedEquipmentById(@PathVariable ("id") Integer id) {
         CertifiedEquipmentDTO founded = certifiedEquipmentService.findCertifiedEquipmentById(id);
         if (founded == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

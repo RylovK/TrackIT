@@ -19,7 +19,5 @@ public interface EquipmentRepository extends JpaRepository<Equipment, Integer>, 
     @Query("SELECT e FROM Equipment e WHERE e.partNumber.number = :partNumber AND e.serialNumber = :serialNumber")
     Optional<Equipment> findByPartNumberAndSerialNumber(@Param("partNumber") String partNumber, @Param("serialNumber") String serialNumber);
 
-    Page<CertifiedEquipment> findAllCertifiedEquipment(Specification<CertifiedEquipment> spec, Pageable pageable);
 
-    Optional<Equipment> findCertifiedEquipmentById(Integer id);
 }

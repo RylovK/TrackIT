@@ -1,5 +1,7 @@
 package org.example.trackit.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.properties.AllocationStatus;
@@ -16,15 +18,16 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/")
 @AllArgsConstructor
+@Tag(name = "Equipment API", description = "Operations related to equipment management")
 public class EquipmentController {
 
     //////////////////////////////////TODO: validation
-    /*добавить метод редактирования, удаления    swagger*/
 
     private final EquipmentService equipmentService;
     private final EquipmentValidator equipmentValidator;
 
     @GetMapping
+    @Operation(summary = "Find all equipment", description = "Get a list of all equipment with filtration and pagination")
     public ResponseEntity<Page<EquipmentDTO>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "25") int size,
                                                               @RequestParam(required = false) String partNumber,

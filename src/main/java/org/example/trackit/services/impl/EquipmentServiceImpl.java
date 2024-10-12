@@ -10,6 +10,7 @@ import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.services.EquipmentService;
+import org.example.trackit.services.PartNumberService;
 import org.example.trackit.util.exceptions.PartNumberNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final EquipmentMapper equipmentMapper;
     private final PartNumberService partNumberService;
+
 
     @Override
     public Page<EquipmentDTO> findAllEquipment

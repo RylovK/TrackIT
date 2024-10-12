@@ -20,16 +20,30 @@ public class PartNumberServiceImpl implements PartNumberService {
     private final PartNumberRepository partNumberRepository;
     private final PartNumberMapper partNumberMapper;
 
+    @Override
     public List<PartNumberDTO> findAllPartNumbers() {
         List<PartNumber> partNumbers = partNumberRepository.findAll();
         return partNumbers.stream().map(partNumberMapper::toDTO).toList();
     }
+
+    @Override
     public Optional<PartNumber> findPartNumberByNumber(String number) {
         return partNumberRepository.findByNumber(number);
     }
 
+    @Override
     public PartNumberDTO createPartNumber(PartNumberDTO partNumberDTO) {
         PartNumber save = partNumberRepository.save(partNumberMapper.toEntity(partNumberDTO));
         return partNumberMapper.toDTO(save);
+    }
+
+    @Override
+    public PartNumberDTO save(PartNumberDTO partNumberDTO) {
+        return null;
+    }
+
+    @Override
+    public boolean deletePartNumber(String number) {
+        return false;
     }
 }

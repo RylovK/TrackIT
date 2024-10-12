@@ -28,7 +28,7 @@ public class EquipmentDTO {
 
     private AllocationStatus allocationStatus;
 
-    private Job job;
+    private JobDTO job;
 
     private LocalDateTime createdAt;
 

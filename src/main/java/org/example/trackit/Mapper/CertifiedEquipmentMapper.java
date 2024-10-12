@@ -2,10 +2,12 @@ package org.example.trackit.Mapper;
 
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
+import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.CertificationStatus;
+import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,7 +24,7 @@ public interface CertifiedEquipmentMapper {
         dto.setSerialNumber(equipment.getSerialNumber());
         dto.setHealthStatus(equipment.getHealthStatus());
         dto.setHealthStatus(equipment.getHealthStatus());
-        dto.setJob(equipment.getJob());
+        dto.setJob(new JobDTO(equipment.getJob().getJobName()));
         dto.setCreatedAt(equipment.getCreatedAt());
         dto.setAllocationStatusLastModified(equipment.getAllocationStatusLastModified());
 
@@ -50,13 +52,15 @@ public interface CertifiedEquipmentMapper {
         entity.setSerialNumber(equipmentDTO.getSerialNumber());
         entity.setHealthStatus(equipmentDTO.getHealthStatus());
         entity.setAllocationStatus(equipmentDTO.getAllocationStatus());
-        entity.setJob(equipmentDTO.getJob());
+        Job job = new Job();
+        job.setJobName(equipmentDTO.getJob().getJobName());
+        entity.setJob(job);
         entity.setAllocationStatusLastModified(equipmentDTO.getAllocationStatusLastModified());
 
-        entity.setCertificationStatus(equipmentDTO.getCertificationStatus());
+        //entity.setCertificationStatus(equipmentDTO.getCertificationStatus());
         entity.setCertificationDate(equipmentDTO.getCertificationDate());
         entity.setCertificationPeriod(equipmentDTO.getCertificationPeriod());
-        entity.setNextCertificationDate(equipmentDTO.getNextCertificationDate());
+        //entity.setNextCertificationDate(equipmentDTO.getNextCertificationDate());
         entity.setFileCertificate(equipmentDTO.getFileCertificate());
 
         PartNumber partNumber = new PartNumber();
