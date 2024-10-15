@@ -2,12 +2,10 @@ package org.example.trackit.Mapper;
 
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
-import org.example.trackit.dto.JobDTO;
+import org.example.trackit.dto.JobResponseDTO;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.CertifiedEquipment;
-import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
-import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 
@@ -31,7 +29,7 @@ public class CertifiedEquipmentMapper {
         PartNumber partNumber = equipment.getPartNumber();
         dto.setPartNumberDTO(partNumberMapper.toDTO(partNumber));
 
-        dto.setJobDTO(jobMapper.toDTO(equipment.getJob()));
+        dto.setJobResponseDTO(jobMapper.toResponseDTO(equipment.getJob()));
 
         dto.setCertificationStatus(equipment.getCertificationStatus());
         dto.setCertificationDate(equipment.getCertificationDate());
@@ -56,8 +54,8 @@ public class CertifiedEquipmentMapper {
         PartNumberDTO partNumberDTO = dto.getPartNumberDTO();
         entity.setPartNumber(partNumberMapper.toEntity(partNumberDTO));
 
-        JobDTO jobDTO = dto.getJobDTO();
-        entity.setJob(jobMapper.toJob(jobDTO));
+        JobResponseDTO jobResponseDTO = dto.getJobResponseDTO();
+        entity.setJob(jobMapper.toJob(jobResponseDTO));
 
         //entity.setCertificationStatus(equipmentDTO.getCertificationStatus());
         entity.setCertificationDate(dto.getCertificationDate());

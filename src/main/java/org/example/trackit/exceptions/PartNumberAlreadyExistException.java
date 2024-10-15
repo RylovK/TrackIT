@@ -1,4 +1,4 @@
-package org.example.trackit.util.exceptions;
+package org.example.trackit.exceptions;
 
 import jakarta.persistence.EntityExistsException;
 

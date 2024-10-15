@@ -30,6 +30,14 @@ public interface EquipmentService<T extends EquipmentDTO> {
     T save(T equipmentDTO);
 
     /**
+     *
+     * @param id of equipment need to be updated
+     * @param equipmentDTO DTO with updated fields
+     * @return updated DTO
+     */
+    T update(int id, T equipmentDTO);
+
+    /**
      * Finds equipment by its ID.
      *
      * @param id the ID of the equipment to find

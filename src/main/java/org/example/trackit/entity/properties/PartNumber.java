@@ -22,7 +22,5 @@ public class PartNumber {
     private String photo;
 
     @OneToMany(mappedBy = "partNumber", cascade = CascadeType.ALL)
-    //@ToString.Exclude
-    //@JsonManagedReference
     private Set<Equipment> equipmentList;
 }

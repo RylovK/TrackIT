@@ -1,16 +1,26 @@
 package org.example.trackit.dto;
 
-import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.trackit.entity.Equipment;
 
-@Setter
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
-@AllArgsConstructor
+@Setter
 @NoArgsConstructor
 public class JobDTO {
 
+    private int id;
+
     private String jobName;
+
+    private Set<Equipment> equipment;
+
+    public JobDTO(String jobName) {
+        this.jobName = jobName;
+        equipment = new HashSet<>();
+    }
 }

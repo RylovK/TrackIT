@@ -1,10 +1,11 @@
-package org.example.trackit.util;
+package org.example.trackit.validators;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
 import org.example.trackit.services.PartNumberService;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -24,17 +25,12 @@ public class PartNumberValidator implements Validator {
     }
 
     @Override
-    public void validate(Object target, Errors errors) {
+    public void validate(@NonNull Object target, @NonNull Errors errors) {
         log.info("Validating part number");
         PartNumberDTO partNumberDTO = (PartNumberDTO) target;
         Optional<PartNumber> founded = partNumberService.findPartNumberByNumber(partNumberDTO.getNumber());
         if (founded.isPresent()) {
             errors.rejectValue("number", "duplicate", "Part number already exists");
         }
-    }
-
-    public boolean isPresent(PartNumberDTO partNumberDTO) {
-        log.info("Checking if partNumberDTO {} is present", partNumberDTO.getNumber());
-        return partNumberService.findPartNumberByNumber(partNumberDTO.getNumber()).isPresent();
     }
 }

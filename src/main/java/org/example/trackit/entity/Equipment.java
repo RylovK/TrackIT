@@ -26,8 +26,6 @@ public class Equipment {
 
         @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn(name = "part_number_id")
-//        @ToString.Exclude
-//        @JsonBackReference
         private PartNumber partNumber;
 
         @NotEmpty
@@ -60,7 +58,6 @@ public class Equipment {
                 healthStatus = HealthStatus.RONG;
                 allocationStatus = AllocationStatus.ON_BASE;
                 allocationStatusLastModified = LocalDateTime.now();
-                job = new Job("");
         }
 
         public void setAllocationStatus(AllocationStatus status) {

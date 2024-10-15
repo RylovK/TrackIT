@@ -1,23 +1,24 @@
 package org.example.trackit.services.impl;
 
-import jakarta.transaction.Transactional;
+
 import lombok.AllArgsConstructor;
 import org.example.trackit.Mapper.PartNumberMapper;
-import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.dto.PartNumberDTO;
+import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.PartNumber;
 import org.example.trackit.repository.PartNumberRepository;
 import org.example.trackit.services.PartNumberService;
-import org.example.trackit.util.exceptions.PartNumberNotFoundException;
+import org.example.trackit.exceptions.PartNumberNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @AllArgsConstructor
 public class PartNumberServiceImpl implements PartNumberService {
 
@@ -31,11 +32,9 @@ public class PartNumberServiceImpl implements PartNumberService {
 
     @Override
     public PartNumberDTO getPartNumberDTOByPartNumber(String partNumber) {
-        Optional<PartNumber> byNumber = partNumberRepository.findByNumber(partNumber);
-        if (byNumber.isEmpty()) {
-            throw new PartNumberNotFoundException(partNumber);
-        }
-        return partNumberMapper.toDTO(byNumber.get());
+        return partNumberRepository.findByNumber(partNumber)
+                .map(partNumberMapper::toDTO)
+                .orElseThrow(() -> new PartNumberNotFoundException("Part number not found: " + partNumber));
     }
 
     @Override
@@ -44,16 +43,40 @@ public class PartNumberServiceImpl implements PartNumberService {
     }
 
     @Override
+    @Transactional
     public PartNumberDTO save(PartNumberDTO partNumberDTO) {
         PartNumber save = partNumberRepository.save(partNumberMapper.toEntity(partNumberDTO));
         return partNumberMapper.toDTO(save);
     }
 
     @Override
+    @Transactional
+    public PartNumberDTO update(String existingPartNumber, PartNumberDTO dto) {
+        PartNumber existing = partNumberRepository.findByNumber(existingPartNumber)
+                .orElseThrow(() -> new PartNumberNotFoundException("Part number not found: " + existingPartNumber));
+        if (!existingPartNumber.equalsIgnoreCase(dto.getNumber())) {
+            Set<Equipment> equipmentList = existing.getEquipmentList();
+            partNumberRepository.delete(existing);
+            PartNumber newPartNumber  = partNumberMapper.toEntity(dto);
+            newPartNumber.setEquipmentList(equipmentList);
+            partNumberRepository.save(newPartNumber);
+            return partNumberMapper.toDTO(newPartNumber);
+        } else {
+            existing.setDescription(dto.getDescription());
+            existing.setPhoto(dto.getPhoto());
+            PartNumber saved = partNumberRepository.save(existing);
+            return partNumberMapper.toDTO(saved);
+        }
+    }
+
+
+
+    @Override
+    @Transactional
     public boolean deletePartNumber(String number) {
-        Optional<PartNumber> partNumberByNumber = findPartNumberByNumber(number);
-        if (partNumberByNumber.isPresent()) {
-            partNumberRepository.delete(partNumberByNumber.get());
+        Optional<PartNumber> founded = findPartNumberByNumber(number);
+        if (founded.isPresent()) {
+            partNumberRepository.delete(founded.get());
             return true;
         }
         return false;

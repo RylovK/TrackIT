@@ -2,12 +2,12 @@ package org.example.trackit.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.services.PartNumberService;
-import org.example.trackit.util.PartNumberValidator;
-import org.example.trackit.util.exceptions.PartNumberAlreadyExistException;
+import org.example.trackit.validators.PartNumberValidator;
+import org.example.trackit.exceptions.PartNumberAlreadyExistException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/partNumber")
 @AllArgsConstructor
 @Tag(name = "Part numbers API", description = "Operations related to part numbers management")
-@Slf4j
 public class PartNumberController {
 
     private final PartNumberService partNumberService;
@@ -36,10 +35,10 @@ public class PartNumberController {
     @PostMapping
     @Operation(summary = "Create part number", description = "Creates a new part number with the provided details.")
     public ResponseEntity<PartNumberDTO> createPartNumber(
-            @RequestBody PartNumberDTO partNumberDTO,
+            @RequestBody @Valid PartNumberDTO partNumberDTO,
             BindingResult bindingResult) {
         partNumberValidator.validate(partNumberDTO, bindingResult);
-        if (bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {//TODO: валидация на работает
             throw new PartNumberAlreadyExistException("Part number already exist: " + partNumberDTO.getNumber());
         }
         PartNumberDTO createdPN = partNumberService.save(partNumberDTO);
@@ -48,20 +47,21 @@ public class PartNumberController {
 
     @GetMapping("/{partNumber}")
     @Operation(summary = "Get info page about part number", description = "Get all information about part number")
-    public ResponseEntity<PartNumberDTO> getPartNumber(@RequestParam String partNumber) {
+    public ResponseEntity<PartNumberDTO> getPartNumber(@PathVariable String partNumber) {
         PartNumberDTO founded = partNumberService.getPartNumberDTOByPartNumber(partNumber);
         return ResponseEntity.ok(founded);
     }
 
-    @PatchMapping
+    @PatchMapping("/{partNumber}")
     @Operation(summary = "Update existing part number", description = "Update exciting part number")
-    public ResponseEntity<PartNumberDTO> updatePartNumber(@RequestBody PartNumberDTO dto, BindingResult bindingResult) {
-        partNumberValidator.validate(dto, bindingResult);
-        if (bindingResult.hasErrors()) { //Part number is exciting
-            PartNumberDTO updated = partNumberService.save(dto);
-            return ResponseEntity.ok(updated);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<PartNumberDTO> updatePartNumber(@PathVariable String partNumber,
+                                                          @RequestBody PartNumberDTO dto,
+                                                          BindingResult bindingResult) {
+//        partNumberValidator.validate(dto, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);} //TODO: настроить валидацию и ответ
+        PartNumberDTO updated = partNumberService.update(partNumber, dto);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
     @DeleteMapping

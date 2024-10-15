@@ -21,6 +21,7 @@ public class Job {
     private int id;
 
     @NotEmpty
+    @Column(unique = true)
     private String jobName;
 
     @OneToMany(mappedBy = "job", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

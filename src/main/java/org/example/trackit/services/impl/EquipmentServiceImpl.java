@@ -1,8 +1,8 @@
 package org.example.trackit.services.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
 
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import org.example.trackit.Mapper.EquipmentMapper;
 import org.example.trackit.dto.EquipmentDTO;
@@ -11,7 +11,7 @@ import org.example.trackit.entity.properties.*;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.services.EquipmentService;
 import org.example.trackit.services.PartNumberService;
-import org.example.trackit.util.exceptions.PartNumberNotFoundException;
+import org.example.trackit.exceptions.PartNumberNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,7 +36,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     @Override
     public Page<EquipmentDTO> findAllEquipment
             (Map<String, String> filters, Pageable pageable) {
-        if(filters.isEmpty()) return equipmentRepository.findAll(pageable).map(equipmentMapper::toDTO);
+        if (filters.isEmpty()) return equipmentRepository.findAll(pageable).map(equipmentMapper::toDTO);
 
         Specification<Equipment> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -81,9 +81,15 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     }
 
     @Override
+    public EquipmentDTO update(int id, EquipmentDTO equipmentDTO) {
+        return null;
+    }
+
+    @Override
     public EquipmentDTO findEquipmentById(int id) {
-        Optional<Equipment> byId = equipmentRepository.findById(id);
-        return byId.map(equipmentMapper::toDTO).orElse(null);//TODO:сделать exception?
+        return equipmentRepository.findById(id)
+                .map(equipmentMapper::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
     }
 
     @Override

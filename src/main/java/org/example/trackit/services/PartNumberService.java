@@ -56,6 +56,14 @@ public interface PartNumberService {
     PartNumberDTO save(PartNumberDTO partNumberDTO);
 
     /**
+     *
+     * @param excitingPartNumber Part number to be updated
+     * @param partNumberDTO DTO with updated fields
+     * @return Updated DTO
+     */
+    PartNumberDTO update(String excitingPartNumber, PartNumberDTO partNumberDTO);
+
+    /**
      * Deletes a part number by its number.
      *
      * @param number the part number to delete

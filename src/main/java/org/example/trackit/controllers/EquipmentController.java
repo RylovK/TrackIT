@@ -3,11 +3,10 @@ package org.example.trackit.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.example.trackit.dto.CreateEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
-import org.example.trackit.entity.properties.AllocationStatus;
-import org.example.trackit.entity.properties.HealthStatus;
 import org.example.trackit.services.EquipmentService;
-import org.example.trackit.util.EquipmentValidator;
+import org.example.trackit.validators.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -40,24 +39,23 @@ public class EquipmentController {
     @GetMapping("/{id}")
     public ResponseEntity<EquipmentDTO> getEquipment(@PathVariable int id) {
         EquipmentDTO equipmentDTO = equipmentService.findEquipmentById(id);
-        if (equipmentDTO == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);//TODO:создать настраиваемый ответ с сообщением об ошибке
-        }
         return new ResponseEntity<>(equipmentDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<EquipmentDTO> createEquipment(@RequestBody EquipmentDTO equipmentDTO, BindingResult bindingResult) {
-        equipmentValidator.validate(equipmentDTO, bindingResult);
+    public ResponseEntity<EquipmentDTO> createEquipment(@RequestBody CreateEquipmentDTO createEquipmentDTO, BindingResult bindingResult) {
+        equipmentValidator.validate(createEquipmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//TODO:создать настраиваемый ответ с сообщением об ошибке
         }
-        EquipmentDTO createdEquipment = equipmentService.save(equipmentDTO);
+        EquipmentDTO createdEquipment = equipmentService.save(new EquipmentDTO(createEquipmentDTO));
         return new ResponseEntity<>(createdEquipment, HttpStatus.CREATED);
     }
 
-    @PatchMapping
-    public ResponseEntity<EquipmentDTO> updateEquipment(@RequestBody EquipmentDTO equipmentDTO, BindingResult bindingResult) {//TODO:обработать ошибки, добавить @Valid
+    @PatchMapping("/{id}")
+    public ResponseEntity<EquipmentDTO> updateEquipment(@PathVariable int id,
+                                                        @RequestBody EquipmentDTO equipmentDTO,
+                                                        BindingResult bindingResult) {//TODO:обработать ошибки, добавить @Valid
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//TODO:создать настраиваемый ответ с сообщением об ошибке
         }

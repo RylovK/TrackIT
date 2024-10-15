@@ -3,7 +3,7 @@ package org.example.trackit.controllers;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.services.EquipmentService;
-import org.example.trackit.util.EquipmentValidator;
+import org.example.trackit.validators.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

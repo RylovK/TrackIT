@@ -1,10 +1,12 @@
-package org.example.trackit.util;
+package org.example.trackit.validators;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.trackit.dto.CreateEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.repository.EquipmentRepository;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -24,9 +26,9 @@ public class EquipmentValidator implements Validator {
     }
 
     @Override
-    public void validate(Object target, Errors errors) {
+    public void validate(@NonNull Object target, @NonNull Errors errors) {
         log.info("Validating equipment {}", target);
-        EquipmentDTO equipment = (EquipmentDTO) target;
+        CreateEquipmentDTO equipment = (CreateEquipmentDTO) target;
         log.info("Validating equipment {}", equipment.getSerialNumber());
         Optional<Equipment> founded =
                 equipmentRepository.findByPartNumberAndSerialNumber(equipment.getPartNumber(),

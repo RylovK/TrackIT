@@ -5,13 +5,12 @@ import lombok.AllArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
-import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
 import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.services.EquipmentService;
 import org.example.trackit.services.PartNumberService;
-import org.example.trackit.util.exceptions.PartNumberNotFoundException;
+import org.example.trackit.exceptions.PartNumberNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -94,5 +93,10 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         partNumber.get().getEquipmentList().add(equipment);
         equipmentRepository.save(equipment);
         return certifiedEquipmentMapper.toDTO(equipment);
+    }
+
+    @Override
+    public CertifiedEquipmentDTO update(int id, CertifiedEquipmentDTO equipmentDTO) {
+        return null;
     }
 }
