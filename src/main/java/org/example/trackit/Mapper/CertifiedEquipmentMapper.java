@@ -1,32 +1,37 @@
 package org.example.trackit.Mapper;
 
+import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
-import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.CertifiedEquipment;
-import org.example.trackit.entity.Equipment;
-import org.example.trackit.entity.properties.CertificationStatus;
 import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.Period;
 
-@Mapper(componentModel = "spring")
-public interface CertifiedEquipmentMapper {
+@Component
+@AllArgsConstructor
+public class CertifiedEquipmentMapper {
 
-    default CertifiedEquipmentDTO toDTO(CertifiedEquipment equipment) {
+    private final PartNumberMapper partNumberMapper;
+    private final JobMapper jobMapper;
+
+    public CertifiedEquipmentDTO toDTO(CertifiedEquipment equipment) {
         CertifiedEquipmentDTO dto = new CertifiedEquipmentDTO();
+
         dto.setId(equipment.getId());
         dto.setSerialNumber(equipment.getSerialNumber());
         dto.setHealthStatus(equipment.getHealthStatus());
-        dto.setHealthStatus(equipment.getHealthStatus());
-        dto.setJob(new JobDTO(equipment.getJob().getJobName()));
-        dto.setCreatedAt(equipment.getCreatedAt());
+        dto.setAllocationStatus(equipment.getAllocationStatus());
         dto.setAllocationStatusLastModified(equipment.getAllocationStatusLastModified());
+        dto.setCreatedAt(equipment.getCreatedAt());
+
+        PartNumber partNumber = equipment.getPartNumber();
+        dto.setPartNumberDTO(partNumberMapper.toDTO(partNumber));
+
+        dto.setJobDTO(jobMapper.toDTO(equipment.getJob()));
 
         dto.setCertificationStatus(equipment.getCertificationStatus());
         dto.setCertificationDate(equipment.getCertificationDate());
@@ -34,40 +39,31 @@ public interface CertifiedEquipmentMapper {
         dto.setNextCertificationDate(equipment.getNextCertificationDate());
         dto.setFileCertificate(equipment.getFileCertificate());
 
-        PartNumberDTO partNumberDTO = new PartNumberDTO();
-        partNumberDTO.setNumber(equipment.getPartNumber().getNumber());
-        partNumberDTO.setDescription(equipment.getPartNumber().getDescription());
-        partNumberDTO.setPhoto(equipment.getPartNumber().getPhoto());
-        dto.setPartNumberDTO(partNumberDTO);
-
         return dto;
     }
 
-    default CertifiedEquipment toEntity(CertifiedEquipmentDTO equipmentDTO) {
-        if (equipmentDTO == null) {
-            return null;
-        }
+    public CertifiedEquipment toEntity(CertifiedEquipmentDTO dto) {
+//        if (equipmentDTO == null) {
+//            return null;
+//        }
         CertifiedEquipment entity = new CertifiedEquipment();
-        entity.setId(equipmentDTO.getId());
-        entity.setSerialNumber(equipmentDTO.getSerialNumber());
-        entity.setHealthStatus(equipmentDTO.getHealthStatus());
-        entity.setAllocationStatus(equipmentDTO.getAllocationStatus());
-        Job job = new Job();
-        job.setJobName(equipmentDTO.getJob().getJobName());
-        entity.setJob(job);
-        entity.setAllocationStatusLastModified(equipmentDTO.getAllocationStatusLastModified());
+        entity.setId(dto.getId());
+        entity.setSerialNumber(dto.getSerialNumber());
+        entity.setHealthStatus(dto.getHealthStatus());
+        entity.setAllocationStatus(dto.getAllocationStatus());
+        entity.setAllocationStatusLastModified(dto.getAllocationStatusLastModified());
+
+        PartNumberDTO partNumberDTO = dto.getPartNumberDTO();
+        entity.setPartNumber(partNumberMapper.toEntity(partNumberDTO));
+
+        JobDTO jobDTO = dto.getJobDTO();
+        entity.setJob(jobMapper.toJob(jobDTO));
 
         //entity.setCertificationStatus(equipmentDTO.getCertificationStatus());
-        entity.setCertificationDate(equipmentDTO.getCertificationDate());
-        entity.setCertificationPeriod(equipmentDTO.getCertificationPeriod());
+        entity.setCertificationDate(dto.getCertificationDate());
+        entity.setCertificationPeriod(dto.getCertificationPeriod());
         //entity.setNextCertificationDate(equipmentDTO.getNextCertificationDate());
-        entity.setFileCertificate(equipmentDTO.getFileCertificate());
-
-        PartNumber partNumber = new PartNumber();
-        partNumber.setNumber(equipmentDTO.getPartNumber());
-        partNumber.setDescription(equipmentDTO.getDescription());
-        partNumber.setPhoto(equipmentDTO.getPhoto());
-        entity.setPartNumber(partNumber);
+        entity.setFileCertificate(dto.getFileCertificate());
 
         return entity;
     }

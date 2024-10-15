@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
-import org.example.trackit.services.EquipmentService;
+import org.example.trackit.repository.EquipmentRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class EquipmentValidator implements Validator {
 
-    private final EquipmentService equipmentService;
+    private final EquipmentRepository equipmentRepository;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -29,7 +29,7 @@ public class EquipmentValidator implements Validator {
         EquipmentDTO equipment = (EquipmentDTO) target;
         log.info("Validating equipment {}", equipment.getSerialNumber());
         Optional<Equipment> founded =
-                equipmentService.findByPartNumberAndSerialNumber(equipment.getPartNumber(),
+                equipmentRepository.findByPartNumberAndSerialNumber(equipment.getPartNumber(),
                         equipment.getSerialNumber());
         if (founded.isPresent()) {
             errors.rejectValue("Equipment", "duplicate", "Equipment already exists");

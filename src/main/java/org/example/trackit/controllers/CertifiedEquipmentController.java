@@ -2,10 +2,7 @@ package org.example.trackit.controllers;
 
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
-import org.example.trackit.entity.properties.AllocationStatus;
-import org.example.trackit.entity.properties.CertificationStatus;
-import org.example.trackit.entity.properties.HealthStatus;
-import org.example.trackit.services.CertifiedEquipmentService;
+import org.example.trackit.services.EquipmentService;
 import org.example.trackit.util.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,35 +12,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/certified")
 @AllArgsConstructor
 public class CertifiedEquipmentController {
 
-    private final CertifiedEquipmentService certifiedEquipmentService;
+    private final EquipmentService<CertifiedEquipmentDTO> equipmentService;
     private final EquipmentValidator equipmentValidator;
 
 
     @GetMapping
     public ResponseEntity<Page<CertifiedEquipmentDTO>> getAllCertifiedEquipment(@RequestParam(defaultValue = "0") int page,
                                                                                 @RequestParam(defaultValue = "25") int size,
-                                                                                @RequestParam(required = false) String partNumber,
-                                                                                @RequestParam(required = false) String serialNumber,
-                                                                                @RequestParam(required = false) HealthStatus healthStatus,
-                                                                                @RequestParam(required = false) AllocationStatus allocationStatus,
-                                                                                @RequestParam(required = false) String jobName,
-                                                                                @RequestParam(required = false) CertificationStatus certificationStatus,
+                                                                                @RequestParam(required = false) Map<String, String> filters,
                                                                                 @RequestParam(defaultValue = "nextCertificationDate") String sortBy,
                                                                                 @RequestParam(defaultValue = "asc") String sortDirection) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
-        Page<CertifiedEquipmentDTO> allCertifiedEquipment = certifiedEquipmentService.
-                findAllCertifiedEquipment(partNumber, serialNumber, healthStatus, allocationStatus, jobName, certificationStatus, pageRequest);
+        Page<CertifiedEquipmentDTO> allCertifiedEquipment = equipmentService.findAllEquipment(filters, pageRequest);
         return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CertifiedEquipmentDTO> getCertifiedEquipmentById(@PathVariable ("id") Integer id) {
-        CertifiedEquipmentDTO founded = certifiedEquipmentService.findCertifiedEquipmentById(id);
+        CertifiedEquipmentDTO founded = equipmentService.findEquipmentById(id);
         if (founded == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -63,7 +56,7 @@ public class CertifiedEquipmentController {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//TODO:создать настраиваемый ответ с сообщением об ошибке
         }
-        CertifiedEquipmentDTO createdEquipment = certifiedEquipmentService.save(equipmentDTO);
+        CertifiedEquipmentDTO createdEquipment = equipmentService.save(equipmentDTO);
         return new ResponseEntity<>(createdEquipment, HttpStatus.CREATED);
     }
 }

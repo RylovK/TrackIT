@@ -20,12 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
-public class EquipmentServiceImpl implements EquipmentService {
+public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
 
     private final EquipmentRepository equipmentRepository;
     private final EquipmentMapper equipmentMapper;
@@ -34,24 +35,31 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public Page<EquipmentDTO> findAllEquipment
-            (String partNumber, String serialNumber, HealthStatus healthStatus,
-             AllocationStatus allocationStatus, String jobName, Pageable pageable) {
+            (Map<String, String> filters, Pageable pageable) {
+        if(filters.isEmpty()) return equipmentRepository.findAll(pageable).map(equipmentMapper::toDTO);
+
         Specification<Equipment> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (partNumber != null) {
-                predicates.add(criteriaBuilder.like(root.get("partNumber"), "%" + partNumber + "%"));
-            }
-            if (serialNumber != null) {
-                predicates.add(criteriaBuilder.like(root.get("serialNumber"), "%" + serialNumber + "%"));
-            }
-            if (healthStatus != null) {
-                predicates.add(criteriaBuilder.equal(root.get("healthStatus"), healthStatus));
-            }
-            if (allocationStatus != null) {
-                predicates.add(criteriaBuilder.equal(root.get("allocationStatus"), allocationStatus));
-            }
-            if (jobName != null && !jobName.isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.join("job").get("jobName"), jobName));
+            for (Map.Entry<String, String> entry : filters.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase("partNumber")) {
+                    predicates.add(criteriaBuilder.like(root.get(entry.getKey()), entry.getValue()));
+                    continue;
+                }
+                if (entry.getKey().equalsIgnoreCase("serialNumber")) {
+                    predicates.add(criteriaBuilder.like(root.get(entry.getKey()), entry.getValue()));
+                    continue;
+                }
+                if (entry.getKey().equalsIgnoreCase("healthStatus")) {
+                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                    continue;
+                }
+                if (entry.getKey().equalsIgnoreCase("allocationStatus")) {
+                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                    continue;
+                }
+                if (entry.getKey().equalsIgnoreCase("jobName")) {
+                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
@@ -76,11 +84,6 @@ public class EquipmentServiceImpl implements EquipmentService {
     public EquipmentDTO findEquipmentById(int id) {
         Optional<Equipment> byId = equipmentRepository.findById(id);
         return byId.map(equipmentMapper::toDTO).orElse(null);//TODO:сделать exception?
-    }
-
-    @Override
-    public Optional<Equipment> findByPartNumberAndSerialNumber(@NotEmpty String partNumber, String serialNumber) {
-        return equipmentRepository.findByPartNumberAndSerialNumber(partNumber, serialNumber);
     }
 
     @Override

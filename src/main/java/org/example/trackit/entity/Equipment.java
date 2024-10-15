@@ -10,6 +10,7 @@ import org.example.trackit.entity.properties.AllocationStatus;
 import org.example.trackit.entity.properties.HealthStatus;
 import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -25,8 +26,8 @@ public class Equipment {
 
         @ManyToOne(fetch = FetchType.EAGER)
         @JoinColumn(name = "part_number_id")
-        @ToString.Exclude
-        @JsonBackReference
+//        @ToString.Exclude
+//        @JsonBackReference
         private PartNumber partNumber;
 
         @NotEmpty
@@ -41,7 +42,8 @@ public class Equipment {
         @JoinColumn(name = "job_id", unique = true)
         private Job job;
 
-        //@CreationTimestamp TODO:раскомментировать после миграции в бд
+        @CreationTimestamp
+        //TODO:раскомментировать после миграции в бд
         private LocalDateTime createdAt;
 
         private LocalDateTime allocationStatusLastModified;
@@ -58,6 +60,7 @@ public class Equipment {
                 healthStatus = HealthStatus.RONG;
                 allocationStatus = AllocationStatus.ON_BASE;
                 allocationStatusLastModified = LocalDateTime.now();
+                job = new Job("");
         }
 
         public void setAllocationStatus(AllocationStatus status) {

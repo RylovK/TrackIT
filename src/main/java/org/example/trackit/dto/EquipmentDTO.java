@@ -1,16 +1,12 @@
 package org.example.trackit.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
-import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.AllocationStatus;
 import org.example.trackit.entity.properties.HealthStatus;
-import org.example.trackit.entity.properties.Job;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -21,25 +17,26 @@ public class EquipmentDTO {
     @JsonIgnore
     private PartNumberDTO partNumberDTO;
 
-    @NotEmpty
+    @JsonIgnore
+    private JobDTO jobDTO;
+
     private String serialNumber;
 
     private HealthStatus healthStatus;
 
     private AllocationStatus allocationStatus;
 
-    private JobDTO job;
-
     private LocalDateTime createdAt;
 
     private LocalDateTime allocationStatusLastModified;
 
-    public String getPartNumber() {
-        return partNumberDTO.getNumber();
-    }
-
     public EquipmentDTO() {
         partNumberDTO = new PartNumberDTO();
+        jobDTO = new JobDTO();
+    }
+
+    public String getPartNumber() {
+        return partNumberDTO.getNumber();
     }
 
     public void setPartNumber(String partNumber) {
@@ -50,15 +47,16 @@ public class EquipmentDTO {
         return partNumberDTO.getDescription();
     }
 
-//    public void setDescription(String description) {
-//        this.partNumberDTO.setDescription(description);
-//    }
-
     public String getPhoto() {
         return partNumberDTO.getPhoto();
     }
 
-//    public void setPhoto(String photo) {
-//        partNumberDTO.setPhoto(photo);
-//    }
+    public String getJobName() {
+        return jobDTO.getJobName();
+    }
+
+    public void setJobName(String job) {
+        this.jobDTO.setJobName(job);
+    }
+
 }

@@ -17,12 +17,12 @@ public class PartNumber {
     @Id
     private String number;
 
-    @OneToMany(mappedBy = "partNumber", cascade = CascadeType.ALL)
-    @ToString.Exclude
-    @JsonManagedReference
-    private Set<Equipment> equipmentList;
-
     private String description;
 
     private String photo;
+
+    @OneToMany(mappedBy = "partNumber", cascade = CascadeType.ALL)
+    //@ToString.Exclude
+    //@JsonManagedReference
+    private Set<Equipment> equipmentList;
 }

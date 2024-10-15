@@ -1,6 +1,7 @@
 package org.example.trackit.util;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
 import org.example.trackit.services.PartNumberService;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class PartNumberValidator implements Validator {
 
     private final PartNumberService partNumberService;
@@ -23,10 +25,16 @@ public class PartNumberValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        log.info("Validating part number");
         PartNumberDTO partNumberDTO = (PartNumberDTO) target;
         Optional<PartNumber> founded = partNumberService.findPartNumberByNumber(partNumberDTO.getNumber());
         if (founded.isPresent()) {
-            errors.rejectValue("partNumber", "duplicate", "Part number already exists");
+            errors.rejectValue("number", "duplicate", "Part number already exists");
         }
+    }
+
+    public boolean isPresent(PartNumberDTO partNumberDTO) {
+        log.info("Checking if partNumberDTO {} is present", partNumberDTO.getNumber());
+        return partNumberService.findPartNumberByNumber(partNumberDTO.getNumber()).isPresent();
     }
 }

@@ -15,10 +15,4 @@ public class PartNumberDTO {
     private String description;
 
     private String photo;
-
-    private Set<Equipment> equipmentList;
-
-    public PartNumberDTO() {
-        equipmentList = new HashSet<>();
-    }
 }

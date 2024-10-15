@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/")
 @AllArgsConstructor
@@ -23,20 +25,15 @@ public class EquipmentController {
 
     //////////////////////////////////TODO: validation
 
-    private final EquipmentService equipmentService;
+    private final EquipmentService<EquipmentDTO> equipmentService;
     private final EquipmentValidator equipmentValidator;
 
     @GetMapping
-    @Operation(summary = "Find all equipment", description = "Get a list of all equipment with filtration and pagination")
+    @Operation(summary = "Find all equipment", description = "Get a list of all equipment with filtration and pagination")//TODO: нужна страница index, где будут зашружены все партномера, работы и статусы
     public ResponseEntity<Page<EquipmentDTO>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "25") int size,
-                                                              @RequestParam(required = false) String partNumber,
-                                                              @RequestParam(required = false) String serialNumber,
-                                                              @RequestParam(required = false) HealthStatus healthStatus,
-                                                              @RequestParam(required = false) AllocationStatus allocationStatus,
-                                                              @RequestParam(required = false) String jobName) {
-        Page<EquipmentDTO> dtoPage = equipmentService.findAllEquipment
-                (partNumber, serialNumber, healthStatus, allocationStatus, jobName, PageRequest.of(page, size));
+                                                              @RequestParam(required = false) Map<String, String> filters) {
+        Page<EquipmentDTO> dtoPage = equipmentService.findAllEquipment(filters, PageRequest.of(page, size));
         return ResponseEntity.ok(dtoPage);
     }
 
