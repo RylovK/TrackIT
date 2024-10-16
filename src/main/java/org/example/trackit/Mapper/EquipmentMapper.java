@@ -15,14 +15,11 @@ public class EquipmentMapper {
     private final JobMapper jobMapper;
 
     public EquipmentDTO toDTO(Equipment equipment) {
-//                if (equipment == null) {
-//                        return null;
-//                }
         EquipmentDTO dto = new EquipmentDTO();
         dto.setId(equipment.getId());
         dto.setSerialNumber(equipment.getSerialNumber());
-        dto.setHealthStatus(equipment.getHealthStatus());
         dto.setAllocationStatus(equipment.getAllocationStatus());
+        dto.setHealthStatus(equipment.getHealthStatus());
         dto.setCreatedAt(equipment.getCreatedAt());
         dto.setAllocationStatusLastModified(equipment.getAllocationStatusLastModified());
 
@@ -38,9 +35,6 @@ public class EquipmentMapper {
     }
 
     public Equipment toEntity(EquipmentDTO dto) {
-//                if (equipmentDTO == null) {
-//                        return null;
-//                }
         Equipment entity = new Equipment();
         entity.setId(dto.getId());
         entity.setSerialNumber(dto.getSerialNumber());
@@ -48,12 +42,10 @@ public class EquipmentMapper {
         entity.setAllocationStatus(dto.getAllocationStatus());
         entity.setAllocationStatusLastModified(dto.getAllocationStatusLastModified());
 
-        entity.setJob(new Job(dto.getJobName()));
+        entity.setJob(jobMapper.toJob(dto.getJobResponseDTO()));
 
         PartNumber partNumber = new PartNumber();
         partNumber.setNumber(dto.getPartNumber());
-//                partNumber.setDescription(dto.getDescription());
-//                partNumber.setPhoto(dto.getPhoto());
         entity.setPartNumber(partNumber);
         return entity;
     }

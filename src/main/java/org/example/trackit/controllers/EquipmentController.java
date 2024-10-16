@@ -56,13 +56,14 @@ public class EquipmentController {
     public ResponseEntity<EquipmentDTO> updateEquipment(@PathVariable int id,
                                                         @RequestBody EquipmentDTO equipmentDTO,
                                                         BindingResult bindingResult) {//TODO:обработать ошибки, добавить @Valid
+        equipmentValidator.validateUpdate(id, equipmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//TODO:создать настраиваемый ответ с сообщением об ошибке
         }
-        EquipmentDTO updated = equipmentService.save(equipmentDTO);
+        EquipmentDTO updated = equipmentService.update(id, equipmentDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEquipment(@PathVariable int id) {
         boolean deleted = equipmentService.deleteEquipmentById(id);
         if (!deleted)

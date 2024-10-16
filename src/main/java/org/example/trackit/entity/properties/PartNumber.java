@@ -1,10 +1,8 @@
 package org.example.trackit.entity.properties;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import org.example.trackit.entity.Equipment;
 
 import java.util.Set;

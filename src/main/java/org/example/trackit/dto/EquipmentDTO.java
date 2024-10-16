@@ -28,6 +28,7 @@ public class EquipmentDTO {
 
     private AllocationStatus allocationStatus;
 
+//    @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
     private LocalDateTime allocationStatusLastModified;
