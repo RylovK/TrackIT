@@ -10,17 +10,16 @@ import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
+import org.example.trackit.exceptions.JobNotFoundException;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.services.EquipmentService;
-import org.example.trackit.services.JobService;
 import org.example.trackit.services.PartNumberService;
 import org.example.trackit.exceptions.PartNumberNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -79,38 +78,18 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     @Override
     @Transactional
     public EquipmentDTO save(EquipmentDTO equipmentDTO) {
-        Optional<PartNumber> partNumber = partNumberService.findPartNumberByNumber(equipmentDTO.getPartNumber());
-        if (partNumber.isEmpty()) {
-            throw new PartNumberNotFoundException("PartNumber does not exist");
-        }
-        Equipment equipment = new Equipment(partNumber.get(), equipmentDTO.getSerialNumber());
-        partNumber.get().getEquipmentList().add(equipment);
+        PartNumber partNumber = partNumberMapper.toEntity(equipmentDTO.getPartNumberDTO());
+        Equipment equipment = new Equipment(partNumber, equipmentDTO.getSerialNumber());
+        partNumber.getEquipmentList().add(equipment);
         equipmentRepository.save(equipment);
         return equipmentMapper.toDTO(equipment);
     }
 
     @Override
-    public EquipmentDTO update(int id, EquipmentDTO equipmentDTO) {
+    @Transactional
+    public EquipmentDTO update(int id, EquipmentDTO dto) {
         Equipment existing = equipmentRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
-        // Проверка, что можно изменять только location, если статус "On location"
-        validateOnLocationStatus(existing, equipmentDTO);
-
-        // Проверка, что Job обязателен  при смене статусе на "On location"
-        validateJobForOnLocation(equipmentDTO);
-
-        // Обработка смены статуса с "On location" на "On base" и обратно
-        handleStatusChange(existing, equipmentDTO);
-
-        Equipment updated = performUpdate(id, equipmentDTO);
-
-        return equipmentMapper.toDTO(updated);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    protected Equipment performUpdate(int id, EquipmentDTO dto) {
-        Equipment existing = equipmentRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
         existing.setSerialNumber(dto.getSerialNumber());
         PartNumber partNumber = partNumberMapper.toEntity(dto.getPartNumberDTO());
         existing.setPartNumber(partNumber);
@@ -119,12 +98,15 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDateTime.now());
         }
-        Optional<Job> optionalJob = jobRepository.findByJobName(dto.getJobName());
-        if (optionalJob.isPresent()) {
-            Job job = optionalJob.get();
-            existing.setJob(job);
-        }
-        return equipmentRepository.save(existing);
+        if (dto.getJobName() != null) {
+            Optional<Job> optionalJob = jobRepository.findByJobName(dto.getJobName());
+            if (optionalJob.isPresent()) {
+                Job job = optionalJob.get();
+                existing.setJob(job);
+                job.getEquipment().add(existing);
+            } else throw new JobNotFoundException("Job not found");
+        } else existing.setJob(null);
+        return equipmentMapper.toDTO(equipmentRepository.save(existing));
     }
 
     @Override
@@ -142,32 +124,6 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
             return true;
         }
         return false;
-    }
-
-    private void validateOnLocationStatus(Equipment existing, EquipmentDTO dto) {
-        if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
-                && dto.getAllocationStatus() != AllocationStatus.ON_BASE)
-            throw new IllegalStateException("Cannot change state while equipment ON_LOCATION");
-    }
-
-    private void validateJobForOnLocation(EquipmentDTO dto) {
-        if (dto.getAllocationStatus() == AllocationStatus.ON_LOCATION
-                && dto.getJobName() == null) {
-            throw new IllegalStateException("Job must be assigned when setting status to ON_LOCATION");
-        }
-    }
-
-    private void handleStatusChange(Equipment existing, EquipmentDTO dto) {
-        if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
-                && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
-            dto.setHealthStatus(HealthStatus.RONG);
-            dto.setJobName(null);
-            dto.setAllocationStatusLastModified(LocalDateTime.now());
-        } else if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
-                && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION
-                && dto.getHealthStatus() != HealthStatus.RITE) {
-            throw new IllegalStateException("You can send to job only RITE equipment");
-        }
     }
 }
 

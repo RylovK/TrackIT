@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.example.trackit.dto.JobDTO;
 import org.example.trackit.exceptions.JobAlreadyExistException;
 import org.example.trackit.exceptions.JobNotFoundException;
+import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.JobService;
 import org.example.trackit.validators.JobValidator;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class JobController {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(dto, "jobDTO");
         jobValidator.validate(dto, bindingResult);
         if (bindingResult.hasErrors()) {
-            throw new JobAlreadyExistException("Job already exists: " + jobName);
+            throw new ValidationErrorException(bindingResult);
         }
         JobDTO saved = jobService.save(dto);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
@@ -52,12 +53,11 @@ public class JobController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<JobDTO> updateJob(@PathVariable int id, @RequestParam String jobName) {
-        //TODO: настроить валидацию и ответ
         JobDTO updated = new JobDTO(jobName);
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(updated, "jobDTO");
         jobValidator.validate(updated, bindingResult);
         if (bindingResult.hasErrors()) {
-            throw new JobAlreadyExistException("Job already exists: " + jobName);
+            throw new ValidationErrorException(bindingResult);
         }
         JobDTO saved = jobService.update(id, updated);
         return new ResponseEntity<>(saved, HttpStatus.OK);

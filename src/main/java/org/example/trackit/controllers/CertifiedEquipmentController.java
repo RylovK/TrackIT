@@ -1,7 +1,11 @@
 package org.example.trackit.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
+import org.example.trackit.dto.CreateCertifiedEquipmentDTO;
+import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.EquipmentService;
 import org.example.trackit.validators.EquipmentValidator;
 import org.springframework.data.domain.Page;
@@ -17,6 +21,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/certified")
 @AllArgsConstructor
+@Tag(name = "Certified equipment API", description = "Operations related to equipment management and its certification")
 public class CertifiedEquipmentController {
 
     private final EquipmentService<CertifiedEquipmentDTO> equipmentService;
@@ -24,6 +29,7 @@ public class CertifiedEquipmentController {
 
 
     @GetMapping
+    @Operation(summary = "Find all certified equipment", description = "Get a list of all certified equipment with filtration and pagination")
     public ResponseEntity<Page<CertifiedEquipmentDTO>> getAllCertifiedEquipment(@RequestParam(defaultValue = "0") int page,
                                                                                 @RequestParam(defaultValue = "25") int size,
                                                                                 @RequestParam(required = false) Map<String, String> filters,
@@ -35,11 +41,9 @@ public class CertifiedEquipmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CertifiedEquipmentDTO> getCertifiedEquipmentById(@PathVariable ("id") Integer id) {
+    @Operation(summary = "Find certified equipment by id")
+    public ResponseEntity<CertifiedEquipmentDTO> getEquipmentById(@PathVariable ("id") Integer id) {
         CertifiedEquipmentDTO founded = equipmentService.findEquipmentById(id);
-        if (founded == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(founded, HttpStatus.OK);
     }
 
@@ -51,12 +55,26 @@ public class CertifiedEquipmentController {
      * @return DTO of created equipment or validation errors
      */
     @PostMapping
-    public ResponseEntity<CertifiedEquipmentDTO> createCertifiedEquipment(@RequestBody CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
+    @Operation(summary = "Create certified equipment")
+    public ResponseEntity<CertifiedEquipmentDTO> createEquipment(@RequestBody CreateCertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validate(equipmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);//TODO:создать настраиваемый ответ с сообщением об ошибке
+            throw new ValidationErrorException(bindingResult);
         }
-        CertifiedEquipmentDTO createdEquipment = equipmentService.save(equipmentDTO);
+        CertifiedEquipmentDTO createdEquipment = equipmentService.save(new CertifiedEquipmentDTO(equipmentDTO));
         return new ResponseEntity<>(createdEquipment, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update certified equipment")
+    public ResponseEntity<CertifiedEquipmentDTO> updateEquipment(@PathVariable int id, @RequestBody CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
+        equipmentValidator.validateUpdate(id,equipmentDTO, bindingResult);
+        equipmentValidator.validateCertification(id, equipmentDTO, bindingResult);
+        if (bindingResult.hasErrors()) {
+            throw new ValidationErrorException(bindingResult);
+        }
+        CertifiedEquipmentDTO updated = equipmentService.update(id, equipmentDTO);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+
     }
 }

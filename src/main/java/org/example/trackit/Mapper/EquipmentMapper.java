@@ -34,6 +34,7 @@ public class EquipmentMapper {
         return dto;
     }
 
+    //TODO: тут не все поля, нужны ли они?
     public Equipment toEntity(EquipmentDTO dto) {
         Equipment entity = new Equipment();
         entity.setId(dto.getId());

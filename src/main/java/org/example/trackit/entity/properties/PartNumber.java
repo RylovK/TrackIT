@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.example.trackit.entity.Equipment;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -21,4 +22,8 @@ public class PartNumber {
 
     @OneToMany(mappedBy = "partNumber", cascade = CascadeType.ALL)
     private Set<Equipment> equipmentList;
+
+    public PartNumber() {
+        equipmentList = new HashSet<>();
+    }
 }

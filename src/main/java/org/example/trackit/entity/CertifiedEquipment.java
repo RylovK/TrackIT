@@ -12,6 +12,7 @@ import java.time.Period;
 
 @Entity
 @Getter
+@Setter
 public class CertifiedEquipment extends Equipment {
 
     @Enumerated(EnumType.STRING)
@@ -23,21 +24,7 @@ public class CertifiedEquipment extends Equipment {
 
     private LocalDate nextCertificationDate; //TODO:автоматическая установка
 
-    @Setter
     private String fileCertificate;
-
-    public CertifiedEquipment(PartNumber partNumber, String serialNumber, LocalDate certificationDate, Period certificationPeriod, String fileCertificate) {
-        super(partNumber, serialNumber);
-        this.certificationDate = certificationDate;
-        this.certificationPeriod = certificationPeriod;
-        this.nextCertificationDate = certificationDate.plus(certificationPeriod);
-        if (nextCertificationDate.isBefore(LocalDate.now())) {
-            certificationStatus = CertificationStatus.EXPIRED;
-        } else {
-            certificationStatus = CertificationStatus.VALID;
-        }
-        this.fileCertificate = fileCertificate;
-    }
 
     public CertifiedEquipment() {
         super();
@@ -50,7 +37,7 @@ public class CertifiedEquipment extends Equipment {
         certificationStatus = CertificationStatus.EXPIRED;
         certificationPeriod = Period.ofMonths(12);
     }
-
+//TODO: перенести эту логику в метод update в сервисе
     public void setCertificationDate(LocalDate certificationDate) {
         this.certificationDate = certificationDate;
         this.nextCertificationDate = certificationDate.plus(certificationPeriod);
@@ -60,5 +47,4 @@ public class CertifiedEquipment extends Equipment {
         this.certificationPeriod = certificationPeriod;
         this.nextCertificationDate = certificationDate.plus(certificationPeriod);
     }
-
 }

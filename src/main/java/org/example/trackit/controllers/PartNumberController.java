@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.PartNumberDTO;
+import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.PartNumberService;
 import org.example.trackit.validators.PartNumberValidator;
-import org.example.trackit.exceptions.PartNumberAlreadyExistException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -38,8 +38,8 @@ public class PartNumberController {
             @RequestBody @Valid PartNumberDTO partNumberDTO,
             BindingResult bindingResult) {
         partNumberValidator.validate(partNumberDTO, bindingResult);
-        if (bindingResult.hasErrors()) {//TODO: валидация на работает
-            throw new PartNumberAlreadyExistException("Part number already exist: " + partNumberDTO.getNumber());
+        if (bindingResult.hasErrors()) {
+            throw new ValidationErrorException(bindingResult);
         }
         PartNumberDTO createdPN = partNumberService.save(partNumberDTO);
         return new ResponseEntity<>(createdPN, HttpStatus.CREATED);
@@ -57,9 +57,10 @@ public class PartNumberController {
     public ResponseEntity<PartNumberDTO> updatePartNumber(@PathVariable String partNumber,
                                                           @RequestBody PartNumberDTO dto,
                                                           BindingResult bindingResult) {
-//        partNumberValidator.validate(dto, bindingResult);
+//        partNumberValidator.validateUpdate(dto, bindingResult);//TODO: валидация на работает
         if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);} //TODO: настроить валидацию и ответ
+            throw new ValidationErrorException(bindingResult);
+        }
         PartNumberDTO updated = partNumberService.update(partNumber, dto);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }

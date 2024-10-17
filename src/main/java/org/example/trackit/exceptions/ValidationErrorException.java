@@ -1,15 +1,14 @@
 package org.example.trackit.exceptions;
 
-import jakarta.persistence.EntityExistsException;
 import lombok.Getter;
 import org.springframework.validation.BindingResult;
 
 @Getter
-public class PartNumberAlreadyExistException extends EntityExistsException {
+public class ValidationErrorException extends RuntimeException {
 
     private final BindingResult bindingResult;
 
-    public PartNumberAlreadyExistException(BindingResult bindingResult) {
+    public ValidationErrorException(BindingResult bindingResult) {
         this.bindingResult = bindingResult;
     }
 }

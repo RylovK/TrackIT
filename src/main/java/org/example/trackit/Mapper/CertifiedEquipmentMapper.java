@@ -29,7 +29,9 @@ public class CertifiedEquipmentMapper {
         PartNumber partNumber = equipment.getPartNumber();
         dto.setPartNumberDTO(partNumberMapper.toDTO(partNumber));
 
-        dto.setJobResponseDTO(jobMapper.toResponseDTO(equipment.getJob()));
+        if (equipment.getJob() != null) {
+            dto.setJobResponseDTO(jobMapper.toResponseDTO(equipment.getJob()));
+        }
 
         dto.setCertificationStatus(equipment.getCertificationStatus());
         dto.setCertificationDate(equipment.getCertificationDate());
@@ -41,9 +43,7 @@ public class CertifiedEquipmentMapper {
     }
 
     public CertifiedEquipment toEntity(CertifiedEquipmentDTO dto) {
-//        if (equipmentDTO == null) {
-//            return null;
-//        }
+
         CertifiedEquipment entity = new CertifiedEquipment();
         entity.setId(dto.getId());
         entity.setSerialNumber(dto.getSerialNumber());
