@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -40,12 +41,12 @@ public class CertifiedEquipmentController {
         return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Find certified equipment by id")
-    public ResponseEntity<CertifiedEquipmentDTO> getEquipmentById(@PathVariable ("id") Integer id) {
-        CertifiedEquipmentDTO founded = equipmentService.findEquipmentById(id);
-        return new ResponseEntity<>(founded, HttpStatus.OK);
-    }
+//    @GetMapping("/{id}")
+//    @Operation(summary = "Find certified equipment by id")
+//    public ResponseEntity<CertifiedEquipmentDTO> getEquipmentById(@PathVariable ("id") Integer id) {
+//        CertifiedEquipmentDTO founded = equipmentService.findEquipmentById(id);
+//        return new ResponseEntity<>(founded, HttpStatus.OK);
+//    }
 
     /**
      * This method takes DTO from creation form
@@ -69,12 +70,23 @@ public class CertifiedEquipmentController {
     @Operation(summary = "Update certified equipment")
     public ResponseEntity<CertifiedEquipmentDTO> updateEquipment(@PathVariable int id, @RequestBody CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validateUpdate(id,equipmentDTO, bindingResult);
-        equipmentValidator.validateCertification(id, equipmentDTO, bindingResult);
+        int newId = equipmentService.convertIfNeed(id);
+        equipmentValidator.validateCertification(newId, equipmentDTO, bindingResult);
+        System.out.println("No validation errors");
         if (bindingResult.hasErrors()) {
+            System.out.println("Validation errors");
             throw new ValidationErrorException(bindingResult);
         }
-        CertifiedEquipmentDTO updated = equipmentService.update(id, equipmentDTO);
+        CertifiedEquipmentDTO updated = equipmentService.update(newId, equipmentDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
 
+    }
+
+    @PatchMapping("/{id}/upload")
+    @Operation(summary = "Upload a certificate file")
+    public ResponseEntity<String> uploadCertificate(@PathVariable int id,
+                                                    @RequestParam("file") MultipartFile file) {
+        String fileUrl = equipmentService.saveFile(id, file);
+        return new ResponseEntity<>(fileUrl, HttpStatus.OK);
     }
 }

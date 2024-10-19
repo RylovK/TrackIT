@@ -5,6 +5,7 @@ import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,20 +16,12 @@ import java.util.Optional;
 public interface PartNumberService {
 
     /**
-     * Retrieves all part numbers with pagination
+     * Retrieves all part numbers
      *
-     * @param pageable for pagination information, cannot be NULL
-     * @return page of part numbers
+     * @return list of part numbers
      */
-    Page<PartNumberDTO> findAllPartNumbers(Pageable pageable);
+    List<PartNumberDTO> findAllPartNumbers();
 
-//    /**
-//     *
-//     * @param partNumber for searching equipment list
-//     * @param pageable for pagination information, cannot be NULL
-//     * @return page of equipment with provided part number
-//     */
-//    Page<EquipmentDTO> findAllEquipmentByPartNumber(String partNumber, Pageable pageable);
 
     /**
      * Getting PartNumberDTO by its number. Used for controller
@@ -70,4 +63,6 @@ public interface PartNumberService {
      * @return true if the part number was deleted, false otherwise
      */
     boolean deletePartNumber(String number);
+
+    String saveImage(String partNumber, MultipartFile file);
 }

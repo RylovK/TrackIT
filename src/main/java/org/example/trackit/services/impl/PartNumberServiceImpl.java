@@ -9,11 +9,12 @@ import org.example.trackit.entity.properties.PartNumber;
 import org.example.trackit.repository.PartNumberRepository;
 import org.example.trackit.services.PartNumberService;
 import org.example.trackit.exceptions.PartNumberNotFoundException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.example.trackit.util.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,10 +25,11 @@ public class PartNumberServiceImpl implements PartNumberService {
 
     private final PartNumberRepository partNumberRepository;
     private final PartNumberMapper partNumberMapper;
+    private final FileUtils fileUtils;
 
     @Override
-    public Page<PartNumberDTO> findAllPartNumbers(Pageable pageable) {
-        return partNumberRepository.findAll(pageable).map(partNumberMapper::toDTO);
+    public List<PartNumberDTO> findAllPartNumbers() {
+        return partNumberRepository.findAll().stream().map(partNumberMapper::toDTO).toList();
     }
 
     @Override
@@ -81,4 +83,18 @@ public class PartNumberServiceImpl implements PartNumberService {
         }
         return false;
     }
+
+    @Override
+    @Transactional
+    public String saveImage(String partNumber, MultipartFile file) {
+        PartNumber entity = partNumberRepository.findByNumber(partNumber)
+                .orElseThrow(() -> new PartNumberNotFoundException("Part number not found"));
+
+        String filePath = fileUtils.savePhoto(partNumber, file);
+        entity.setPhoto(filePath);
+        partNumberRepository.save(entity);
+
+        return filePath;
+    }
+
 }

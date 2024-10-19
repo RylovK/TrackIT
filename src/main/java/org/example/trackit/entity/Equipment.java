@@ -2,6 +2,7 @@ package org.example.trackit.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.trackit.entity.properties.AllocationStatus;
@@ -10,12 +11,15 @@ import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
+@Table(uniqueConstraints =
+        {@UniqueConstraint(columnNames = {"part_number_id", "serialNumber"})})
 public class Equipment {
 
     @Id
@@ -24,6 +28,7 @@ public class Equipment {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "part_number_id")
+    @NotNull
     private PartNumber partNumber;
 
     @NotEmpty
@@ -38,11 +43,13 @@ public class Equipment {
     @JoinColumn(name = "job_id", unique = true)
     private Job job;
 
+    private String lastJob;
+
     @CreationTimestamp
     //TODO:раскомментировать после миграции в бд
     private LocalDateTime createdAt;
 
-    private LocalDateTime allocationStatusLastModified;
+    private LocalDate allocationStatusLastModified;
 
     public Equipment() {
         healthStatus = HealthStatus.RONG;

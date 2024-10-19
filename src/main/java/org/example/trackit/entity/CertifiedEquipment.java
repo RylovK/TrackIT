@@ -1,6 +1,7 @@
 package org.example.trackit.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,36 +16,37 @@ import java.time.Period;
 @Setter
 public class CertifiedEquipment extends Equipment {
 
-    @Enumerated(EnumType.STRING)
-    private CertificationStatus certificationStatus; //TODO:автоматическая установка
+    @Transient
+    @Setter(AccessLevel.NONE)
+    private CertificationStatus certificationStatus;
 
     private LocalDate certificationDate;
 
-    private Period certificationPeriod;//in month 6.12.24.36.48.60
+    private int certificationPeriod;//in month 6.12.24.36.48.60
 
-    private LocalDate nextCertificationDate; //TODO:автоматическая установка
+    private LocalDate nextCertificationDate;
 
     private String fileCertificate;
 
     public CertifiedEquipment() {
         super();
         certificationStatus = CertificationStatus.EXPIRED;
-        certificationPeriod = Period.ofMonths(12);
+        certificationPeriod = 12;
     }
 
     public CertifiedEquipment(PartNumber partNumber, String serialNumber) {
         super(partNumber, serialNumber);
         certificationStatus = CertificationStatus.EXPIRED;
-        certificationPeriod = Period.ofMonths(12);
-    }
-//TODO: перенести эту логику в метод update в сервисе
-    public void setCertificationDate(LocalDate certificationDate) {
-        this.certificationDate = certificationDate;
-        this.nextCertificationDate = certificationDate.plus(certificationPeriod);
+        certificationPeriod = 12;
     }
 
-    public void setCertificationPeriod(Period certificationPeriod) {
-        this.certificationPeriod = certificationPeriod;
-        this.nextCertificationDate = certificationDate.plus(certificationPeriod);
+    public CertificationStatus getCertificationStatus() {
+        LocalDate now = LocalDate.now();
+        if (certificationDate != null) {
+            if (now.isBefore(certificationDate.plusMonths(certificationPeriod))) {
+                return CertificationStatus.VALID;
+            }
+        }
+        return CertificationStatus.EXPIRED;
     }
 }

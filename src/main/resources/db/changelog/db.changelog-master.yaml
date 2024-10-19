@@ -1,0 +1,171 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Kirill
+      changes:
+        - createTable:
+            tableName: part_number
+            columns:
+              - column:
+                  name: number
+                  type: varchar(25)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: photo
+                  type: varchar(255)
+
+  - changeSet:
+      id: 2
+      author: Kirill
+      changes:
+        - createTable:
+            tableName: job
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: job_name
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+
+  - changeSet:
+      id: 3
+      author: Kirill
+      changes:
+        - createTable:
+            tableName: equipment
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: part_number_id
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_equipment_part_number
+                    references: part_number(number)
+              - column:
+                  name: serial_number
+                  type: varchar(25)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: health_status
+                  type: varchar(25)
+              - column:
+                  name: allocation_status
+                  type: varchar(25)
+              - column:
+                  name: job_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_equipment_job
+                    references: job(id)
+                    unique: true
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: current_timestamp
+              - column:
+                  name: allocation_status_last_modified
+                  type: date
+
+        - addUniqueConstraint:
+            tableName: equipment
+            columnNames: part_number_id, serial_number
+            constraintName: unique_part_serial
+
+  - changeSet:
+      id: 4
+      author: Kirill
+      changes:
+        - createTable:
+            tableName: certified_equipment
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: certification_status
+                  type: varchar(25)
+              - column:
+                  name: certification_date
+                  type: date
+              - column:
+                  name: certification_period
+                  type: varchar(255)
+              - column:
+                  name: next_certification_date
+                  type: date
+              - column:
+                  name: file_certificate
+                  type: varchar(255)
+        - addForeignKeyConstraint:
+            baseTableName: certified_equipment
+            baseColumnNames: id
+            referencedTableName: equipment
+            referencedColumnNames: id
+            constraintName: fk_certified_equipment_id
+
+  - changeSet:
+      id: 5
+      author: Kirill
+      changes:
+        - modifyDataType:
+            tableName: certified_equipment
+            columnName: certification_period
+            newDataType: int
+
+  - changeSet:
+      id: 6
+      author: Kirill
+      changes:
+        - dropColumn:
+            tableName: certified_equipment
+            columnName: certification_status
+        - dropColumn:
+            tableName: certified_equipment
+            columnName: next_certification_date
+
+  - changeSet:
+      id: 7
+      author: Kirill
+      changes:
+        - addColumn:
+            tableName: equipment
+            columns:
+              - column:
+                  name: last_job
+                  type: varchar(255)
+
+  - changeSet:
+      id: 8
+      author: Kirill
+      changes:
+        - addColumn:
+            tableName: certified_equipment
+            columns:
+              - column:
+                  name: next_certification_date
+                  type: date
+

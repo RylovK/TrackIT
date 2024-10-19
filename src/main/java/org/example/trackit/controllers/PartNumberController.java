@@ -8,12 +8,13 @@ import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.PartNumberService;
 import org.example.trackit.validators.PartNumberValidator;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/partNumber")
@@ -25,10 +26,9 @@ public class PartNumberController {
     private final PartNumberValidator partNumberValidator;
 
     @GetMapping
-    @Operation(summary = "Get a pageable list of all part numbers", description = "Get a pageable list of all part numbers with pagination")
-    public ResponseEntity<Page<PartNumberDTO>> getAllPartNumbers(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "25") int size) {
-        Page<PartNumberDTO> founded = partNumberService.findAllPartNumbers(PageRequest.of(page, size));
+    @Operation(summary = "Get a list of all part numbers")
+    public ResponseEntity<List<PartNumberDTO>> getAllPartNumbers() {
+        List<PartNumberDTO> founded = partNumberService.findAllPartNumbers();
         return ResponseEntity.ok(founded);
     }
 
@@ -64,6 +64,15 @@ public class PartNumberController {
         PartNumberDTO updated = partNumberService.update(partNumber, dto);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
+
+    @PatchMapping("/{partNumber}/upload")
+    @Operation(summary = "Upload image for part number", description = "Upload an image for an existing part number")
+    public ResponseEntity<String> uploadImage(@PathVariable String partNumber,
+                                              @RequestParam("file") MultipartFile file) {
+        String fileUrl = partNumberService.saveImage(partNumber, file);
+        return new ResponseEntity<>(fileUrl, HttpStatus.OK);
+    }
+
 
     @DeleteMapping
     @Operation(summary = "Delete part number")

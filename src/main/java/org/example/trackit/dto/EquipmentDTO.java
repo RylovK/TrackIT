@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.example.trackit.entity.properties.AllocationStatus;
 import org.example.trackit.entity.properties.HealthStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Setter
@@ -31,7 +32,7 @@ public class EquipmentDTO {
 //    @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
-    private LocalDateTime allocationStatusLastModified;
+    private LocalDate allocationStatusLastModified;
 
     public EquipmentDTO() {
         partNumberDTO = new PartNumberDTO();

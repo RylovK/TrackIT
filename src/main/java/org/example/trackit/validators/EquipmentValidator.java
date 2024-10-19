@@ -63,6 +63,7 @@ public class EquipmentValidator implements Validator {
     public void validateUpdate(int id, EquipmentDTO dto, Errors errors) {
         System.out.println("Validate update for id:" + id + " dto:" + dto.getPartNumber() + ":" + dto.getSerialNumber());
         Equipment existing = equipmentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+
         if (isPartNumberValid(dto.getPartNumber(), errors)) {
             if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
                     && dto.getAllocationStatus() != AllocationStatus.ON_BASE) {
@@ -85,6 +86,7 @@ public class EquipmentValidator implements Validator {
                 errors.reject("equipmentCondition", "You can send to job only RITE equipment");
             }
         }
+        System.out.println("Validation passed update for id:" + id + " dto:" + dto.getPartNumber() + ":" + dto.getSerialNumber());
     }
 
     public void validateCertification(int id, CertifiedEquipmentDTO dto, Errors errors) {

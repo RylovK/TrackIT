@@ -43,8 +43,9 @@ public class EquipmentMapper {
         entity.setAllocationStatus(dto.getAllocationStatus());
         entity.setAllocationStatusLastModified(dto.getAllocationStatusLastModified());
 
-        entity.setJob(jobMapper.toJob(dto.getJobResponseDTO()));
-
+        if (dto.getJobName() != null) {
+            entity.setJob(jobMapper.toJob(dto.getJobResponseDTO()));
+        }
         PartNumber partNumber = new PartNumber();
         partNumber.setNumber(dto.getPartNumber());
         entity.setPartNumber(partNumber);

@@ -3,6 +3,7 @@ package org.example.trackit.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.CreateEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
@@ -41,6 +42,9 @@ public class EquipmentController {
     @GetMapping("/{id}")
     public ResponseEntity<EquipmentDTO> getEquipmentById(@PathVariable int id) {
         EquipmentDTO equipmentDTO = equipmentService.findEquipmentById(id);
+        if (equipmentDTO instanceof CertifiedEquipmentDTO certifiedEquipmentDTO) {
+            return ResponseEntity.ok(certifiedEquipmentDTO);
+        }
         return new ResponseEntity<>(equipmentDTO, HttpStatus.OK);
     }
 
