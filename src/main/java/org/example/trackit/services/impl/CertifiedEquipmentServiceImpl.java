@@ -103,7 +103,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         existing.setSerialNumber(dto.getSerialNumber());
         PartNumber partNumber = partNumberMapper.toEntity(dto.getPartNumberDTO());
         existing.setPartNumber(partNumber);
-        existing.setHealthStatus(dto.getHealthStatus());
+        existing.setHealthStatus(dto.getHealthStatus() == null ? HealthStatus.RONG : dto.getHealthStatus());
         if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDate.now());

@@ -1,10 +1,7 @@
 package org.example.trackit.services;
 
-import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

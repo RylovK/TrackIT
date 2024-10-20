@@ -6,19 +6,18 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.Mapper.EquipmentMapper;
-import org.example.trackit.Mapper.JobMapper;
 import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
 import org.example.trackit.exceptions.JobNotFoundException;
+import org.example.trackit.exceptions.PartNumberNotFoundException;
 import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.JobRepository;
+import org.example.trackit.repository.PartNumberRepository;
 import org.example.trackit.services.EquipmentService;
-import org.example.trackit.services.PartNumberService;
-import org.example.trackit.exceptions.PartNumberNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +42,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     private final JobRepository jobRepository;
     private final CertifiedEquipmentMapper certifiedEquipmentMapper;
     private final CertifiedEquipmentRepository certifiedEquipmentRepository;
+    private final PartNumberRepository partNumberRepository;
 
 
     @Override
@@ -96,18 +95,19 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         Equipment existing = equipmentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
         existing.setSerialNumber(dto.getSerialNumber());
-        PartNumber partNumber = partNumberMapper.toEntity(dto.getPartNumberDTO());
+        PartNumber partNumber = partNumberRepository.findByNumber(dto.getPartNumber())
+                .orElseThrow(() -> new PartNumberNotFoundException("PartNumber not found"));
         existing.setPartNumber(partNumber);
         existing.setHealthStatus(dto.getHealthStatus());
         if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
             if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
             && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
-                existing.setLastJob(dto.getJobName());
+                existing.setLastJob("Shipped to: " + dto.getJobName() + " on " + LocalDate.now());
             }
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDate.now());
         }
-        if (dto.getJobName() != null) {
+        if (dto.getJobName() != null && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
             Optional<Job> optionalJob = jobRepository.findByJobName(dto.getJobName());
             if (optionalJob.isPresent()) {
                 Job job = optionalJob.get();
@@ -115,7 +115,9 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
                 job.getEquipment().add(existing);
             } else throw new JobNotFoundException("Job not found");
         } else existing.setJob(null);
-        return equipmentMapper.toDTO(equipmentRepository.save(existing));
+        Equipment saved = equipmentRepository.save(existing);
+        partNumber.getEquipmentList().add(saved);
+        return equipmentMapper.toDTO(saved);
     }
 
     @Override

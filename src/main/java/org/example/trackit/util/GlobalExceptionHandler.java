@@ -7,6 +7,8 @@ import org.example.trackit.exceptions.JobNotFoundException;
 import org.example.trackit.exceptions.PartNumberAlreadyExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -54,5 +56,16 @@ public class GlobalExceptionHandler {
             errors.put(error.getObjectName(), error.getDefaultMessage());
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<String> handleUsernameNotFound(UsernameNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<String> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body("You don't have access rights to this resource: " + ex.getMessage());
     }
 }

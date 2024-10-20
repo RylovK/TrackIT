@@ -25,11 +25,12 @@ public class EquipmentDTO {
     @JsonIgnore
     private JobResponseDTO jobResponseDTO;
 
+    private String lastJob;
+
     private HealthStatus healthStatus;
 
     private AllocationStatus allocationStatus;
 
-//    @Setter(AccessLevel.NONE)
     private LocalDateTime createdAt;
 
     private LocalDate allocationStatusLastModified;
@@ -58,8 +59,16 @@ public class EquipmentDTO {
         return partNumberDTO.getDescription();
     }
 
+    public void setDescription(String description) {
+        this.partNumberDTO.setDescription(description);
+    }
+
     public String getPhoto() {
         return partNumberDTO.getPhoto();
+    }
+
+    public void setPhoto(String photo) {
+        this.partNumberDTO.setPhoto(photo);
     }
 
     public String getJobName() {

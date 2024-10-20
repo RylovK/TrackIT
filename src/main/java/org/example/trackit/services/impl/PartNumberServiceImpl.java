@@ -71,8 +71,6 @@ public class PartNumberServiceImpl implements PartNumberService {
         }
     }
 
-
-
     @Override
     @Transactional
     public boolean deletePartNumber(String number) {

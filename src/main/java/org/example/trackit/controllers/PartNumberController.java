@@ -10,6 +10,7 @@ import org.example.trackit.services.PartNumberService;
 import org.example.trackit.validators.PartNumberValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +33,7 @@ public class PartNumberController {
         return ResponseEntity.ok(founded);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     @Operation(summary = "Create part number", description = "Creates a new part number with the provided details.")
     public ResponseEntity<PartNumberDTO> createPartNumber(
@@ -52,12 +54,13 @@ public class PartNumberController {
         return ResponseEntity.ok(founded);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PatchMapping("/{partNumber}")
     @Operation(summary = "Update existing part number", description = "Update exciting part number")
     public ResponseEntity<PartNumberDTO> updatePartNumber(@PathVariable String partNumber,
                                                           @RequestBody PartNumberDTO dto,
                                                           BindingResult bindingResult) {
-//        partNumberValidator.validateUpdate(dto, bindingResult);//TODO: валидация на работает
+        //partNumberValidator.validateUpdate(dto, bindingResult);//TODO: валидация на работает
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
         }
@@ -73,7 +76,7 @@ public class PartNumberController {
         return new ResponseEntity<>(fileUrl, HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping
     @Operation(summary = "Delete part number")
     public ResponseEntity<Void> deletePartNumber(@RequestParam String partNumber) {

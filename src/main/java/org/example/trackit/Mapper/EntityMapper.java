@@ -15,6 +15,7 @@ public class EntityMapper {
         certifiedEquipment.setHealthStatus(equipment.getHealthStatus());
         certifiedEquipment.setAllocationStatus(equipment.getAllocationStatus());
         certifiedEquipment.setJob(equipment.getJob());
+        certifiedEquipment.setLastJob(equipment.getLastJob());
         certifiedEquipment.setCreatedAt(equipment.getCreatedAt());
         certifiedEquipment.setAllocationStatusLastModified(equipment.getAllocationStatusLastModified());
         return certifiedEquipment;

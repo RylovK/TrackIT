@@ -3,6 +3,7 @@ package org.example.trackit.Mapper;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
+import org.example.trackit.entity.properties.AllocationStatus;
 import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ public class EquipmentMapper {
             Job job = equipment.getJob();
             dto.setJobResponseDTO(jobMapper.toResponseDTO(job));
         }
+        dto.setLastJob(equipment.getLastJob());
 
         return dto;
     }
@@ -43,11 +45,10 @@ public class EquipmentMapper {
         entity.setAllocationStatus(dto.getAllocationStatus());
         entity.setAllocationStatusLastModified(dto.getAllocationStatusLastModified());
 
-        if (dto.getJobName() != null) {
+        if (dto.getJobName() != null && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
             entity.setJob(jobMapper.toJob(dto.getJobResponseDTO()));
         }
-        PartNumber partNumber = new PartNumber();
-        partNumber.setNumber(dto.getPartNumber());
+        PartNumber partNumber = partNumberMapper.toEntity(dto.getPartNumberDTO());
         entity.setPartNumber(partNumber);
         return entity;
     }

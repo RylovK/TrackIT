@@ -32,6 +32,7 @@ public class CertifiedEquipmentMapper {
         if (equipment.getJob() != null) {
             dto.setJobResponseDTO(jobMapper.toResponseDTO(equipment.getJob()));
         }
+        dto.setLastJob(equipment.getLastJob());
 
         dto.setCertificationStatus(equipment.getCertificationStatus());
         dto.setCertificationDate(equipment.getCertificationDate());

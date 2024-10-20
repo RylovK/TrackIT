@@ -1,5 +1,6 @@
 package org.example.trackit.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ public class JobDTO {
 
     private int id;
 
+    @NotEmpty
     private String jobName;
 
     private Set<Equipment> equipment;
