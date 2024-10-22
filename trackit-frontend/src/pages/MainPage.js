@@ -31,7 +31,7 @@ const MainPage = () => {
             }
 
             const data = await response.json();
-            navigate('/equipment', { state: { equipment: data.content } });
+            navigate('/equipment', { state: { filters: { serialNumber } } }); // Передаем только фильтры
         } catch (error) {
             console.error('Error during search:', error);
             message.error(error.message || 'Something went wrong while searching for the equipment.');

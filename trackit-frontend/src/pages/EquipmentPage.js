@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Input, Button, message } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const EquipmentPage = () => {
     const [equipmentData, setEquipmentData] = useState([]);
@@ -13,14 +13,16 @@ const EquipmentPage = () => {
     });
 
     const location = useLocation();
-    const navigate = useNavigate();
 
     // Получаем фильтры из состояния, переданного с MainPage
     useEffect(() => {
-        if (location.state && location.state.equipment) {
-            const serialNumber = location.state.equipment.serialNumber || '';
-            setFilters((prev) => ({ ...prev, serialNumber })); // Устанавливаем фильтр на серийный номер
-            fetchData({ serialNumber }); // Загружаем данные с фильтром
+        if (location.state && location.state.filters) {
+            const initialFilters = location.state.filters;
+            setFilters((prev) => ({
+                ...prev,
+                serialNumber: initialFilters.serialNumber || '', // Устанавливаем serialNumber из состояния
+            }));
+            fetchData(initialFilters); // Загружаем данные с фильтрами
         } else {
             fetchData(); // Если нет фильтров, загружаем все данные
         }
@@ -79,7 +81,7 @@ const EquipmentPage = () => {
         fetchData(); // Fetch data without filters
     };
 
-    // Define columns for the Ant Design table
+    // Определение колонок для таблицы Ant Design
     const columns = [
         {
             title: 'ID',
@@ -136,7 +138,6 @@ const EquipmentPage = () => {
             key: 'createdAt',
             render: (date) => new Date(date).toLocaleString(),
         },
-
     ];
 
     return (
