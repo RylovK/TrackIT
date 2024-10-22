@@ -22,18 +22,21 @@ public class EquipmentDTO {
 
     private String serialNumber;
 
+    private HealthStatus healthStatus;
+
+    private AllocationStatus allocationStatus;
+
     @JsonIgnore
     private JobResponseDTO jobResponseDTO;
 
     private String lastJob;
 
-    private HealthStatus healthStatus;
+    private LocalDate allocationStatusLastModified;
 
-    private AllocationStatus allocationStatus;
+    private String comments;
 
     private LocalDateTime createdAt;
 
-    private LocalDate allocationStatusLastModified;
 
     public EquipmentDTO() {
         partNumberDTO = new PartNumberDTO();

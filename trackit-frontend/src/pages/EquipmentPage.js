@@ -101,13 +101,13 @@ const EquipmentPage = () => {
             title: 'Health Status',
             dataIndex: 'healthStatus',
             key: 'healthStatus',
-            render: (healthStatus) => healthStatus ? healthStatus.name : 'N/A',
+            render: (healthStatus) => healthStatus ? healthStatus : 'N/A',
         },
         {
             title: 'Allocation Status',
             dataIndex: 'allocationStatus',
             key: 'allocationStatus',
-            render: (allocationStatus) => allocationStatus ? allocationStatus.name : 'N/A',
+            render: (allocationStatus) => allocationStatus ? allocationStatus : 'N/A',
         },
         {
             title: 'Job',
@@ -115,20 +115,14 @@ const EquipmentPage = () => {
             key: 'jobName',
         },
         {
-            title: 'Last Job',
-            dataIndex: 'lastJob',
-            key: 'lastJob',
-        },
-        {
             title: 'Comments',
             dataIndex: 'comments',
             key: 'comments',
         },
         {
-            title: 'Created At',
-            dataIndex: 'createdAt',
-            key: 'createdAt',
-            render: (date) => new Date(date).toLocaleString(),
+            title: 'Last Job',
+            dataIndex: 'lastJob',
+            key: 'lastJob',
         },
         {
             title: 'Allocation Status Last Modified',
@@ -136,6 +130,13 @@ const EquipmentPage = () => {
             key: 'allocationStatusLastModified',
             render: (date) => date ? new Date(date).toLocaleString() : 'N/A',
         },
+        {
+            title: 'Created At',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+            render: (date) => new Date(date).toLocaleString(),
+        },
+
     ];
 
     return (
