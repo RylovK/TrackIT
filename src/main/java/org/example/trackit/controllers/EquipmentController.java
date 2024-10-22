@@ -2,6 +2,7 @@ package org.example.trackit.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.CreateEquipmentDTO;
@@ -49,7 +50,7 @@ public class EquipmentController {
     }
 
     @PostMapping
-    public ResponseEntity<EquipmentDTO> createEquipment(@RequestBody CreateEquipmentDTO createEquipmentDTO, BindingResult bindingResult) {
+    public ResponseEntity<EquipmentDTO> createEquipment(@RequestBody @Valid CreateEquipmentDTO createEquipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validate(createEquipmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
@@ -60,7 +61,7 @@ public class EquipmentController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<EquipmentDTO> updateEquipment(@PathVariable int id,
-                                                        @RequestBody EquipmentDTO equipmentDTO,
+                                                        @RequestBody @Valid EquipmentDTO equipmentDTO,
                                                         BindingResult bindingResult) {//TODO:обработать ошибки, добавить @Valid
         equipmentValidator.validateUpdate(id, equipmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {

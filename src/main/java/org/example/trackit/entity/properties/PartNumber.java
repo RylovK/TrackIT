@@ -23,7 +23,7 @@ public class PartNumber {
 
     private String photo;
 
-    @OneToMany(mappedBy = "partNumber", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "partNumber", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Equipment> equipmentList;
 
     public PartNumber() {

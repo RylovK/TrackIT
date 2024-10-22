@@ -1,6 +1,7 @@
 package org.example.trackit.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +17,7 @@ public class JobDTO {
 
     private int id;
 
-    @NotEmpty
+    @Size(min = 4, max = 25, message = "The job name must be between 4 and 25 symbols")
     private String jobName;
 
     private Set<Equipment> equipment;

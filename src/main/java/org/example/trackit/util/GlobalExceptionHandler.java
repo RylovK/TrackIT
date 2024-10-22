@@ -1,5 +1,6 @@
 package org.example.trackit.util;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.exceptions.JobAlreadyExistException;
@@ -67,5 +68,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body("You don't have access rights to this resource: " + ex.getMessage());
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<String> handleJwtException(JwtException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }

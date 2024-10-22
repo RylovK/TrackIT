@@ -1,6 +1,7 @@
 package org.example.trackit.validators;
 
 import lombok.AllArgsConstructor;
+import org.example.trackit.dto.LoginDTO;
 import org.example.trackit.entity.User;
 import org.example.trackit.services.impl.UserService;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class UserValidator implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
-        User user = (User) target;
+        LoginDTO user = (LoginDTO) target;
         userService.findUserByUsername(user.getUsername())
                 .ifPresentOrElse(_ -> errors.rejectValue("username", "duplicate", "Username already exists"),
                         () -> {});

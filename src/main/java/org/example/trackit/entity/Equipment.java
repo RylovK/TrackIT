@@ -37,19 +37,23 @@ public class Equipment {
     @Enumerated(EnumType.STRING)
     private HealthStatus healthStatus;
 
+    @Enumerated(EnumType.STRING)
     private AllocationStatus allocationStatus;
 
+    private String comments;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "job_id", unique = true)
+    @JoinColumn(name = "job_id")
     private Job job;
 
     private String lastJob;
+
+    private LocalDate allocationStatusLastModified;
 
     @CreationTimestamp
     //TODO:раскомментировать после миграции в бд
     private LocalDateTime createdAt;
 
-    private LocalDate allocationStatusLastModified;
 
     public Equipment() {
         healthStatus = HealthStatus.RONG;

@@ -41,9 +41,9 @@ public class EquipmentDTO {
     }
 
     public EquipmentDTO(CreateEquipmentDTO createEquipmentDTO) {
-        partNumberDTO = new PartNumberDTO();
-        partNumberDTO.setNumber(createEquipmentDTO.getPartNumber());
-        jobResponseDTO = new JobResponseDTO();
+        this.partNumberDTO = new PartNumberDTO();
+        this.partNumberDTO.setNumber(createEquipmentDTO.getPartNumber());
+        this.jobResponseDTO = new JobResponseDTO();
         this.serialNumber = createEquipmentDTO.getSerialNumber();
     }
 
@@ -65,10 +65,6 @@ public class EquipmentDTO {
 
     public String getPhoto() {
         return partNumberDTO.getPhoto();
-    }
-
-    public void setPhoto(String photo) {
-        this.partNumberDTO.setPhoto(photo);
     }
 
     public String getJobName() {

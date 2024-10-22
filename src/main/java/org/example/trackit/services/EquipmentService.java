@@ -5,12 +5,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * Service interface for managing equipment.
  */
 public interface EquipmentService<T extends EquipmentDTO> {
+
+    /**
+     *
+     * @return list of all equipment
+     */
+    List<T> findAll();
 
     /**
      *

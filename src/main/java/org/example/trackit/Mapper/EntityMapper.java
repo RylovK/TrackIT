@@ -18,6 +18,7 @@ public class EntityMapper {
         certifiedEquipment.setLastJob(equipment.getLastJob());
         certifiedEquipment.setCreatedAt(equipment.getCreatedAt());
         certifiedEquipment.setAllocationStatusLastModified(equipment.getAllocationStatusLastModified());
+        certifiedEquipment.setComments(equipment.getComments());
         return certifiedEquipment;
     }
 }

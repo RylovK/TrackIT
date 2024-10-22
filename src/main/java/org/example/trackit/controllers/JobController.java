@@ -2,9 +2,10 @@ package org.example.trackit.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.JobDTO;
-import org.example.trackit.exceptions.JobAlreadyExistException;
+import org.example.trackit.dto.JobResponseDTO;
 import org.example.trackit.exceptions.JobNotFoundException;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.JobService;
@@ -12,7 +13,6 @@ import org.example.trackit.validators.JobValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,8 +40,8 @@ public class JobController {
 
     @PostMapping
     @Operation(summary = "Create new job")
-    public ResponseEntity<JobDTO> createJob(@RequestParam String jobName) {
-        JobDTO dto = new JobDTO(jobName);
+    public ResponseEntity<JobDTO> createJob(@RequestBody @Valid JobResponseDTO jobResponseDTO) {
+        JobDTO dto = new JobDTO(jobResponseDTO.getJobName());
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(dto, "jobDTO");
         jobValidator.validate(dto, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -52,8 +52,8 @@ public class JobController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<JobDTO> updateJob(@PathVariable int id, @RequestParam String jobName) {
-        JobDTO updated = new JobDTO(jobName);
+    public ResponseEntity<JobDTO> updateJob(@PathVariable int id, @RequestBody @Valid JobResponseDTO jobResponseDTO) {
+        JobDTO updated = new JobDTO(jobResponseDTO.getJobName());
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(updated, "jobDTO");
         jobValidator.validate(updated, bindingResult);
         if (bindingResult.hasErrors()) {

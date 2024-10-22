@@ -2,6 +2,7 @@ package org.example.trackit.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.CreateCertifiedEquipmentDTO;
@@ -57,7 +58,7 @@ public class CertifiedEquipmentController {
      */
     @PostMapping
     @Operation(summary = "Create certified equipment")
-    public ResponseEntity<CertifiedEquipmentDTO> createEquipment(@RequestBody CreateCertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
+    public ResponseEntity<CertifiedEquipmentDTO> createEquipment(@RequestBody @Valid CreateCertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validate(equipmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
@@ -68,7 +69,7 @@ public class CertifiedEquipmentController {
 
     @PatchMapping("/{id}")
     @Operation(summary = "Update certified equipment")
-    public ResponseEntity<CertifiedEquipmentDTO> updateEquipment(@PathVariable int id, @RequestBody CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
+    public ResponseEntity<CertifiedEquipmentDTO> updateEquipment(@PathVariable int id, @RequestBody @Valid CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validateUpdate(id,equipmentDTO, bindingResult);
         int newId = equipmentService.convertIfNeed(id);
         equipmentValidator.validateCertification(newId, equipmentDTO, bindingResult);

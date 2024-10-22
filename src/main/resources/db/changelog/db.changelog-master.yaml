@@ -214,3 +214,14 @@ databaseChangeLog:
             oldTableName: user
             newTableName: app_user
 
+  - changeSet:
+      id: 12
+      author: Kirill
+      changes:
+        - addColumn:
+            tableName: equipment
+            columns:
+              - column:
+                  name: comments
+                  type: varchar(255)
+

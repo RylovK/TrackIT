@@ -1,6 +1,8 @@
 package org.example.trackit.services.impl;
 
 import lombok.AllArgsConstructor;
+import org.example.trackit.Mapper.UserMapper;
+import org.example.trackit.dto.LoginDTO;
 import org.example.trackit.entity.User;
 import org.example.trackit.entity.properties.Role;
 import org.example.trackit.repository.UserRepository;
@@ -16,9 +18,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Transactional
-    public void registerUser(User user) {
+    public void registerUser(LoginDTO loginDTO) {
+        User user = userMapper.toUser(loginDTO);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);

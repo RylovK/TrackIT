@@ -44,6 +44,10 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     private final CertifiedEquipmentRepository certifiedEquipmentRepository;
     private final PartNumberRepository partNumberRepository;
 
+    @Override
+    public List<EquipmentDTO> findAll() {
+        return equipmentRepository.findAll().stream().map(equipmentMapper::toDTO).toList();
+    }
 
     @Override
     public Page<EquipmentDTO> findAllEquipment

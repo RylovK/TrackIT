@@ -58,9 +58,8 @@ public class PartNumberController {
     @PatchMapping("/{partNumber}")
     @Operation(summary = "Update existing part number", description = "Update exciting part number")
     public ResponseEntity<PartNumberDTO> updatePartNumber(@PathVariable String partNumber,
-                                                          @RequestBody PartNumberDTO dto,
+                                                          @RequestBody @Valid PartNumberDTO dto,
                                                           BindingResult bindingResult) {
-        //partNumberValidator.validateUpdate(dto, bindingResult);//TODO: валидация на работает
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
         }
