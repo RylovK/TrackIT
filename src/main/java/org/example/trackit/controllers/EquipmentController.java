@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/equipment")
 @AllArgsConstructor
 @Tag(name = "Equipment API", description = "Operations related to equipment management")
 public class EquipmentController {
@@ -32,10 +32,10 @@ public class EquipmentController {
 
     @GetMapping
     @Operation(summary = "Find all equipment", description = "Get a list of all equipment with filtration and pagination")
-//TODO: нужна страница index, где будут зашружены все партномера, работы и статусы
     public ResponseEntity<Page<EquipmentDTO>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "25") int size,
                                                               @RequestParam(required = false) Map<String, String> filters) {
+        System.out.println("Get request for: " + filters);
         Page<EquipmentDTO> dtoPage = equipmentService.findAllEquipment(filters, PageRequest.of(page, size));
         return ResponseEntity.ok(dtoPage);
     }

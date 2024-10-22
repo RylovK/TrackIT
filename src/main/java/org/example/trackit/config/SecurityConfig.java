@@ -29,7 +29,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
+        http.cors()
+                .and()
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("auth/register", "/auth/login").permitAll()
                         .anyRequest().authenticated()

@@ -42,7 +42,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> loginUser(@RequestBody @Valid LoginDTO dto, BindingResult bindingResult) {
-        userValidator.validate(dto, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
         }

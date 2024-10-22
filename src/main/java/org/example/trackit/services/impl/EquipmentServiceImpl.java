@@ -57,24 +57,29 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         Specification<Equipment> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             for (Map.Entry<String, String> entry : filters.entrySet()) {
-                if (entry.getKey().equalsIgnoreCase("partNumber")) {
-                    predicates.add(criteriaBuilder.like(root.get(entry.getKey()), entry.getValue()));
+                String key = entry.getKey();
+                String value = entry.getValue().toLowerCase();
+
+                if (key.equalsIgnoreCase("partNumber")) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
                     continue;
                 }
-                if (entry.getKey().equalsIgnoreCase("serialNumber")) {
-                    predicates.add(criteriaBuilder.like(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("serialNumber")) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
                     continue;
                 }
-                if (entry.getKey().equalsIgnoreCase("healthStatus")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("healthStatus")) {
+                    HealthStatus status = HealthStatus.valueOf(value.toUpperCase());
+                    predicates.add(criteriaBuilder.equal(root.get(key), status));
                     continue;
                 }
-                if (entry.getKey().equalsIgnoreCase("allocationStatus")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("allocationStatus")) {
+                    AllocationStatus status = AllocationStatus.valueOf(value.toUpperCase());
+                    predicates.add(criteriaBuilder.equal(root.get(key), status));
                     continue;
                 }
-                if (entry.getKey().equalsIgnoreCase("jobName")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("jobName")) {
+                    predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(key)), value));
                 }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

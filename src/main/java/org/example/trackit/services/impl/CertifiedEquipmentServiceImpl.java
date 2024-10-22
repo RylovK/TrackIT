@@ -45,6 +45,11 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     private final FileUtils fileUtils;
 
     @Override
+    public List<CertifiedEquipmentDTO> findAll() {
+        return certifiedEquipmentRepository.findAll().stream().map(certifiedEquipmentMapper::toDTO).toList();
+    }
+
+    @Override
     public Page<CertifiedEquipmentDTO> findAllEquipment
             (Map<String, String> filters, Pageable pageable) {
         Specification<CertifiedEquipment> spec = (root, query, criteriaBuilder) -> {
