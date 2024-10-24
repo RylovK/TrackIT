@@ -79,7 +79,8 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
                     continue;
                 }
                 if (key.equalsIgnoreCase("jobName")) {
-                    predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get(key)), value));
+                    predicates.add(criteriaBuilder.equal(
+                            criteriaBuilder.lower(root.get("job").get("jobName")), value));
                 }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

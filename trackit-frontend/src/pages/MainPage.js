@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import api from './api'; // Импортируем наш настроенный Axios
 
 const MainPage = () => {
     const [serialNumber, setSerialNumber] = useState('');
@@ -12,25 +13,12 @@ const MainPage = () => {
             return;
         }
 
-        const token = localStorage.getItem('token'); // Retrieve the token from local storage
-        const url = `http://localhost:8080/equipment?serialNumber=${serialNumber}`;
-        console.log('Fetching from URL:', url);
-
         try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`, // Use the token here
-                    'Content-Type': 'application/json',
-                },
+            // Используем глобально настроенный Axios для запроса
+            const response = await api.get('/equipment', {
+                params: { serialNumber }, // Передаем фильтр как параметр
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error fetching equipment');
-            }
-
-            const data = await response.json();
             navigate('/equipment', { state: { filters: { serialNumber } } }); // Передаем только фильтры
         } catch (error) {
             console.error('Error during search:', error);
@@ -44,9 +32,9 @@ const MainPage = () => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            height: 'calc(100vh - 256px)', // Adjust based on navbar height
-            marginTop: '16px',
-            paddingLeft: '200px', // Add padding to move everything right
+            minHeight: '100vh',
+            padding: '0 20px',
+            boxSizing: 'border-box',
         }}>
             <Input
                 placeholder="Enter Serial Number"
@@ -57,6 +45,7 @@ const MainPage = () => {
                     fontSize: '16px',
                     height: '40px',
                     marginBottom: '20px',
+                    textAlign: 'center',
                 }}
             />
             <Button type="primary" onClick={handleSearch} style={{ fontSize: '16px' }}>

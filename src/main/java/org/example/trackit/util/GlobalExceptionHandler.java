@@ -1,5 +1,6 @@
 package org.example.trackit.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
 import org.example.trackit.exceptions.ValidationErrorException;
@@ -70,8 +71,8 @@ public class GlobalExceptionHandler {
                 .body("You don't have access rights to this resource: " + ex.getMessage());
     }
 
-    @ExceptionHandler(JwtException.class)
-    public ResponseEntity<String> handleJwtException(JwtException ex) {
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<String> handleJwtException(ExpiredJwtException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }
