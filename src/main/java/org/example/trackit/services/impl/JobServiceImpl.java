@@ -1,8 +1,11 @@
 package org.example.trackit.services.impl;
 
 import lombok.AllArgsConstructor;
+import org.example.trackit.Mapper.EquipmentMapper;
 import org.example.trackit.Mapper.JobMapper;
+import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.dto.JobDTO;
+import org.example.trackit.dto.JobResponseDTO;
 import org.example.trackit.entity.properties.Job;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.services.JobService;
@@ -12,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,17 +25,26 @@ public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
     private final JobMapper jobMapper;
+    private final EquipmentMapper equipmentMapper;
 
     @Override
-    public List<JobDTO> findAllJobs() {
-        return jobRepository.findAll().stream().map(jobMapper::toJobDTO).toList();
+    public List<JobResponseDTO> findAllJobs() {
+        return jobRepository.findAll().stream().map(jobMapper::toResponseDTO).toList();
     }
 
     @Override
     public JobDTO findJobById(int id) {
-        return jobRepository.findById(id)
-                .map(jobMapper::toJobDTO)
+        Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new JobNotFoundException("Job not found: " + id));
+        JobDTO jobDTO = jobMapper.toJobDTO(job);
+
+        // If there are nested mappings (e.g., for equipment)
+        Set<EquipmentDTO> equipmentDTOs = job.getEquipment().stream()
+                .map(equipmentMapper::toDTO) // Ensure you're using the correct mapper
+                .collect(Collectors.toSet());
+
+        jobDTO.setEquipment(equipmentDTOs);
+        return jobDTO;
     }
 
 

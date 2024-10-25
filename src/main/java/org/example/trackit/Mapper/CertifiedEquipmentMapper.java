@@ -34,6 +34,8 @@ public class CertifiedEquipmentMapper {
         }
         dto.setLastJob(equipment.getLastJob());
 
+        dto.setComments(equipment.getComments());
+
         dto.setCertificationStatus(equipment.getCertificationStatus());
         dto.setCertificationDate(equipment.getCertificationDate());
         dto.setCertificationPeriod(equipment.getCertificationPeriod());
@@ -63,6 +65,8 @@ public class CertifiedEquipmentMapper {
         entity.setNextCertificationDate(dto.getNextCertificationDate());
         entity.setCertificationPeriod(dto.getCertificationPeriod());
         entity.setFileCertificate(dto.getFileCertificate());
+
+        entity.setComments(dto.getComments());
 
         return entity;
     }

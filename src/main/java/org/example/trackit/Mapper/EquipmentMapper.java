@@ -33,6 +33,8 @@ public class EquipmentMapper {
         }
         dto.setLastJob(equipment.getLastJob());
 
+        dto.setComments(equipment.getComments());
+
         return dto;
     }
 
@@ -50,7 +52,7 @@ public class EquipmentMapper {
         }
         PartNumber partNumber = partNumberMapper.toEntity(dto.getPartNumberDTO());
         entity.setPartNumber(partNumber);
+        entity.setComments(dto.getComments());
         return entity;
     }
-
 }

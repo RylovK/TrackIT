@@ -28,7 +28,7 @@ public class JobController {
 
     @GetMapping
     @Operation(summary = "Get list of all job")
-    public ResponseEntity<List<JobDTO>> getAllJobs() {
+    public ResponseEntity<List<JobResponseDTO>> getAllJobs() {
         return new ResponseEntity<>(jobService.findAllJobs(), HttpStatus.OK);
     }
 

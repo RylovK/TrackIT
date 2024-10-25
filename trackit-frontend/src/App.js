@@ -4,10 +4,11 @@ import Layout from './components/Layout'; // Макет с Navbar
 import MainPage from './pages/MainPage';
 import PartNumberPage from './pages/PartNumberPage';
 import PartNumberEditPage from './pages/PartNumberEditPage';
-import JobPage from './pages/JobPage';
-import JobEditPage from './pages/JobEditPage';
-import EquipmentPage from './pages/EquipmentPage';
-import EquipmentEditPage from './pages/EquipmentEditPage';
+import JobPage from './pages/Job/JobPage';
+import JobEditPage from './pages/Job/JobEditPage';
+import JobCreatePage from './pages/Job/JobCreatePage';
+import EquipmentPage from './pages/Equipment/EquipmentPage';
+import EquipmentEditPage from './pages/Equipment/EquipmentEditPage';
 import CertifiedEquipmentPage from './pages/CertifiedEquipmentPage';
 import CertifiedEquipmentEditPage from './pages/CertifiedEquipmentEditPage';
 import LoginPage from './pages/LoginPage';
@@ -27,7 +28,8 @@ const App = () => {
             <Route path="/partnumber" element={<PartNumberPage />} />
             <Route path="/partnumber/edit" element={<PartNumberEditPage />} />
             <Route path="/job" element={<JobPage />} />
-            <Route path="/job/edit" element={<JobEditPage />} />
+            <Route path="/job/create" element={<JobCreatePage />} />
+            <Route path="/job/:id" element={<JobEditPage />} />
             <Route path="/equipment" element={<EquipmentPage />} />
             <Route path="/equipment/:id" element={<EquipmentEditPage />} />
             <Route path="/certified" element={<CertifiedEquipmentPage />} />

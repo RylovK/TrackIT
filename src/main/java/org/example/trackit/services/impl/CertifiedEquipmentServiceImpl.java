@@ -110,6 +110,10 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         existing.setPartNumber(partNumber);
         existing.setHealthStatus(dto.getHealthStatus() == null ? HealthStatus.RONG : dto.getHealthStatus());
         if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
+            if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
+                    && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
+                existing.setLastJob("Shipped to: " + dto.getJobName() + " on " + LocalDate.now());
+            }
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDate.now());
         }
@@ -121,8 +125,10 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
                 job.getEquipment().add(existing);
             } else throw new JobNotFoundException("Job not found");
         } else existing.setJob(null);
+        existing.setComments(dto.getComments());
         setEquipmentCertification(dto, existing);
         partNumber.getEquipmentList().add(existing);
+
         return certifiedEquipmentMapper.toDTO(equipmentRepository.save(existing));
     }
 

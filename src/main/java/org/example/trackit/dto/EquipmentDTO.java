@@ -2,6 +2,7 @@ package org.example.trackit.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.trackit.entity.properties.AllocationStatus;
@@ -20,6 +21,7 @@ public class EquipmentDTO {
     @JsonIgnore
     private PartNumberDTO partNumberDTO;
 
+    @NotEmpty
     private String serialNumber;
 
     private HealthStatus healthStatus;

@@ -53,7 +53,7 @@ public class EquipmentValidator implements Validator {
     private boolean isPartNumberValid(String partNumber, Errors errors) {
         Optional<PartNumber> founded = partNumberRepository.findByNumber(partNumber);
         if (founded.isEmpty()) {
-            errors.rejectValue("PartNumber", "invalid", "Part number does not exist");
+            errors.rejectValue("partNumber", "invalid", "Part number does not exist");
             return false;
         }
         return true;

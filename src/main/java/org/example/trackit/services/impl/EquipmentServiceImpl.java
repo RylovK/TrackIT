@@ -125,6 +125,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
                 job.getEquipment().add(existing);
             } else throw new JobNotFoundException("Job not found");
         } else existing.setJob(null);
+        existing.setComments(dto.getComments());
         Equipment saved = equipmentRepository.save(existing);
         partNumber.getEquipmentList().add(saved);
         return equipmentMapper.toDTO(saved);
