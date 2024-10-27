@@ -146,8 +146,10 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     }
 
     @Override
+    @Transactional
     public boolean deleteEquipmentById(int id) {
         Optional<Equipment> byId = equipmentRepository.findById(id);
+        System.out.println("Founded " + byId.isPresent() + "id: " + id);
         if (byId.isPresent()) {
             equipmentRepository.delete(byId.get());
             return true;

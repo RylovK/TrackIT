@@ -1,8 +1,6 @@
-// api.js
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode'; // Исправленный импорт
 import { message } from 'antd';
-import { useNavigate } from 'react-router-dom';
 
 // Создаем экземпляр Axios
 const api = axios.create({
@@ -34,16 +32,12 @@ api.interceptors.request.use(
 
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 // Интерсептор для обработки ошибок
 api.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
             // Если сервер вернул 401, это может означать, что токен истек или неверный

@@ -29,7 +29,6 @@ public class CertifiedEquipmentController {
     private final EquipmentService<CertifiedEquipmentDTO> equipmentService;
     private final EquipmentValidator equipmentValidator;
 
-
     @GetMapping
     @Operation(summary = "Find all certified equipment", description = "Get a list of all certified equipment with filtration and pagination")
     public ResponseEntity<Page<CertifiedEquipmentDTO>> getAllCertifiedEquipment(@RequestParam(defaultValue = "0") int page,
@@ -42,20 +41,6 @@ public class CertifiedEquipmentController {
         return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
     }
 
-//    @GetMapping("/{id}")
-//    @Operation(summary = "Find certified equipment by id")
-//    public ResponseEntity<CertifiedEquipmentDTO> getEquipmentById(@PathVariable ("id") Integer id) {
-//        CertifiedEquipmentDTO founded = equipmentService.findEquipmentById(id);
-//        return new ResponseEntity<>(founded, HttpStatus.OK);
-//    }
-
-    /**
-     * This method takes DTO from creation form
-     * @param equipmentDTO this param has two option: serial and part numbers only, and additional parameters for
-     *                     certified equipment: certification date, certification period(Month) and file with certificate.
-     * @param bindingResult Errors from form validation.
-     * @return DTO of created equipment or validation errors
-     */
     @PostMapping
     @Operation(summary = "Create certified equipment")
     public ResponseEntity<CertifiedEquipmentDTO> createEquipment(@RequestBody @Valid CreateCertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
@@ -80,7 +65,6 @@ public class CertifiedEquipmentController {
         }
         CertifiedEquipmentDTO updated = equipmentService.update(newId, equipmentDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
-
     }
 
     @PatchMapping("/{id}/upload")

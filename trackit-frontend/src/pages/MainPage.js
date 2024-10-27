@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Button, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import api from './api'; // Импортируем наш настроенный Axios
+import api from '../api'; // Импортируем наш настроенный Axios
 
 const MainPage = () => {
     const [serialNumber, setSerialNumber] = useState('');
@@ -23,6 +23,17 @@ const MainPage = () => {
         } catch (error) {
             console.error('Error during search:', error);
             message.error(error.message || 'Something went wrong while searching for the equipment.');
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await api.post('/logout'); // Запрос на логаут к API
+            message.success('You have been logged out');
+            navigate('/login'); // Перенаправление на страницу входа
+        } catch (error) {
+            console.error('Error during logout:', error);
+            message.error(error.message || 'Failed to logout.');
         }
     };
 
@@ -48,8 +59,11 @@ const MainPage = () => {
                     textAlign: 'center',
                 }}
             />
-            <Button type="primary" onClick={handleSearch} style={{ fontSize: '16px' }}>
+            <Button type="primary" onClick={handleSearch} style={{ fontSize: '16px', marginBottom: '20px' }}>
                 Find
+            </Button>
+            <Button type="default" onClick={handleLogout} style={{ fontSize: '16px' }}>
+                Logout
             </Button>
         </div>
     );

@@ -25,8 +25,6 @@ import java.util.Map;
 @Tag(name = "Equipment API", description = "Operations related to equipment management")
 public class EquipmentController {
 
-    //////////////////////////////////TODO: validation
-
     private final EquipmentService<EquipmentDTO> equipmentService;
     private final EquipmentValidator equipmentValidator;
 
@@ -73,6 +71,7 @@ public class EquipmentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEquipment(@PathVariable int id) {
+        System.out.println("Trying to delete " + id);
         boolean deleted = equipmentService.deleteEquipmentById(id);
         if (!deleted)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

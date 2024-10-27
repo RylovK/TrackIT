@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Service
 public class FileUtils {
@@ -42,9 +41,12 @@ public class FileUtils {
             }
             String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
             String fileName = name + extension;
+            System.out.print("Trying to save " + fileName);
             Path filePath = Paths.get(imagesDirectory, fileName);
+            System.out.println(" to " + filePath);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            return filePath.toString();
+            System.out.println("saved to " + filePath);
+            return fileName;
         } catch (IOException e) {
             throw new RuntimeException("Failed to save file", e);
         }

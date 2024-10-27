@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom'; // Import Link
-import axios from 'axios';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import api from '../../api'; // Import your axios instance
 import { Button, Spin, message, Input, Table } from 'antd';
 
 const JobEditPage = () => {
     const { id } = useParams(); // Get the job ID from the URL
+    const navigate = useNavigate(); // Initialize useNavigate for redirecting
     const [job, setJob] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
     const [jobName, setJobName] = useState(''); // State for job name input
 
-    const fetchJob = async () => {
-        const token = localStorage.getItem('token');
+    const fetchJob = useCallback(async () => {
+        setLoading(true); // Set loading to true at the beginning of the fetch
         try {
-            const response = await axios.get(`http://localhost:8080/job/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
+            const response = await api.get(`/job/${id}`); // Use your axios instance
             setJob(response.data);
             setJobName(response.data.jobName); // Set jobName for editing
         } catch (err) {
@@ -28,22 +25,17 @@ const JobEditPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [id]);
 
     const handleEdit = () => {
         setIsEditing(true); // Switch to edit mode
     };
 
     const handleSave = async () => {
-        const token = localStorage.getItem('token');
         try {
-            const response = await axios.patch(`http://localhost:8080/job/${id}`, {
+            const response = await api.patch(`/job/${id}`, {
                 id: job.id,
                 jobName: jobName,
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
             });
             setJob(response.data); // Update the job state with the new data
             setIsEditing(false); // Switch back to view mode
@@ -55,9 +47,21 @@ const JobEditPage = () => {
         }
     };
 
+    const handleDelete = async () => {
+        try {
+            await api.delete(`/job?id=${id}`); // Send delete request
+            message.success('Job deleted successfully!');
+            navigate('/job'); // Redirect to the job list page after deletion
+        } catch (err) {
+            setError('Failed to delete job');
+            message.error('Failed to delete job');
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
         fetchJob();
-    }, [id]);
+    }, [fetchJob]);
 
     if (loading) return <Spin tip="Loading..." />;
     if (error) return <div>Error: {error}</div>;
@@ -106,6 +110,13 @@ const JobEditPage = () => {
                             <h2>Job Name: {job.jobName}</h2>
                             <Button type="default" onClick={handleEdit}>
                                 Edit
+                            </Button>
+                            <Button
+                                type="danger"
+                                onClick={handleDelete}
+                                style={{ marginLeft: '10px' }}
+                            >
+                                Delete
                             </Button>
                         </div>
                     )}

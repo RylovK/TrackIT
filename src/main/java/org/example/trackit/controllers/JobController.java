@@ -12,6 +12,7 @@ import org.example.trackit.services.JobService;
 import org.example.trackit.validators.JobValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +67,7 @@ public class JobController {
 
     @DeleteMapping
     @Operation(summary = "Delete job")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteJob(@RequestParam int id) {
         if (jobService.delete(id)){
             return new ResponseEntity<>(HttpStatus.OK);

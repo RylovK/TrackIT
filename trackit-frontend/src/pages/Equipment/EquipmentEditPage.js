@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import api from '../../api'; // Импортируем ваш API
 
 const EquipmentEditPage = () => {
     const { id } = useParams();
+    const navigate = useNavigate(); // Для навигации после удаления
     const [equipment, setEquipment] = useState(null);
     const [isCertified, setIsCertified] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -15,10 +16,7 @@ const EquipmentEditPage = () => {
     const [jobs, setJobs] = useState([]);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        axios.get(`http://localhost:8080/equipment/${id}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
+        api.get(`/equipment/${id}`)
             .then(response => {
                 setEquipment(response.data);
                 setFormData(response.data);
@@ -32,10 +30,7 @@ const EquipmentEditPage = () => {
     }, [id]);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        axios.get('http://localhost:8080/partNumber', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
+        api.get('/partNumber')
             .then(response => {
                 setPartNumbers(response.data);
             })
@@ -45,10 +40,7 @@ const EquipmentEditPage = () => {
     }, []);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        axios.get('http://localhost:8080/job', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
+        api.get('/job')
             .then(response => {
                 setJobs(response.data);
             })
@@ -63,17 +55,11 @@ const EquipmentEditPage = () => {
     };
 
     const handleSave = () => {
-        const token = localStorage.getItem('token');
         const url = isCertified
-            ? `http://localhost:8080/certified/${id}`
-            : `http://localhost:8080/equipment/${id}`;
+            ? `/certified/${id}`
+            : `/equipment/${id}`;
 
-        axios.patch(url, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        })
+        api.patch(url, formData)
             .then(response => {
                 console.log("Equipment updated successfully:", response.data);
                 setIsEditing(false);
@@ -104,6 +90,20 @@ const EquipmentEditPage = () => {
             });
     };
 
+    // Метод для удаления оборудования
+    const handleDelete = () => {
+        api.delete(`/equipment/${id}`)
+            .then(() => {
+                console.log("Equipment deleted successfully");
+                navigate('/equipment'); // Перенаправление на список оборудования после удаления
+            })
+            .catch(error => {
+                console.error("Error deleting equipment:", error);
+            });
+    };
+
+
+
     if (!equipment) {
         return <div>Loading...</div>;
     }
@@ -112,13 +112,12 @@ const EquipmentEditPage = () => {
         <div>
             <h1>Equipment Info</h1>
             <form>
-
                 {formData.photo && (
                     <div>
                         <label>Image:</label>
                         <img
                             src={`${imageDirectory}${formData.photo}`}
-                            alt="Equipment Photo"
+                            alt={formData.serialNumber || 'Equipment Image'}
                             style={{width: '200px', height: 'auto'}}
                         />
                     </div>
@@ -145,7 +144,6 @@ const EquipmentEditPage = () => {
                         disabled={!isEditing}
                         onChange={handleInputChange}
                     >
-                        {/*<option value="">Select Part Number</option>*/}
                         {partNumbers.map(part => (
                             <option key={part.id} value={part.number}>
                                 {part.number}
@@ -156,6 +154,19 @@ const EquipmentEditPage = () => {
                         <p className="error">{validationErrors.partNumber}</p>
                     )}
                 </div>
+                <div>
+                    <label>Description:</label>
+                    <input
+                        type="text"
+                        name="description"
+                        value={formData.description || ''}
+                        readOnly
+                    />
+                    {validationErrors.description && (
+                        <p className="error">{validationErrors.description}</p>
+                    )}
+                </div>
+
                 <div>
                     <label>Health Status:</label>
                     <select
@@ -204,7 +215,6 @@ const EquipmentEditPage = () => {
                         )}
                     </div>
                 )}
-
 
                 <div>
                     <label>Comments:</label>
@@ -298,7 +308,7 @@ const EquipmentEditPage = () => {
             </form>
 
             {nonFieldErrors.length > 0 && (
-                <div className="error-summary" style={{ color: 'red' }}>
+                <div className="error-summary" style={{color: 'red'}}>
                     {nonFieldErrors.map((error, index) => (
                         <div key={index}>
                             {error}
@@ -308,7 +318,7 @@ const EquipmentEditPage = () => {
             )}
 
             {validationErrors.certificationStatus && (
-                <div className="error" style={{ color: 'red' }}>
+                <div className="error" style={{color: 'red'}}>
                     {validationErrors.certificationStatus}
                 </div>
             )}
@@ -320,6 +330,9 @@ const EquipmentEditPage = () => {
             {isEditing && (
                 <button onClick={handleSave}>Save</button>
             )}
+            <button onClick={handleDelete} style={{color: 'red', marginTop: '10px'}}>
+                Delete Equipment
+            </button>
         </div>
     );
 };

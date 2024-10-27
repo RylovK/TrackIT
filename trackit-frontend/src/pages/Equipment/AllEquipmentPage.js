@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Table, Input, Button, message, Select } from 'antd';
 import { useLocation, useNavigate } from 'react-router-dom';
+import api from '../../api';
 
 const { Option } = Select;
 
-const EquipmentPage = () => {
+const AllEquipmentPage = () => {
     const [equipmentData, setEquipmentData] = useState([]);
-    const [jobNames, setJobNames] = useState([]); // Хранение уникальных jobName
+    const [jobNames, setJobNames] = useState([]);
     const [filters, setFilters] = useState({
         serialNumber: '',
         partNumber: '',
@@ -16,7 +17,30 @@ const EquipmentPage = () => {
     });
 
     const location = useLocation();
-    const navigate = useNavigate(); // Используем хук для навигации
+    const navigate = useNavigate();
+
+    const fetchData = useCallback(async (filterParams = {}) => {
+        const filteredParams = Object.fromEntries(
+            Object.entries(filterParams).filter(([_, value]) => value)
+        );
+
+        const query = new URLSearchParams(filteredParams).toString();
+        const url = `/equipment${query ? '?' + query : ''}`;
+
+        try {
+            const response = await api.get(url);
+            setEquipmentData(response.data.content);
+            extractJobNames(response.data.content);
+        } catch (error) {
+            console.error('Error fetching equipment:', error);
+            message.error(error.message || 'Something went wrong while fetching equipment.');
+        }
+    }, []);
+
+    const extractJobNames = (data) => {
+        const uniqueJobNames = [...new Set(data.map(item => item.jobName).filter(Boolean))];
+        setJobNames(uniqueJobNames);
+    };
 
     useEffect(() => {
         if (location.state && location.state.filters) {
@@ -29,45 +53,9 @@ const EquipmentPage = () => {
         } else {
             fetchData();
         }
-    }, [location.state]);
+    }, [location.state, fetchData]); // Add fetchData here
 
-    const fetchData = async (filterParams = {}) => {
-        const token = localStorage.getItem('token');
-
-        const filteredParams = Object.fromEntries(
-            Object.entries(filterParams).filter(([_, value]) => value)
-        );
-
-        const query = new URLSearchParams(filteredParams).toString();
-        const url = `http://localhost:8080/equipment${query ? '?' + query : ''}`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Error fetching equipment');
-            }
-
-            const data = await response.json();
-            setEquipmentData(data.content);
-            extractJobNames(data.content); // Извлекаем уникальные jobName
-        } catch (error) {
-            console.error('Error fetching equipment:', error);
-            message.error(error.message || 'Something went wrong while fetching equipment.');
-        }
-    };
-
-    const extractJobNames = (data) => {
-        const uniqueJobNames = [...new Set(data.map(item => item.jobName).filter(Boolean))];
-        setJobNames(uniqueJobNames);
-    };
+    // Rest of your component remains the same...
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
@@ -102,20 +90,13 @@ const EquipmentPage = () => {
     };
 
     const handleRowClick = (id) => {
-        navigate(`/equipment/${id}`); // Навигация к EquipmentEditPage с id
+        navigate(`/equipment/${id}`);
     };
 
     const exportAllEquipment = async () => {
-        const token = localStorage.getItem('token');
         try {
-            const response = await fetch('http://localhost:8080/export/all', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(new Blob([blob]));
+            const response = await api.get('/export/all', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', 'equipment.xlsx');
@@ -129,16 +110,9 @@ const EquipmentPage = () => {
     };
 
     const exportCertifiedEquipment = async () => {
-        const token = localStorage.getItem('token');
         try {
-            const response = await fetch('http://localhost:8080/export/certified', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
-            });
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(new Blob([blob]));
+            const response = await api.get('/export/certified', { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', 'certified_equipment.xlsx');
@@ -270,32 +244,28 @@ const EquipmentPage = () => {
                     <Button type="primary" onClick={applyFilters} style={{ marginRight: '10px' }}>
                         Apply Filters
                     </Button>
-                    <Button onClick={resetFilters} style={{ marginRight: '10px' }}>
+                    <Button onClick={resetFilters}>
                         Reset Filters
+                    </Button>
+                    <Button type="primary" onClick={exportAllEquipment} style={{ marginLeft: '10px' }}>
+                        Export All Equipment
+                    </Button>
+                    <Button type="primary" onClick={exportCertifiedEquipment} style={{ marginLeft: '10px' }}>
+                        Export Certified Equipment
                     </Button>
                 </div>
             </div>
-
             <Table
                 dataSource={equipmentData}
                 columns={columns}
-                rowKey="id"
-                pagination={false}
                 onRow={(record) => ({
                     onClick: () => handleRowClick(record.id),
                 })}
+                rowKey="id"
+                pagination={{ pageSize: 10 }}
             />
-
-            <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
-                <Button type="primary" onClick={exportAllEquipment}>
-                    Export all equipment
-                </Button>
-                <Button type="primary" onClick={exportCertifiedEquipment}>
-                    Export certified equipment
-                </Button>
-            </div>
         </div>
     );
 };
 
-export default EquipmentPage;
+export default AllEquipmentPage;

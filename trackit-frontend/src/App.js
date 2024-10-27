@@ -2,17 +2,19 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout'; // Макет с Navbar
 import MainPage from './pages/MainPage';
-import PartNumberPage from './pages/PartNumberPage';
-import PartNumberEditPage from './pages/PartNumberEditPage';
+import PartNumberCreatingPage from './pages/PartNumber/PartNumberCreatingPage';
+import PartNumberEditPage from './pages/PartNumber/PartNumberEditPage';
 import JobPage from './pages/Job/JobPage';
 import JobEditPage from './pages/Job/JobEditPage';
 import JobCreatePage from './pages/Job/JobCreatePage';
-import EquipmentPage from './pages/Equipment/EquipmentPage';
+import AllEquipmentPage from './pages/Equipment/AllEquipmentPage';
 import EquipmentEditPage from './pages/Equipment/EquipmentEditPage';
 import CertifiedEquipmentPage from './pages/CertifiedEquipmentPage';
 import CertifiedEquipmentEditPage from './pages/CertifiedEquipmentEditPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PartNumberList from "./pages/PartNumber/PartNumberList";
+import EquipmentCreatingPage from "./pages/Equipment/EquipmentCreatingPage";
 
 const App = () => {
   return (
@@ -25,13 +27,20 @@ const App = () => {
           {/* Роуты с Navbar через Layout */}
           <Route element={<Layout />}>
             <Route path="/main" element={<MainPage />} />
-            <Route path="/partnumber" element={<PartNumberPage />} />
-            <Route path="/partnumber/edit" element={<PartNumberEditPage />} />
+
+            <Route path="/partnumber/create" element={<PartNumberCreatingPage />} />
+            <Route path="/partnumber/all" element={<PartNumberList />} />
+            <Route path="/partnumber/:partNumber" element={<PartNumberEditPage />} />
+
             <Route path="/job" element={<JobPage />} />
             <Route path="/job/create" element={<JobCreatePage />} />
             <Route path="/job/:id" element={<JobEditPage />} />
-            <Route path="/equipment" element={<EquipmentPage />} />
+
+            <Route path="/equipment" element={<AllEquipmentPage />} />
             <Route path="/equipment/:id" element={<EquipmentEditPage />} />
+            <Route path="/equipment/create" element={<EquipmentCreatingPage />} />
+
+
             <Route path="/certified" element={<CertifiedEquipmentPage />} />
             <Route path="/certified/:id" element={<CertifiedEquipmentEditPage />} />
             <Route path="/" element={<MainPage />} />

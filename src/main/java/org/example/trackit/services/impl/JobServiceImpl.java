@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,6 +60,7 @@ public class JobServiceImpl implements JobService {
         Job existing = jobRepository.findById(id).orElseThrow(() -> new JobNotFoundException("Job not found: " + id));
         existing.setJobName(jobDTO.getJobName());
         Job updated = jobRepository.save(existing);
+        updated.getEquipment().forEach(equipment -> equipment.setJob(updated));
         return jobMapper.toJobDTO(updated);
     }
 

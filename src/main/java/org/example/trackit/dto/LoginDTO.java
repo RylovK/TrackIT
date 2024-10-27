@@ -10,6 +10,7 @@ import lombok.Setter;
 public class LoginDTO {
 
     @Size(min = 4, max = 20, message = "The username must be between 4 and 20 symbols")
+    @NotEmpty(message = "User name cannot be empty")
     private String username;
 
     @NotEmpty(message = "The password cannot be empty")

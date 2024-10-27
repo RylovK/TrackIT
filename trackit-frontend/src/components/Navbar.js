@@ -9,12 +9,20 @@ const Navbar = () => {
         navigate('/'); // Path to the main page
     };
 
+    const handleEquipmentList = () => {
+        navigate('/equipment'); //
+    };
+
     const handleCreateEquipment = () => {
-        navigate('/equipment/edit'); // Path for EquipmentEditPage
+        navigate('/equipment/create'); //
     };
 
     const handleCreatePartNumber = () => {
-        navigate('/partnumber/edit'); // Path for PartNumberEditPage
+        navigate('/partnumber/create'); // Path for PartNumberEditPage
+    };
+
+    const handlePartNumberList = () => {
+        navigate('/partnumber/all'); // Path for PartNumberEditPage
     };
 
     const handleCreateJob = () => {
@@ -45,15 +53,15 @@ const Navbar = () => {
 
             <Divider style={{ margin: '10px 0' }} /> {/* Divider for grouping */}
 
+            <Button type="primary" onClick={handleEquipmentList} style={{ marginBottom: '10px' }}>
+                All equipment list
+            </Button>
+
             <Button type="primary" onClick={handleCreateEquipment} style={{ marginBottom: '10px' }}>
                 Create Equipment
             </Button>
 
-            <Divider style={{ margin: '10px 0' }} /> {/* Divider for grouping */}
 
-            <Button type="primary" onClick={handleCreatePartNumber} style={{ marginBottom: '10px' }}>
-                Create Part Number
-            </Button>
 
             <Divider style={{ margin: '10px 0' }} /> {/* Divider for grouping */}
 
@@ -68,6 +76,17 @@ const Navbar = () => {
 
             <Button type="primary" onClick={handleCertificationPage} style={{ marginBottom: '10px' }}>
                 Certification Page
+            </Button>
+
+            <Divider style={{ margin: '10px 0' }} /> {/* Divider for grouping */}
+            <Divider style={{ margin: '10px 0' }} /> {/* Divider for grouping */}
+
+            <Button type="primary" onClick={handleCreatePartNumber} style={{ marginBottom: '10px' }}>
+                Create Part Number
+            </Button>
+
+            <Button type="primary" onClick={handlePartNumberList} style={{ marginBottom: '10px' }}>
+                List of all part numbers
             </Button>
         </div>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../../api'; // Import your axios instance
 import { Table, Spin, message } from 'antd';
 import { Link } from 'react-router-dom';
 
@@ -11,13 +11,8 @@ const JobPage = () => {
     const [error, setError] = useState(null);
 
     const fetchJobs = async () => {
-        const token = localStorage.getItem('token'); // Retrieve the token from local storage
         try {
-            const response = await axios.get('http://localhost:8080/job', {
-                headers: {
-                    'Authorization': `Bearer ${token}`, // Include the token in the headers
-                },
-            });
+            const response = await api.get('/job'); // Use your axios instance
             console.log('API Response:', response.data);
             setJobs(response.data); // Ensure this is an array
         } catch (err) {
@@ -39,7 +34,7 @@ const JobPage = () => {
 
     return (
         <div>
-            <h1>Job list</h1>
+            <h1>Job List</h1>
             <Table dataSource={jobs} rowKey="id">
                 <Column
                     title="Job Name"

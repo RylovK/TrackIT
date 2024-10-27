@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../api'; // Assuming your axios instance is exported from api.js
 import { Button, Input, message } from 'antd';
 
 const JobCreatePage = () => {
@@ -12,15 +12,10 @@ const JobCreatePage = () => {
         e.preventDefault(); // Prevent default form submission
         setLoading(true); // Set loading state
 
-        const token = localStorage.getItem('token'); // Retrieve JWT token
         try {
             // Make POST request to create a new job
-            const response = await axios.post('http://localhost:8080/job', {
+            const response = await api.post('/job', {
                 jobName: jobName,
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                },
             });
 
             // Handle successful job creation
