@@ -2,6 +2,7 @@ package org.example.trackit.controllers;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.LoginDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.security.AuthResponse;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @AllArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final UserService userService;
@@ -45,6 +47,7 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
         }
+        log.info("Getting authentication token");
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);

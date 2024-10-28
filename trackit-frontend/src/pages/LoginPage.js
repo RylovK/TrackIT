@@ -1,38 +1,31 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate } from 'react-router-dom';
+import api from '../api'; // Импортируем экземпляр axios
 
 const LoginPage = () => {
     const [errors, setErrors] = useState({});
-    const navigate = useNavigate(); // Use useNavigate instead of useHistory
+    const navigate = useNavigate();
 
     const handleLogin = async (values) => {
         try {
-            const response = await fetch('http://localhost:8080/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
+            const response = await api.post('/auth/login', values); // Используем api для запроса
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                // Set the errors state with the response errors
-                setErrors(errorData);
-                throw new Error('Login failed');
-            }
-
-            const data = await response.json();
-            // Store the token in local storage
-            localStorage.setItem('token', data.token);
+            const { token } = response.data;
+            // Сохраняем токен в localStorage
+            localStorage.setItem('token', token);
             message.success('Login successful');
-            // Redirect to the main page or any protected route
-            navigate('/main'); // Adjust this according to your app structure
+            // Перенаправление на главную страницу или защищенный маршрут
+            navigate('/main'); // Настройте путь в зависимости от структуры вашего приложения
         } catch (error) {
-            console.error('Error during login:', error);
-            // Optionally, display a generic error message
-            message.error('Something went wrong. Please try again.');
+            if (error.response && error.response.status === 401) {
+                // Получаем ошибки из ответа и устанавливаем их в состояние
+                //setErrors(error.response.data);
+                message.error('Invalid username or password');
+            } else {
+                console.error('Error during login:', error);
+                message.error('Something went wrong. Please try again.');
+            }
         }
     };
 

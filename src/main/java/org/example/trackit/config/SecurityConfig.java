@@ -32,7 +32,7 @@ public class SecurityConfig {
         http.cors()
                 .and()
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("auth/register", "/auth/login", "/images/**", "/certificates/**").permitAll()
+                        .requestMatchers("/error", "auth/register", "/auth/login", "/images/**", "/certificates/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(AbstractAuthenticationFilterConfigurer::permitAll)

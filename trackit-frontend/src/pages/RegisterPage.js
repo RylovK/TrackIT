@@ -1,33 +1,24 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
+import api from '../api'; // Импортируем заранее настроенный экземпляр axios
 
 const RegisterPage = () => {
-    const [errors, setErrors] = useState({}); // State to hold validation errors
+    const [errors, setErrors] = useState({}); // Состояние для хранения ошибок валидации
 
     const handleRegister = async (values) => {
         try {
-            const response = await fetch('http://localhost:8080/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(values),
-            });
+            await api.post('/auth/register', values); // Убираем переменную response
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                // Set the errors state with the response errors
-                setErrors(errorData);
-                throw new Error('Registration failed');
-            }
-
-            // Registration successful
             message.success('User registered successfully');
-            setErrors({}); // Clear errors if registration is successful
+            setErrors({}); // Очищаем ошибки, если регистрация успешна
         } catch (error) {
-            console.error('Error during registration:', error);
-            // Optionally, display a generic error message
-            message.error('Something went wrong. Please try again.');
+            if (error.response && error.response.data) {
+                // Обновляем состояние errors данными из ответа
+                setErrors(error.response.data);
+            } else {
+                console.error('Error during registration:', error);
+                message.error('Something went wrong. Please try again.');
+            }
         }
     };
 
