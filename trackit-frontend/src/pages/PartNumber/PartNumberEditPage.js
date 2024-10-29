@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Image, Spin, Button, Input, message, Select } from 'antd';
-import api from '../../api'; // Импортируйте ваш настроенный экземпляр Axios
+import { Card, Typography, Image, Spin, Button, Input, message } from 'antd';
+import api from '../../api';
 
 const { Title, Text } = Typography;
-const { Option } = Select; // Импортируем компонент Option из Select
 
 const PartNumberPage = () => {
-    const { partNumber } = useParams(); // Получаем номер детали из параметров маршрута
-    const navigate = useNavigate(); // Используем useNavigate для навигации
+    const { partNumber } = useParams();
+    const navigate = useNavigate();
     const [partNumberData, setPartNumberData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ number: '', description: '', photo: '' });
     const [imageFile, setImageFile] = useState(null);
-    const [partNumbers, setPartNumbers] = useState([]); // Состояние для списка номеров деталей
+    const [partNumbers, setPartNumbers] = useState([]); // Состояние для всех номеров деталей
 
     useEffect(() => {
         const fetchPartNumberData = async () => {
@@ -60,7 +59,7 @@ const PartNumberPage = () => {
             message.success('Part number updated successfully');
 
             if (editedData.number !== partNumberData.number) {
-                navigate(`/partnumber/${editedData.number}`); // Переход на новый номер
+                navigate(`/partnumber/${editedData.number}`);
             } else {
                 setPartNumberData(response.data);
                 setIsEditing(false);
@@ -112,8 +111,13 @@ const PartNumberPage = () => {
         }
     };
 
-    const handlePartNumberSelect = (value) => {
-        navigate(`/partnumber/${value}`); // Переход на выбранный номер детали
+    const handlePartNumberSelect = (e) => {
+        const value = e.target.value;
+        setEditedData((prevData) => ({
+            ...prevData,
+            number: value,
+        }));
+        navigate(`/partnumber/${value}`);
     };
 
     const handleDeleteClick = async () => {
@@ -121,7 +125,7 @@ const PartNumberPage = () => {
             const response = await api.delete(`/partNumber?partNumber=${partNumber}`);
             if (response.status === 200) {
                 message.success('Part number deleted successfully');
-                navigate('/partnumber/all'); // Navigate back to the part number list
+                navigate('/partnumber/all');
             } else {
                 message.error('Failed to delete part number');
             }
@@ -138,18 +142,18 @@ const PartNumberPage = () => {
 
     return (
         <Card style={{ width: 300, margin: 'auto' }}>
-            <Select
+            <Input
+                list="partNumbers"
                 placeholder="Select Part Number"
                 value={editedData.number}
                 onChange={handlePartNumberSelect}
                 style={{ width: '100%', marginTop: 16 }}
-            >
+            />
+            <datalist id="partNumbers">
                 {partNumbers.map((part) => (
-                    <Option key={part.number} value={part.number}>
-                        {part.number}
-                    </Option>
+                    <option key={part.number} value={part.number} />
                 ))}
-            </Select>
+            </datalist>
             <Title level={4}>
                 Part Number: {isEditing ? (
                 <Input

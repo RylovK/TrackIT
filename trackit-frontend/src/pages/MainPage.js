@@ -29,6 +29,7 @@ const MainPage = () => {
     const handleLogout = async () => {
         try {
             await api.post('/logout'); // Запрос на логаут к API
+            localStorage.removeItem('token')
             message.success('You have been logged out');
             navigate('/login'); // Перенаправление на страницу входа
         } catch (error) {

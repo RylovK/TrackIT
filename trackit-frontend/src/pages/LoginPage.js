@@ -9,23 +9,14 @@ const LoginPage = () => {
 
     const handleLogin = async (values) => {
         try {
-            const response = await api.post('/auth/login', values); // Используем api для запроса
-
+            const response = await api.post('/auth/login', values);
             const { token } = response.data;
-            // Сохраняем токен в localStorage
             localStorage.setItem('token', token);
             message.success('Login successful');
-            // Перенаправление на главную страницу или защищенный маршрут
-            navigate('/main'); // Настройте путь в зависимости от структуры вашего приложения
+            navigate('/main');
         } catch (error) {
-            if (error.response && error.response.status === 401) {
-                // Получаем ошибки из ответа и устанавливаем их в состояние
-                //setErrors(error.response.data);
-                message.error('Invalid username or password');
-            } else {
-                console.error('Error during login:', error);
-                message.error('Something went wrong. Please try again.');
-            }
+            // Здесь можно оставить только логику для ошибок, если нужно
+            console.error('Error during login:', error);
         }
     };
 
