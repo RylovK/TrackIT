@@ -117,8 +117,24 @@ const PartNumberPage = () => {
             ...prevData,
             number: value,
         }));
-        navigate(`/partnumber/${value}`);
+
+        // Проверяем, существует ли номер детали в списке
+        if (partNumbers.some(part => part.number === value)) {
+            navigate(`/partnumber/${value}`);
+        // } else {
+        //     message.warning('Part number does not exist'); // Сообщение, если номер не найден
+        }
     };
+
+    const handlePartNumberBlur = () => {
+        if (partNumbers.some(part => part.number === editedData.number)) {
+            navigate(`/partnumber/${editedData.number}`);
+        } else {
+            message.warning('Part number does not exist');
+        }
+    };
+
+
 
     const handleDeleteClick = async () => {
         try {
@@ -147,6 +163,7 @@ const PartNumberPage = () => {
                 placeholder="Select Part Number"
                 value={editedData.number}
                 onChange={handlePartNumberSelect}
+                onBlur={handlePartNumberBlur}
                 style={{ width: '100%', marginTop: 16 }}
             />
             <datalist id="partNumbers">

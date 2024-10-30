@@ -14,40 +14,45 @@ const EquipmentEditPage = () => {
     const [partNumbers, setPartNumbers] = useState([]);
     const imageDirectory = 'http://localhost:8080/images/';
     const [jobs, setJobs] = useState([]);
+    const [certificateFile, setCertificateFile] = useState(null); // Состояние для загружаемого файла
+    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
-        api.get(`/equipment/${id}`)
-            .then(response => {
-                setEquipment(response.data);
-                setFormData(response.data);
-                if (response.data.certificationStatus) {
-                    setIsCertified(true);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching equipment:', error);
-            });
+        fetchEquipment();
+        fetchPartNumbers();
+        fetchJobs();
     }, [id]);
 
-    useEffect(() => {
-        api.get('/partNumber')
-            .then(response => {
-                setPartNumbers(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching part numbers:', error);
-            });
-    }, []);
+    const fetchEquipment = async () => {
+        try {
+            const response = await api.get(`/equipment/${id}`);
+            setEquipment(response.data);
+            setFormData(response.data);
+            if (response.data.certificationStatus) {
+                setIsCertified(true);
+            }
+        } catch (error) {
+            console.error('Error fetching equipment:', error);
+        }
+    };
 
-    useEffect(() => {
-        api.get('/job')
-            .then(response => {
-                setJobs(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching jobs:', error);
-            });
-    }, []);
+    const fetchPartNumbers = async () => {
+        try {
+            const response = await api.get('/partNumber');
+            setPartNumbers(response.data);
+        } catch (error) {
+            console.error('Error fetching part numbers:', error);
+        }
+    };
+
+    const fetchJobs = async () => {
+        try {
+            const response = await api.get('/job');
+            setJobs(response.data);
+        } catch (error) {
+            console.error('Error fetching jobs:', error);
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -102,6 +107,40 @@ const EquipmentEditPage = () => {
             });
     };
 
+    // Метод для загрузки сертификата
+    const handleUploadCertificate = async () => {
+        if (!certificateFile) {
+            alert('Please select a file to upload.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', certificateFile);
+
+        try {
+            const response = await api.patch(`/certified/${id}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            console.log('File uploaded successfully:', response.data);
+            setSuccessMessage('File uploaded successfully!'); // Успешное сообщение
+            setCertificateFile(null); // Сбросить файл после успешной загрузки
+            await fetchEquipment(); // Обновить данные оборудования
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+    };
+
+    const handleDownloadCertificate = () => {
+        if (formData.fileCertificate) {
+            // Предполагается, что formData.fileCertificate содержит только имя файла
+            const downloadUrl = `http://localhost:8080/certificates/${formData.fileCertificate}`;
+            window.open(downloadUrl, '_blank');
+        } else {
+            alert('No certificate file available for download.');
+        }
+    };
 
 
     if (!equipment) {
@@ -111,6 +150,7 @@ const EquipmentEditPage = () => {
     return (
         <div>
             <h1>Equipment Info</h1>
+            {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
             <form>
                 {formData.photo && (
                     <div>
@@ -118,7 +158,7 @@ const EquipmentEditPage = () => {
                         <img
                             src={`${imageDirectory}${formData.photo}`}
                             alt={formData.serialNumber || 'Equipment Image'}
-                            style={{width: '200px', height: 'auto'}}
+                            style={{ width: '200px', height: 'auto' }}
                         />
                     </div>
                 )}
@@ -295,20 +335,24 @@ const EquipmentEditPage = () => {
                         </div>
                         <div>
                             <label>Certificate File:</label>
+                            <button type="button" onClick={handleDownloadCertificate}>
+                                Download Certificate
+                            </button>
                             <input
-                                type="text"
-                                name="fileCertificate"
-                                value={formData.fileCertificate || ''}
-                                readOnly={!isEditing}
-                                onChange={handleInputChange}
+                                type="file"
+                                onChange={(e) => setCertificateFile(e.target.files[0])}
+                                style={{ marginLeft: '10px' }}
                             />
+                            <button type="button" onClick={handleUploadCertificate}>
+                                Upload Certificate
+                            </button>
                         </div>
                     </>
                 )}
             </form>
 
             {nonFieldErrors.length > 0 && (
-                <div className="error-summary" style={{color: 'red'}}>
+                <div className="error-summary" style={{ color: 'red' }}>
                     {nonFieldErrors.map((error, index) => (
                         <div key={index}>
                             {error}
@@ -318,7 +362,7 @@ const EquipmentEditPage = () => {
             )}
 
             {validationErrors.certificationStatus && (
-                <div className="error" style={{color: 'red'}}>
+                <div className="error" style={{ color: 'red' }}>
                     {validationErrors.certificationStatus}
                 </div>
             )}
@@ -330,7 +374,7 @@ const EquipmentEditPage = () => {
             {isEditing && (
                 <button onClick={handleSave}>Save</button>
             )}
-            <button onClick={handleDelete} style={{color: 'red', marginTop: '10px'}}>
+            <button onClick={handleDelete} style={{ color: 'red', marginTop: '10px' }}>
                 Delete Equipment
             </button>
         </div>

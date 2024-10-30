@@ -28,8 +28,12 @@ public class FileUtils {
     @PostConstruct
     public void init() {
         File uploadDirectory = new File(imagesDirectory);
+        File uploadCertificateDirectory = new File(certificatesDirectory);
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
+        }
+        if (!uploadCertificateDirectory.exists()) {
+            uploadCertificateDirectory.mkdirs();
         }
     }
 
@@ -55,10 +59,14 @@ public class FileUtils {
     public String saveCertificate(MultipartFile file) {
         try {
             String originalFilename = file.getOriginalFilename();
-            String fileName = originalFilename + "_" + LocalDate.now();
+            if (originalFilename == null || !originalFilename.contains(".")) {
+                throw new IllegalArgumentException("Uploaded file must have an extension.");
+            }
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String fileName = originalFilename + LocalDate.now() + extension;
             Path filePath = Paths.get(certificatesDirectory, fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-            return filePath.toString();
+            return fileName;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
