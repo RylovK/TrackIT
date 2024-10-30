@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,6 +40,11 @@ public class CertifiedEquipmentController {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
         Page<CertifiedEquipmentDTO> allCertifiedEquipment = equipmentService.findAllEquipment(filters, pageRequest);
         return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CertifiedEquipmentDTO>> getAllCertifiedEquipment() {
+        return ResponseEntity.ok(equipmentService.findAll());
     }
 
     @PostMapping
