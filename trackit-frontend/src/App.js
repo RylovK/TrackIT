@@ -10,8 +10,7 @@ import JobEditPage from './pages/Job/JobEditPage';
 import JobCreatePage from './pages/Job/JobCreatePage';
 import AllEquipmentPage from './pages/Equipment/AllEquipmentPage';
 import EquipmentEditPage from './pages/Equipment/EquipmentEditPage';
-import CertifiedEquipmentPage from './pages/CertifiedEquipmentPage';
-import CertifiedEquipmentEditPage from './pages/CertifiedEquipmentEditPage';
+import CertifiedEquipmentPage from './pages/Equipment/CertifiedEquipmentPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PartNumberList from "./pages/PartNumber/PartNumberList";
@@ -42,7 +41,6 @@ const App = () => {
               <Route path="/equipment/create" element={<EquipmentCreatingPage />} />
 
               <Route path="/certified" element={<CertifiedEquipmentPage />} />
-              <Route path="/certified/:id" element={<CertifiedEquipmentEditPage />} />
               <Route path="/" element={<MainPage />} />
             </Route>
           </Route>

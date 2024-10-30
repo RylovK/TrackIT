@@ -97,5 +97,7 @@ public class EquipmentValidator implements Validator {
             errors.rejectValue("certificationStatus", "expired", "You can't send to job expired equipment");
         }
     }
+
+
 }
 

@@ -8,6 +8,7 @@ import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.CreateCertifiedEquipmentDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.EquipmentService;
+import org.example.trackit.services.impl.FileService;
 import org.example.trackit.validators.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,6 +30,7 @@ public class CertifiedEquipmentController {
 
     private final EquipmentService<CertifiedEquipmentDTO> equipmentService;
     private final EquipmentValidator equipmentValidator;
+    private final FileService fileService;
 
     @GetMapping
     @Operation(summary = "Find all certified equipment", description = "Get a list of all certified equipment with filtration and pagination")
@@ -39,6 +42,11 @@ public class CertifiedEquipmentController {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sortDirection), sortBy));
         Page<CertifiedEquipmentDTO> allCertifiedEquipment = equipmentService.findAllEquipment(filters, pageRequest);
         return new ResponseEntity<>(allCertifiedEquipment, HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CertifiedEquipmentDTO>> getAllCertifiedEquipment() {
+        return ResponseEntity.ok(equipmentService.findAll());
     }
 
     @PostMapping
@@ -56,14 +64,13 @@ public class CertifiedEquipmentController {
     @Operation(summary = "Update certified equipment")
     public ResponseEntity<CertifiedEquipmentDTO> updateEquipment(@PathVariable int id, @RequestBody @Valid CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validateUpdate(id,equipmentDTO, bindingResult);
-        int newId = equipmentService.convertIfNeed(id);
-        equipmentValidator.validateCertification(newId, equipmentDTO, bindingResult);
+        equipmentValidator.validateCertification(id, equipmentDTO, bindingResult);
         System.out.println("No validation errors");
         if (bindingResult.hasErrors()) {
             System.out.println("Validation errors");
             throw new ValidationErrorException(bindingResult);
         }
-        CertifiedEquipmentDTO updated = equipmentService.update(newId, equipmentDTO);
+        CertifiedEquipmentDTO updated = equipmentService.update(id, equipmentDTO);
         return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
@@ -71,7 +78,7 @@ public class CertifiedEquipmentController {
     @Operation(summary = "Upload a certificate file")
     public ResponseEntity<String> uploadCertificate(@PathVariable int id,
                                                     @RequestParam("file") MultipartFile file) {
-        String fileUrl = equipmentService.saveFile(id, file);
+        String fileUrl = fileService.saveFile(id, file);
         return new ResponseEntity<>(fileUrl, HttpStatus.OK);
     }
 }

@@ -34,7 +34,7 @@ const Navbar = () => {
     };
 
     const handleCertificationPage = () => {
-        navigate('/certified-equipment'); // Path for CertifiedEquipmentPage
+        navigate('/certified'); // Path for CertifiedEquipmentPage
     };
 
     return (

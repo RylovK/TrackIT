@@ -2,7 +2,6 @@ package org.example.trackit.services;
 
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,6 +59,4 @@ public interface PartNumberService {
      * @return true if the part number was deleted, false otherwise
      */
     boolean deletePartNumber(String number);
-
-    String saveImage(String partNumber, MultipartFile file);
 }

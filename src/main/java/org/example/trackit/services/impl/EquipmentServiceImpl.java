@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.Mapper.EquipmentMapper;
 import org.example.trackit.Mapper.PartNumberMapper;
@@ -32,7 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
 
@@ -155,16 +156,6 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public int convertIfNeed(int id) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public String saveFile(int id, MultipartFile file) {
-        throw new UnsupportedOperationException();
     }
 }
 

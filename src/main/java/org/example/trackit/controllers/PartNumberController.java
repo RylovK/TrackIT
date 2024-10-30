@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.PartNumberService;
+import org.example.trackit.services.impl.FileService;
 import org.example.trackit.validators.PartNumberValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class PartNumberController {
 
     private final PartNumberService partNumberService;
     private final PartNumberValidator partNumberValidator;
+    private final FileService fileService;
 
     @GetMapping
     @Operation(summary = "Get a list of all part numbers")
@@ -71,7 +73,7 @@ public class PartNumberController {
     @Operation(summary = "Upload image for part number", description = "Upload an image for an existing part number")
     public ResponseEntity<String> uploadImage(@PathVariable String partNumber,
                                               @RequestParam("file") MultipartFile file) {
-        String fileUrl = partNumberService.saveImage(partNumber, file);
+        String fileUrl = fileService.saveImage(partNumber, file);
         return new ResponseEntity<>(fileUrl, HttpStatus.OK);
     }
 

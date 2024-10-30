@@ -81,18 +81,4 @@ public class PartNumberServiceImpl implements PartNumberService {
         }
         return false;
     }
-
-    @Override
-    @Transactional
-    public String saveImage(String partNumber, MultipartFile file) {
-        PartNumber entity = partNumberRepository.findByNumber(partNumber)
-                .orElseThrow(() -> new PartNumberNotFoundException("Part number not found"));
-
-        String filePath = fileUtils.savePhoto(partNumber, file);
-        entity.setPhoto(filePath);
-        partNumberRepository.save(entity);
-
-        return filePath;
-    }
-
 }
