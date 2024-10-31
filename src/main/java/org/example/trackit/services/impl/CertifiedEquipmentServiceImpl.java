@@ -146,27 +146,4 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     public boolean deleteEquipmentById(int id) {
         return false;
     }
-
-    @Transactional
-    public int convertIfNeed(int id) {
-        Equipment equipment = equipmentRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
-        if (!(equipment instanceof CertifiedEquipment)) {
-            CertifiedEquipment certifiedEquipment = entityMapper.toCertifiedEquipment(equipment);
-            equipmentRepository.delete(equipment);
-            CertifiedEquipment updated = certifiedEquipmentRepository.save(certifiedEquipment);
-            return updated.getId();
-        }
-        return id;
-    }
-
-    @Override
-    @Transactional
-    public String saveFile(int id, MultipartFile file) {
-        CertifiedEquipment found = certifiedEquipmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
-        String filePath = fileUtils.saveCertificate(file);
-        found.setFileCertificate(filePath);
-        certifiedEquipmentRepository.save(found);
-        return filePath;
-    }
 }

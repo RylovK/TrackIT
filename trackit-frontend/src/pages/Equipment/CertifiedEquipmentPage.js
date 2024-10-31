@@ -5,7 +5,7 @@ import api from '../../api';
 
 const { Option } = Select;
 
-const AllEquipmentPage = () => {
+const CertifiedEquipmentPage = () => {
     const [equipmentData, setEquipmentData] = useState([]);
     const [jobNames, setJobNames] = useState([]);
     const [filters, setFilters] = useState({
@@ -14,6 +14,7 @@ const AllEquipmentPage = () => {
         healthStatus: '',
         allocationStatus: '',
         jobName: '',
+        certificationStatus: '',
     });
 
     const location = useLocation();
@@ -25,15 +26,15 @@ const AllEquipmentPage = () => {
         );
 
         const query = new URLSearchParams(filteredParams).toString();
-        const url = `/equipment${query ? '?' + query : ''}`;
+        const url = `/certified${query ? '?' + query : ''}`;
 
         try {
             const response = await api.get(url);
             setEquipmentData(response.data.content);
             extractJobNames(response.data.content);
         } catch (error) {
-            console.error('Error fetching equipment:', error);
-            message.error(error.message || 'Something went wrong while fetching equipment.');
+            console.error('Error fetching certified equipment:', error);
+            message.error(error.message || 'Something went wrong while fetching certified equipment.');
         }
     }, []);
 
@@ -53,9 +54,7 @@ const AllEquipmentPage = () => {
         } else {
             fetchData();
         }
-    }, [location.state, fetchData]); // Add fetchData here
-
-    // Rest of your component remains the same...
+    }, [location.state, fetchData]);
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
@@ -74,6 +73,10 @@ const AllEquipmentPage = () => {
         setFilters({ ...filters, jobName: value });
     };
 
+    const handleCertificationStatusChange = (value) => {
+        setFilters({ ...filters, certificationStatus: value });
+    };
+
     const applyFilters = () => {
         fetchData(filters);
     };
@@ -85,28 +88,13 @@ const AllEquipmentPage = () => {
             healthStatus: '',
             allocationStatus: '',
             jobName: '',
+            certificationStatus: '',
         });
         fetchData();
     };
 
     const handleRowClick = (id) => {
         navigate(`/equipment/${id}`);
-    };
-
-    const exportAllEquipment = async () => {
-        try {
-            const response = await api.get('/export/all', { responseType: 'blob' });
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'equipment.xlsx');
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode.removeChild(link);
-        } catch (error) {
-            console.error('Error exporting equipment:', error);
-            message.error('Error exporting all equipment.');
-        }
     };
 
     const exportCertifiedEquipment = async () => {
@@ -154,6 +142,18 @@ const AllEquipmentPage = () => {
             dataIndex: 'jobName',
             key: 'jobName',
         },
+        {
+            title: 'Certification Status',
+            dataIndex: 'certificationStatus',
+            key: 'certificationStatus',
+            render: (certificationStatus) => certificationStatus ? certificationStatus : 'N/A',
+        },
+        {
+            title: 'Next Certification Date',
+            dataIndex: 'nextCertificationDate',
+            key: 'nextCertificationDate',
+            render: (date) => date ? new Date(date).toLocaleDateString() : 'N/A',
+        },
     ];
 
     return (
@@ -165,6 +165,7 @@ const AllEquipmentPage = () => {
                     <div style={{ width: '150px' }}>Health Status</div>
                     <div style={{ width: '150px' }}>Allocation Status</div>
                     <div style={{ width: '150px' }}>Job Name</div>
+                    <div style={{ width: '150px' }}>Certification Status</div>
                 </div>
                 <div style={{ display: 'flex', marginBottom: '20px' }}>
                     <Input
@@ -217,6 +218,17 @@ const AllEquipmentPage = () => {
                             <Option key={index} value={name}>{name}</Option>
                         ))}
                     </Select>
+                    <Select
+                        placeholder="Certification Status"
+                        name="certificationStatus"
+                        value={filters.certificationStatus}
+                        onChange={handleCertificationStatusChange}
+                        style={{ marginRight: '10px', width: '150px' }}
+                    >
+                        <Option value="">All</Option>
+                        <Option value="VALID">VALID</Option>
+                        <Option value="EXPIRED">EXPIRED</Option>
+                    </Select>
                 </div>
                 <div style={{ display: 'flex', marginBottom: '20px' }}>
                     <Button type="primary" onClick={applyFilters} style={{ marginRight: '10px' }}>
@@ -224,9 +236,6 @@ const AllEquipmentPage = () => {
                     </Button>
                     <Button onClick={resetFilters}>
                         Reset Filters
-                    </Button>
-                    <Button type="primary" onClick={exportAllEquipment} style={{ marginLeft: '10px' }}>
-                        Export All Equipment
                     </Button>
                     <Button type="primary" onClick={exportCertifiedEquipment} style={{ marginLeft: '10px' }}>
                         Export Certified Equipment
@@ -246,4 +255,4 @@ const AllEquipmentPage = () => {
     );
 };
 
-export default AllEquipmentPage;
+export default CertifiedEquipmentPage;

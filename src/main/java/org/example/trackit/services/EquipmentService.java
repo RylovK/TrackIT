@@ -3,7 +3,6 @@ package org.example.trackit.services;
 import org.example.trackit.dto.EquipmentDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -60,9 +59,5 @@ public interface EquipmentService<T extends EquipmentDTO> {
      * @return true if the equipment was deleted, false otherwise
      */
     boolean deleteEquipmentById(int id);
-
-    int convertIfNeed(int id);
-
-    String saveFile(int id, MultipartFile file);
 }
 
