@@ -35,10 +35,10 @@ public class FileService {
         PartNumber entity = partNumberRepository.findByNumber(partNumber)
                 .orElseThrow(() -> new PartNumberNotFoundException("Part number not found"));
 
-        String filePath = fileUtils.savePhoto(partNumber, file);
-        entity.setPhoto(filePath);
+        String fileName = fileUtils.savePhoto(partNumber, file);
+        entity.setPhoto(fileName);
         partNumberRepository.save(entity);
 
-        return filePath;
+        return fileName;
     }
 }

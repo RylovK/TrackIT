@@ -30,7 +30,7 @@ public class AuthController {
 
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
-    private UserValidator userValidator;
+    private final UserValidator userValidator;
     private final JWTTokenProvider jwtTokenProvider;
 
     @PostMapping("/register")
@@ -55,7 +55,5 @@ public class AuthController {
         String token = jwtTokenProvider.generateToken(authentication.getName());
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
     }
-
-
 }
 
