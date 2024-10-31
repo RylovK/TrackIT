@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.JobResponseDTO;
 import org.example.trackit.exceptions.JobNotFoundException;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/job")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Tag(name = "Job API", description = "API for job management")
 public class JobController {
 

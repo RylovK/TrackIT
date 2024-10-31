@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.PartNumberService;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/partNumber")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Tag(name = "Part numbers API", description = "Operations related to part numbers management")
 public class PartNumberController {
 

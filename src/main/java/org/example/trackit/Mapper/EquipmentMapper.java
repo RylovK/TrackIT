@@ -1,6 +1,7 @@
 package org.example.trackit.Mapper;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.AllocationStatus;
@@ -9,7 +10,7 @@ import org.example.trackit.entity.properties.PartNumber;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EquipmentMapper {
 
     private final PartNumberMapper partNumberMapper;

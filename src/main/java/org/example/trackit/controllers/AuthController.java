@@ -2,6 +2,7 @@ package org.example.trackit.controllers;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.LoginDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class AuthController {
 

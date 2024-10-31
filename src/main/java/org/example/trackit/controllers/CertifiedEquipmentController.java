@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.CreateCertifiedEquipmentDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
@@ -24,7 +25,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/certified")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Tag(name = "Certified equipment API", description = "Operations related to equipment management and its certification")
 public class CertifiedEquipmentController {
 

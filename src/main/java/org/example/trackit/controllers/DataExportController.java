@@ -1,6 +1,7 @@
 package org.example.trackit.controllers;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -23,7 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/export")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DataExportController {
 
     private final EquipmentService<EquipmentDTO> equipmentService;

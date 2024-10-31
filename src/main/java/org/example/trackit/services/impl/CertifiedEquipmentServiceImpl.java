@@ -3,6 +3,7 @@ package org.example.trackit.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.Mapper.EntityMapper;
 import org.example.trackit.Mapper.PartNumberMapper;
@@ -32,7 +33,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CertifiedEquipmentServiceImpl implements EquipmentService<CertifiedEquipmentDTO> {
 
@@ -41,8 +42,6 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     private final CertifiedEquipmentMapper certifiedEquipmentMapper;
     private final JobRepository jobRepository;
     private final PartNumberMapper partNumberMapper;
-    private final EntityMapper entityMapper;
-    private final FileUtils fileUtils;
 
     @Override
     public List<CertifiedEquipmentDTO> findAll() {
@@ -143,6 +142,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     }
 
     @Override
+    @Transactional
     public boolean deleteEquipmentById(int id) {
         return false;
     }

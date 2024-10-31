@@ -10,6 +10,7 @@ import org.example.trackit.entity.properties.PartNumber;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -32,12 +33,16 @@ public class CertifiedEquipment extends Equipment {
         super();
         certificationStatus = CertificationStatus.EXPIRED;
         certificationPeriod = 12;
+        certificationDate = LocalDate.of(1970, 1, 1);
+        nextCertificationDate = LocalDate.of(1970, 1, 1);
     }
 
     public CertifiedEquipment(PartNumber partNumber, String serialNumber) {
         super(partNumber, serialNumber);
         certificationStatus = CertificationStatus.EXPIRED;
         certificationPeriod = 12;
+        certificationDate = LocalDate.of(1970, 1, 1);
+        nextCertificationDate = LocalDate.of(1970, 1, 1);
     }
 
     public CertificationStatus getCertificationStatus() {
@@ -49,4 +54,6 @@ public class CertifiedEquipment extends Equipment {
         }
         return CertificationStatus.EXPIRED;
     }
+
+
 }
