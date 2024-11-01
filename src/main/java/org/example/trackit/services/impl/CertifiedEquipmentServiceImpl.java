@@ -13,6 +13,7 @@ import org.example.trackit.exceptions.JobNotFoundException;
 import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.JobRepository;
+import org.example.trackit.repository.specifications.EquipmentSpecifications;
 import org.example.trackit.services.EquipmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,40 +47,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     @Override
     public Page<CertifiedEquipmentDTO> findAllEquipment
             (Map<String, String> filters, Pageable pageable) {
-        Specification<CertifiedEquipment> spec = (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            for (Map.Entry<String, String> entry : filters.entrySet()) {
-
-                String key = entry.getKey();
-                String value = entry.getValue().toLowerCase();
-
-                if (key.equalsIgnoreCase("partNumber")) {
-                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
-                    continue;
-                }
-                if (key.equalsIgnoreCase("serialNumber")) {
-                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
-                    continue;
-                }
-                if (key.equalsIgnoreCase("healthStatus")) {
-                    HealthStatus status = HealthStatus.valueOf(value.toUpperCase());
-                    predicates.add(criteriaBuilder.equal(root.get(key), status));
-                    continue;
-                }
-                if (key.equalsIgnoreCase("allocationStatus")) {
-                    AllocationStatus status = AllocationStatus.valueOf(value.toUpperCase());
-                    predicates.add(criteriaBuilder.equal(root.get(key), status));
-                }
-                if (key.equalsIgnoreCase("jobName")) {
-                    predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("job").get("jobName")), value));
-                }
-                if (key.equalsIgnoreCase("certificationStatus")) {
-                    CertificationStatus status = CertificationStatus.valueOf(value.toUpperCase());
-                    predicates.add(criteriaBuilder.equal(root.get(key), status));
-                }
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
+        Specification<CertifiedEquipment> spec = EquipmentSpecifications.filter(filters);
         Page<CertifiedEquipment> page = certifiedEquipmentRepository.findAll(spec, pageable);
         return page.map(certifiedEquipmentMapper::toDTO);
     }

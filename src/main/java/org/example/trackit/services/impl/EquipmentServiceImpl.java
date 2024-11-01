@@ -18,6 +18,7 @@ import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.repository.PartNumberRepository;
+import org.example.trackit.repository.specifications.EquipmentSpecifications;
 import org.example.trackit.services.EquipmentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,37 +56,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
             (Map<String, String> filters, Pageable pageable) {
         if (filters.isEmpty()) return equipmentRepository.findAll(pageable).map(equipmentMapper::toDTO);
 
-        Specification<Equipment> spec = (root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            for (Map.Entry<String, String> entry : filters.entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue().toLowerCase();
-
-                if (key.equalsIgnoreCase("partNumber")) {
-                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
-                    continue;
-                }
-                if (key.equalsIgnoreCase("serialNumber")) {
-                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
-                    continue;
-                }
-                if (key.equalsIgnoreCase("healthStatus")) {
-                    HealthStatus status = HealthStatus.valueOf(value.toUpperCase());
-                    predicates.add(criteriaBuilder.equal(root.get(key), status));
-                    continue;
-                }
-                if (key.equalsIgnoreCase("allocationStatus")) {
-                    AllocationStatus status = AllocationStatus.valueOf(value.toUpperCase());
-                    predicates.add(criteriaBuilder.equal(root.get(key), status));
-                    continue;
-                }
-                if (key.equalsIgnoreCase("jobName")) {
-                    predicates.add(criteriaBuilder.equal(
-                            criteriaBuilder.lower(root.get("job").get("jobName")), value));
-                }
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        };
+        Specification<Equipment> spec = EquipmentSpecifications.filter(filters);
         Page<Equipment> page = equipmentRepository.findAll(spec, pageable);
         return page.map(equipmentMapper::toDTO);
     }
