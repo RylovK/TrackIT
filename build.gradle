@@ -1,7 +1,10 @@
+
+
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id "org.liquibase.gradle" version "2.2.2"
 }
 
 group = 'org.example'
@@ -51,15 +54,16 @@ dependencies {
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
 
     implementation group: 'org.liquibase', name: 'liquibase-core', version: '4.29.2'
-    implementation group: 'org.liquibase', name: 'liquibase-groovy-dsl', version: '4.0.0'
+    liquibaseRuntime 'org.liquibase:liquibase-core:4.20.0'
+
+//    implementation group: 'org.liquibase', name: 'liquibase-maven-plugin', version: '4.29.2'
+
+//    implementation group: 'org.liquibase', name: 'liquibase-groovy-dsl', version: '4.0.0'
+//    implementation group: 'org.liquibase', name: 'liquibase-gradle-plugin', version: '3.0.1'
 
     implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '5.3.0'
 
-
-
-
 }
-
 tasks.named('test') {
     useJUnitPlatform()
 }

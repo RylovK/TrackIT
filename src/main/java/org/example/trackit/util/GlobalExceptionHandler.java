@@ -35,9 +35,7 @@ public class GlobalExceptionHandler {
         log.warn("Part number already exists: {}", ex.getMessage());
         BindingResult bindingResult = ex.getBindingResult();
         Map<String, String> errors = new HashMap<>();
-        bindingResult.getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
+        bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
 
@@ -58,12 +56,8 @@ public class GlobalExceptionHandler {
         log.error("Validation error: {}", ex.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
         BindingResult bindingResult = ex.getBindingResult();
         Map<String, String> errors = new HashMap<>();
-        bindingResult.getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
-        bindingResult.getGlobalErrors().forEach(error -> {
-            errors.put(error.getObjectName(), error.getDefaultMessage());
-        });
+        bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+        bindingResult.getGlobalErrors().forEach(error -> errors.put(error.getObjectName(), error.getDefaultMessage()));
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
@@ -90,5 +84,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex) {
         log.warn("Bad credentials: {}", ex.getMessage());
         return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("Illegal argument: {}", ex.getMessage());
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

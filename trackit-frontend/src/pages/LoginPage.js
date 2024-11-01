@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Импортируем Link
 import api from '../api'; // Импортируем экземпляр axios
 
 const LoginPage = () => {
-    const [errors, setErrors] = useState({});
+    const [errors] = useState({});
     const navigate = useNavigate();
 
     const handleLogin = async (values) => {
@@ -15,7 +15,6 @@ const LoginPage = () => {
             message.success('Login successful');
             navigate('/main');
         } catch (error) {
-            // Здесь можно оставить только логику для ошибок, если нужно
             console.error('Error during login:', error);
         }
     };
@@ -56,6 +55,11 @@ const LoginPage = () => {
                     </Button>
                 </Form.Item>
             </Form>
+
+            <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                <span>Don't have an account? </span>
+                <Link to="/register">Register</Link> {/* Ссылка на страницу регистрации */}
+            </div>
         </div>
     );
 };

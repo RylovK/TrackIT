@@ -95,7 +95,6 @@ const EquipmentEditPage = () => {
             });
     };
 
-    // Метод для удаления оборудования
     const handleDelete = () => {
         api.delete(`/equipment/${id}`)
             .then(() => {
@@ -107,7 +106,6 @@ const EquipmentEditPage = () => {
             });
     };
 
-    // Метод для загрузки сертификата
     const handleUploadCertificate = async () => {
         if (!certificateFile) {
             alert('Please select a file to upload.');
@@ -134,7 +132,6 @@ const EquipmentEditPage = () => {
 
     const handleDownloadCertificate = () => {
         if (formData.fileCertificate) {
-            // Предполагается, что formData.fileCertificate содержит только имя файла
             const downloadUrl = `http://localhost:8080/certificates/${formData.fileCertificate}`;
             window.open(downloadUrl, '_blank');
         } else {
@@ -142,6 +139,10 @@ const EquipmentEditPage = () => {
         }
     };
 
+    const handleCancel = () => {
+        setIsEditing(false);
+        window.location.reload(); // Перезагружаем страницу без сохранения
+    };
 
     if (!equipment) {
         return <div>Loading...</div>;
@@ -372,7 +373,12 @@ const EquipmentEditPage = () => {
             )}
 
             {isEditing && (
-                <button onClick={handleSave}>Save</button>
+                <>
+                    <button onClick={handleSave}>Save</button>
+                    <button onClick={handleCancel} style={{ marginLeft: '10px' }}>
+                        Cancel
+                    </button>
+                </>
             )}
             <button onClick={handleDelete} style={{ color: 'red', marginTop: '10px' }}>
                 Delete Equipment

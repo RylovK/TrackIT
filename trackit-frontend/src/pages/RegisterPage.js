@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, message } from 'antd';
+import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 import api from '../api'; // Импортируем заранее настроенный экземпляр axios
 
 const RegisterPage = () => {
     const [errors, setErrors] = useState({}); // Состояние для хранения ошибок валидации
+    const navigate = useNavigate(); // Хук для навигации
 
     const handleRegister = async (values) => {
         try {
             await api.post('/auth/register', values); // Убираем переменную response
-
             message.success('User registered successfully');
             setErrors({}); // Очищаем ошибки, если регистрация успешна
+
+            // Перенаправление на страницу логина после успешной регистрации
+            navigate('/login');
         } catch (error) {
             if (error.response && error.response.data) {
                 // Обновляем состояние errors данными из ответа
