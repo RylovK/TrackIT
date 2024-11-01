@@ -1,32 +1,27 @@
 package org.example.trackit.services.impl;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
-import org.example.trackit.Mapper.EntityMapper;
 import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
-import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
 import org.example.trackit.exceptions.JobNotFoundException;
 import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.services.EquipmentService;
-import org.example.trackit.util.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,26 +49,33 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         Specification<CertifiedEquipment> spec = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             for (Map.Entry<String, String> entry : filters.entrySet()) {
-                if (entry.getKey().equalsIgnoreCase("partNumber")) {
-                    predicates.add(criteriaBuilder.like(root.get(entry.getKey()), entry.getValue()));
+
+                String key = entry.getKey();
+                String value = entry.getValue().toLowerCase();
+
+                if (key.equalsIgnoreCase("partNumber")) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
                     continue;
                 }
-                if (entry.getKey().equalsIgnoreCase("serialNumber")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("serialNumber")) {
+                    predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get(key)), "%" + value + "%"));
                     continue;
                 }
-                if (entry.getKey().equalsIgnoreCase("healthStatus")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("healthStatus")) {
+                    HealthStatus status = HealthStatus.valueOf(value.toUpperCase());
+                    predicates.add(criteriaBuilder.equal(root.get(key), status));
                     continue;
                 }
-                if (entry.getKey().equalsIgnoreCase("allocationStatus")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("allocationStatus")) {
+                    AllocationStatus status = AllocationStatus.valueOf(value.toUpperCase());
+                    predicates.add(criteriaBuilder.equal(root.get(key), status));
                 }
-                if (entry.getKey().equalsIgnoreCase("jobName")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("jobName")) {
+                    predicates.add(criteriaBuilder.equal(criteriaBuilder.lower(root.get("job").get("jobName")), value));
                 }
-                if (entry.getKey().equalsIgnoreCase("certificationStatus")) {
-                    predicates.add(criteriaBuilder.equal(root.get(entry.getKey()), entry.getValue()));
+                if (key.equalsIgnoreCase("certificationStatus")) {
+                    CertificationStatus status = CertificationStatus.valueOf(value.toUpperCase());
+                    predicates.add(criteriaBuilder.equal(root.get(key), status));
                 }
             }
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
@@ -131,19 +133,45 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         return certifiedEquipmentMapper.toDTO(equipmentRepository.save(existing));
     }
 
-    private void setEquipmentCertification(CertifiedEquipmentDTO dto, CertifiedEquipment equipment) {
-        if (dto.getCertificationDate() != null) {
-            equipment.setCertificationDate(dto.getCertificationDate());
-            int certificationPeriod = dto.getCertificationPeriod();
-            equipment.setCertificationPeriod(certificationPeriod);
-            equipment.setFileCertificate(dto.getFileCertificate());
-            equipment.setNextCertificationDate(dto.getCertificationDate().plusMonths(certificationPeriod));
-        }
-    }
-
     @Override
     @Transactional
     public boolean deleteEquipmentById(int id) {
         return false;
+    }
+
+    private void setEquipmentCertification(CertifiedEquipmentDTO dto, CertifiedEquipment equipment) {
+        if (dto.getCertificationDate() != null) {
+            LocalDate now = LocalDate.now();
+            LocalDate certificationDate = dto.getCertificationDate();
+            int certificationPeriod = dto.getCertificationPeriod();
+            LocalDate nextCertificationDate = certificationDate.plusMonths(certificationPeriod);
+
+            equipment.setCertificationDate(certificationDate);
+            equipment.setCertificationPeriod(certificationPeriod);
+            equipment.setFileCertificate(dto.getFileCertificate());
+            equipment.setNextCertificationDate(nextCertificationDate);
+
+            updateCertificationStatus(equipment);
+            }
+        }
+
+    private void updateCertificationStatus(CertifiedEquipment equipment) {
+        LocalDate now = LocalDate.now();
+        if (now.isBefore(equipment.getNextCertificationDate())) {
+            equipment.setCertificationStatus(CertificationStatus.VALID);
+        } else {
+            equipment.setCertificationStatus(CertificationStatus.EXPIRED);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    @PostConstruct
+    @Transactional
+    protected void scheduledUpdateCertificationStatus() {
+        List<CertifiedEquipment> all = certifiedEquipmentRepository.findAll();
+        for (CertifiedEquipment equipment : all) {
+            updateCertificationStatus(equipment);
+        }
+        equipmentRepository.saveAll(all);
     }
 }

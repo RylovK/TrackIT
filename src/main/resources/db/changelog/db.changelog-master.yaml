@@ -225,3 +225,14 @@ databaseChangeLog:
                   name: comments
                   type: varchar(255)
 
+  - changeSet:
+      id: 13
+      author: Kirill
+      changes:
+        - addColumn:
+            tableName: certified_equipment
+            columns:
+              - column:
+                  name: certification_status
+                  type: varchar(25)
+

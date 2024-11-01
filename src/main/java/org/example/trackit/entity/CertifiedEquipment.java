@@ -1,24 +1,19 @@
 package org.example.trackit.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trackit.entity.properties.CertificationStatus;
 import org.example.trackit.entity.properties.PartNumber;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.Date;
 
 @Entity
 @Getter
 @Setter
 public class CertifiedEquipment extends Equipment {
 
-    @Transient
-    @Setter(AccessLevel.NONE)
+    @Enumerated(EnumType.STRING)
     private CertificationStatus certificationStatus;
 
     private LocalDate certificationDate;
@@ -34,7 +29,7 @@ public class CertifiedEquipment extends Equipment {
         certificationStatus = CertificationStatus.EXPIRED;
         certificationPeriod = 12;
         certificationDate = LocalDate.of(1970, 1, 1);
-        nextCertificationDate = LocalDate.of(1970, 1, 1);
+        nextCertificationDate = certificationDate.plusMonths(certificationPeriod);
     }
 
     public CertifiedEquipment(PartNumber partNumber, String serialNumber) {
@@ -42,18 +37,18 @@ public class CertifiedEquipment extends Equipment {
         certificationStatus = CertificationStatus.EXPIRED;
         certificationPeriod = 12;
         certificationDate = LocalDate.of(1970, 1, 1);
-        nextCertificationDate = LocalDate.of(1970, 1, 1);
+        nextCertificationDate = certificationDate.plusMonths(certificationPeriod);
     }
 
-    public CertificationStatus getCertificationStatus() {
-        LocalDate now = LocalDate.now();
-        if (certificationDate != null) {
-            if (now.isBefore(certificationDate.plusMonths(certificationPeriod))) {
-                return CertificationStatus.VALID;
-            }
-        }
-        return CertificationStatus.EXPIRED;
-    }
+//    public CertificationStatus getCertificationStatus() {
+//        LocalDate now = LocalDate.now();
+//        if (certificationDate != null) {
+//            if (now.isBefore(certificationDate.plusMonths(certificationPeriod))) {
+//                return CertificationStatus.VALID;
+//            }
+//        }
+//        return CertificationStatus.EXPIRED;
+//    }
 
 
 }
