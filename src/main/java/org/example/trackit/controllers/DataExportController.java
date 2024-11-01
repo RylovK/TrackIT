@@ -30,15 +30,7 @@ public class DataExportController {
     @GetMapping("/all")
     public ResponseEntity<byte[]> exportAll() {
         List<EquipmentDTO> equipmentList = equipmentService.findAll();
-        Workbook workbook = fileUtils.getEquipmentWorkbook(equipmentList);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            workbook.write(outputStream);
-            workbook.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        ByteArrayInputStream inputStream = fileUtils.getInputStream(equipmentList, EquipmentDTO.class);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=equipment.xlsx");
         return ResponseEntity.ok()
@@ -50,15 +42,7 @@ public class DataExportController {
     @GetMapping("/certified")
     public ResponseEntity<byte[]> exportCertified() {
         List<CertifiedEquipmentDTO> certifiedList = certifiedEquipmentService.findAll();
-        Workbook workbook = fileUtils.getCertifiedWorkbook(certifiedList);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            workbook.write(outputStream);
-            workbook.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        ByteArrayInputStream inputStream = fileUtils.getInputStream(certifiedList, CertifiedEquipmentDTO.class);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=certified.xlsx");
         return ResponseEntity.ok()

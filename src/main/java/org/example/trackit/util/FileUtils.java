@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -90,45 +88,32 @@ public class FileUtils {
         return String.format("%s_%s.%s", fileNameWithOutExt, formattedDate, extension);
     }
 
-    public <T extends EquipmentDTO> OutputStream getOutputStream(List<T> equipmentList, Class<T> clazz) {
+    public <T extends EquipmentDTO> ByteArrayInputStream getInputStream(List<T> equipmentList, Class<T> clazz) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Equipment");
         Row headerRow = sheet.createRow(0);
-        fillHeaders(headerRow);
-        if (clazz == CertifiedEquipmentDTO.class) {
+        int rowNum = 1;
+        if (clazz == EquipmentDTO.class) {
+            fillHeaders(headerRow);
+            for (T equipment : equipmentList) {
+                Row row = sheet.createRow(rowNum++);
+                fillDataToRow(row, equipment);
+            }
+        } else {
             fillCertifiedHeaders(headerRow);
+            for (T equipment : equipmentList) {
+                Row row = sheet.createRow(rowNum++);
+                fillCertifiedDataToRow(row, (CertifiedEquipmentDTO) equipment);
+            }
         }
-        int rowNum = 1;
-        for (T equipment : equipmentList) {
-
+        try {
+            workbook.write(outputStream);
+            workbook.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return null;
-    }
-
-    public Workbook getEquipmentWorkbook(List<EquipmentDTO> equipmentList) {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Equipment");
-        Row headerRow = sheet.createRow(0);
-        fillHeaders(headerRow);
-        int rowNum = 1;
-        for (EquipmentDTO dto : equipmentList) {
-            Row row = sheet.createRow(rowNum++);
-            fillDataToRow(row, dto);
-        }
-        return workbook;
-    }
-
-    public Workbook getCertifiedWorkbook(List<CertifiedEquipmentDTO> equipmentList) {
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Certified Equipment");
-        Row headerRow = sheet.createRow(0);
-        fillCertifiedHeaders(headerRow);
-        int rowNum = 1;
-        for (CertifiedEquipmentDTO dto : equipmentList) {
-            Row row = sheet.createRow(rowNum++);
-            fillCertifiedDataToRow(row, dto);
-        }
-        return workbook;
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 
     private void fillCertifiedDataToRow(Row row, CertifiedEquipmentDTO dto) {
@@ -148,7 +133,6 @@ public class FileUtils {
     }
 
     private void fillDataToRow(Row row, EquipmentDTO dto) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         row.createCell(0).setCellValue(dto.getId());
         row.createCell(1).setCellValue(dto.getSerialNumber());
         row.createCell(2).setCellValue(dto.getPartNumber());

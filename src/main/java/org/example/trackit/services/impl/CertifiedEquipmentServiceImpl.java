@@ -82,6 +82,9 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
             if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
                     && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
                 existing.setLastJob("Shipped to: " + dto.getJobName() + " on " + LocalDate.now());
+            }else if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
+                    && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
+                existing.setLastJob("Returned from: " + dto.getJobName() + " on " + LocalDate.now());
             }
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDate.now());

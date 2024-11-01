@@ -83,9 +83,13 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         existing.setHealthStatus(dto.getHealthStatus());
         if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
             if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
-            && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
+                    && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
                 existing.setLastJob("Shipped to: " + dto.getJobName() + " on " + LocalDate.now());
+            } else if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
+                    && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
+                existing.setLastJob("Returned from: " + dto.getJobName() + " on " + LocalDate.now());
             }
+
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDate.now());
         }
@@ -98,9 +102,9 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
             } else throw new JobNotFoundException("Job not found");
         } else existing.setJob(null);
         existing.setComments(dto.getComments());
-        Equipment saved = equipmentRepository.save(existing);
-        partNumber.getEquipmentList().add(saved);
-        return equipmentMapper.toDTO(saved);
+        Equipment updated = equipmentRepository.save(existing);
+        partNumber.getEquipmentList().add(updated);
+        return equipmentMapper.toDTO(updated);
     }
 
     @Override
@@ -121,7 +125,6 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     @Transactional
     public boolean deleteEquipmentById(int id) {
         Optional<Equipment> byId = equipmentRepository.findById(id);
-        System.out.println("Founded " + byId.isPresent() + "id: " + id);
         if (byId.isPresent()) {
             equipmentRepository.delete(byId.get());
             return true;
