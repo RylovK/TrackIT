@@ -61,16 +61,12 @@ public interface EquipmentService<T extends EquipmentDTO> {
     boolean deleteEquipmentById(int id);
 
     default void maintainAllocationStatus(EquipmentDTO dto, Equipment existing) {
-        if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
-            if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
-                    && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
-                existing.setLastJob("Shipped to: " + dto.getJobName() + " on " + LocalDate.now());
-            } else {
-                existing.setLastJob("Returned from: " + dto.getJobName() + " on " + LocalDate.now());
-            }
-            existing.setAllocationStatus(dto.getAllocationStatus());
-            existing.setAllocationStatusLastModified(LocalDate.now());
+        if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
+                && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
+            existing.setLastJob(dto.getJobName());
         }
+        existing.setAllocationStatus(dto.getAllocationStatus());
+        existing.setAllocationStatusLastModified(LocalDate.now());
     }
 }
 
