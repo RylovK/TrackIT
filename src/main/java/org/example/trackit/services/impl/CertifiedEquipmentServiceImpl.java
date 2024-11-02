@@ -77,17 +77,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         PartNumber partNumber = partNumberMapper.toEntity(dto.getPartNumberDTO());
         existing.setPartNumber(partNumber);
         existing.setHealthStatus(dto.getHealthStatus() == null ? HealthStatus.RONG : dto.getHealthStatus());
-        if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
-            if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
-                    && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
-                existing.setLastJob("Shipped to: " + dto.getJobName() + " on " + LocalDate.now());
-            }else if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
-                    && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
-                existing.setLastJob("Returned from: " + dto.getJobName() + " on " + LocalDate.now());
-            }
-            existing.setAllocationStatus(dto.getAllocationStatus());
-            existing.setAllocationStatusLastModified(LocalDate.now());
-        }
+        maintainAllocationStatus(dto, existing);
         if (dto.getJobName() != null) {
             Optional<Job> optionalJob = jobRepository.findByJobName(dto.getJobName());
             if (optionalJob.isPresent()) {
