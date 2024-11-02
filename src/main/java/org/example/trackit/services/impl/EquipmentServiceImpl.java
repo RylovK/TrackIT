@@ -76,6 +76,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         existing.setPartNumber(partNumber);
         existing.setHealthStatus(dto.getHealthStatus());
         maintainAllocationStatus(dto, existing);
+        existing.setComments(dto.getComments());
         if (dto.getJobName() != null && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
             Optional<Job> optionalJob = jobRepository.findByJobName(dto.getJobName());
             if (optionalJob.isPresent()) {
@@ -84,7 +85,6 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
                 job.getEquipment().add(existing);
             } else throw new JobNotFoundException("Job not found");
         } else existing.setJob(null);
-        existing.setComments(dto.getComments());
         Equipment updated = equipmentRepository.save(existing);
         partNumber.getEquipmentList().add(updated);
         return equipmentMapper.toDTO(updated);
