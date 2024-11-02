@@ -59,9 +59,7 @@ public class EquipmentValidator implements Validator {
         return true;
     }
 
-    // Метод для валидации обновления оборудования
     public void validateUpdate(int id, EquipmentDTO dto, Errors errors) {
-        System.out.println("Validate update for id:" + id + " dto:" + dto.getPartNumber() + ":" + dto.getSerialNumber());
         Equipment existing = equipmentRepository.findById(id).orElseThrow(EntityNotFoundException::new);
 
         if (isPartNumberValid(dto.getPartNumber(), errors)) {
@@ -70,12 +68,10 @@ public class EquipmentValidator implements Validator {
                 errors.reject("statusChange", "Cannot change state while equipment ON_LOCATION");
             }
 
-            // Проверка, что Job обязателен при смене статуса на "On location"
             if (dto.getAllocationStatus() == AllocationStatus.ON_LOCATION && dto.getJobName() == null) {
                 errors.reject("jobRequired", "Job must be assigned when setting status to ON_LOCATION");
             }
 
-            // Обработка смены статуса с "On location" на "On base" и обратно
             if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
                     && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
                 dto.setHealthStatus(HealthStatus.RONG);
@@ -86,7 +82,6 @@ public class EquipmentValidator implements Validator {
                 errors.reject("equipmentCondition", "You can send to job only RITE equipment");
             }
         }
-        System.out.println("Validation passed update for id:" + id + " dto:" + dto.getPartNumber() + ":" + dto.getSerialNumber());
     }
 
     public void validateCertification(int id, CertifiedEquipmentDTO dto, Errors errors) {

@@ -3,7 +3,6 @@ package org.example.trackit.services.impl;
 import jakarta.persistence.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
-import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.Mapper.EquipmentMapper;
 import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.EquipmentDTO;
@@ -12,7 +11,6 @@ import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.*;
 import org.example.trackit.exceptions.JobNotFoundException;
 import org.example.trackit.exceptions.PartNumberNotFoundException;
-import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.repository.PartNumberRepository;

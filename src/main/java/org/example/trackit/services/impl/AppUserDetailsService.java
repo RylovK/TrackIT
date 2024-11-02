@@ -23,7 +23,6 @@ public class AppUserDetailsService implements UserDetailsService {
     @Cacheable("userDetailsCache")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Loading user by username: " + username);
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new AppUserDetails(user);
     }

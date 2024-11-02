@@ -34,7 +34,6 @@ public class EquipmentController {
     public ResponseEntity<Page<EquipmentDTO>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "25") int size,
                                                               @RequestParam(required = false) Map<String, String> filters) {
-        System.out.println("Get request for: " + filters);
         Page<EquipmentDTO> dtoPage = equipmentService.findAllEquipment(filters, PageRequest.of(page, size));
         return ResponseEntity.ok(dtoPage);
     }

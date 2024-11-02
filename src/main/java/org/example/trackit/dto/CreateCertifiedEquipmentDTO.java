@@ -14,4 +14,8 @@ public class CreateCertifiedEquipmentDTO extends CreateEquipmentDTO {
     private int certificationPeriod;//TODO: in month сделать валидацию 6,12,24,36,48,60
 
     private String fileCertificate;
+
+    public CreateCertifiedEquipmentDTO() {
+        certificationDate = LocalDate.now();
+    }
 }

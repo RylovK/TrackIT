@@ -59,7 +59,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     public CertifiedEquipmentDTO save(CertifiedEquipmentDTO dto) {
         PartNumber partNumber = partNumberMapper.toEntity(dto.getPartNumberDTO());
         CertifiedEquipment equipment = new CertifiedEquipment(partNumber, dto.getSerialNumber());
-        setEquipmentCertification(dto, equipment);
+        //setEquipmentCertification(dto, equipment);
         partNumber.getEquipmentList().add(equipment);
         CertifiedEquipment saved = certifiedEquipmentRepository.save(equipment);
         return certifiedEquipmentMapper.toDTO(saved);
