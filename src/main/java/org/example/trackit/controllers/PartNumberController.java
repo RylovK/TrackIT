@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.trackit.dto.PartNumberDTO;
+import org.example.trackit.exceptions.PartNumberAlreadyExistException;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.PartNumberService;
 import org.example.trackit.services.impl.FileService;
@@ -43,7 +44,7 @@ public class PartNumberController {
             BindingResult bindingResult) {
         partNumberValidator.validate(partNumberDTO, bindingResult);
         if (bindingResult.hasErrors()) {
-            throw new ValidationErrorException(bindingResult);
+            throw new PartNumberAlreadyExistException(bindingResult);
         }
         PartNumberDTO createdPN = partNumberService.save(partNumberDTO);
         return new ResponseEntity<>(createdPN, HttpStatus.CREATED);

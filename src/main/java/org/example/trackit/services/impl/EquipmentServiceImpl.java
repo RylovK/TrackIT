@@ -1,9 +1,7 @@
 package org.example.trackit.services.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.criteria.Predicate;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.Mapper.EquipmentMapper;
@@ -25,10 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,12 +34,11 @@ import java.util.Optional;
 public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
 
     private final EquipmentRepository equipmentRepository;
-    private final CertifiedEquipmentRepository certifiedEquipmentRepository;
     private final PartNumberRepository partNumberRepository;
-    private final EquipmentMapper equipmentMapper;
-    private final CertifiedEquipmentMapper certifiedEquipmentMapper;
-    private final PartNumberMapper partNumberMapper;
     private final JobRepository jobRepository;
+    private final EquipmentMapper equipmentMapper;
+    private final PartNumberMapper partNumberMapper;
+    private final CertifiedEquipmentServiceImpl certifiedEquipmentServiceImpl;
 
     @Override
     public List<EquipmentDTO> findAll() {
@@ -101,8 +95,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         Optional<Equipment> optional = equipmentRepository.findById(id);
         if (optional.isPresent()) {
             if (optional.get() instanceof CertifiedEquipment) {
-                Optional<CertifiedEquipment> byId = certifiedEquipmentRepository.findCertifiedEquipmentById(id);
-                return byId.map(certifiedEquipmentMapper::toDTO).orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
+                return certifiedEquipmentServiceImpl.findEquipmentById(id);
             }
         }
         return optional.map(equipmentMapper::toDTO)
@@ -113,9 +106,9 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     @Override
     @Transactional
     public boolean deleteEquipmentById(int id) {
-        Optional<Equipment> byId = equipmentRepository.findById(id);
-        if (byId.isPresent()) {
-            equipmentRepository.delete(byId.get());
+        Optional<Equipment> equipment = equipmentRepository.findById(id);
+        if (equipment.isPresent()) {
+            equipmentRepository.delete(equipment.get());
             return true;
         }
         return false;

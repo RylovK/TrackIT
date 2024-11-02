@@ -2,7 +2,6 @@ package org.example.trackit.services.impl;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.Mapper.PartNumberMapper;
@@ -11,7 +10,6 @@ import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.properties.*;
 import org.example.trackit.exceptions.JobNotFoundException;
 import org.example.trackit.repository.CertifiedEquipmentRepository;
-import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.repository.specifications.EquipmentSpecifications;
 import org.example.trackit.services.EquipmentService;
@@ -23,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -96,23 +93,27 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     @Override
     @Transactional
     public boolean deleteEquipmentById(int id) {
+        Optional<CertifiedEquipment> equipment = certifiedEquipmentRepository.findById(id);
+        if (equipment.isPresent()) {
+            certifiedEquipmentRepository.delete(equipment.get());
+            return true;
+        }
         return false;
     }
 
     private void setEquipmentCertification(CertifiedEquipmentDTO dto, CertifiedEquipment equipment) {
-        if (dto.getCertificationDate() != null) {
-            LocalDate certificationDate = dto.getCertificationDate();
-            int certificationPeriod = dto.getCertificationPeriod();
-            LocalDate nextCertificationDate = certificationDate.plusMonths(certificationPeriod);
+        LocalDate certificationDate = dto.getCertificationDate();
+        int certificationPeriod = dto.getCertificationPeriod();
+        LocalDate nextCertificationDate = certificationDate.plusMonths(certificationPeriod);
 
-            equipment.setCertificationDate(certificationDate);
-            equipment.setCertificationPeriod(certificationPeriod);
-            equipment.setFileCertificate(dto.getFileCertificate());
-            equipment.setNextCertificationDate(nextCertificationDate);
+        equipment.setCertificationDate(certificationDate);
+        equipment.setCertificationPeriod(certificationPeriod);
+        equipment.setFileCertificate(dto.getFileCertificate());
+        equipment.setNextCertificationDate(nextCertificationDate);
 
-            updateCertificationStatus(equipment);
-            }
-        }
+        updateCertificationStatus(equipment);
+
+    }
 
     private void updateCertificationStatus(CertifiedEquipment equipment) {
         LocalDate now = LocalDate.now();
