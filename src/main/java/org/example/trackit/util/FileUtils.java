@@ -35,7 +35,7 @@ public class FileUtils {
     }
 
     @PostConstruct
-    public void init() {
+    private void init() {
         File uploadDirectory = new File(imagesDirectory);
         File uploadCertificateDirectory = new File(certificatesDirectory);
         if (!uploadDirectory.exists()) {

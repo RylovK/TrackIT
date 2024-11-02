@@ -1,7 +1,6 @@
 package org.example.trackit.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.services.EquipmentService;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 @RestController

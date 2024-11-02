@@ -39,12 +39,12 @@ import java.util.Optional;
 public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
 
     private final EquipmentRepository equipmentRepository;
-    private final EquipmentMapper equipmentMapper;
-    private final PartNumberMapper partNumberMapper;
-    private final JobRepository jobRepository;
-    private final CertifiedEquipmentMapper certifiedEquipmentMapper;
     private final CertifiedEquipmentRepository certifiedEquipmentRepository;
     private final PartNumberRepository partNumberRepository;
+    private final EquipmentMapper equipmentMapper;
+    private final CertifiedEquipmentMapper certifiedEquipmentMapper;
+    private final PartNumberMapper partNumberMapper;
+    private final JobRepository jobRepository;
 
     @Override
     public List<EquipmentDTO> findAll() {

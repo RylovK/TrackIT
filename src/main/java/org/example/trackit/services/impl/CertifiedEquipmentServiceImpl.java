@@ -33,10 +33,9 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class CertifiedEquipmentServiceImpl implements EquipmentService<CertifiedEquipmentDTO> {
 
-    private final EquipmentRepository equipmentRepository;
     private final CertifiedEquipmentRepository certifiedEquipmentRepository;
-    private final CertifiedEquipmentMapper certifiedEquipmentMapper;
     private final JobRepository jobRepository;
+    private final CertifiedEquipmentMapper certifiedEquipmentMapper;
     private final PartNumberMapper partNumberMapper;
 
     @Override
@@ -65,7 +64,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         CertifiedEquipment equipment = new CertifiedEquipment(partNumber, dto.getSerialNumber());
         setEquipmentCertification(dto, equipment);
         partNumber.getEquipmentList().add(equipment);
-        CertifiedEquipment saved = equipmentRepository.save(equipment);
+        CertifiedEquipment saved = certifiedEquipmentRepository.save(equipment);
         return certifiedEquipmentMapper.toDTO(saved);
     }
 
@@ -101,7 +100,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         setEquipmentCertification(dto, existing);
         partNumber.getEquipmentList().add(existing);
 
-        return certifiedEquipmentMapper.toDTO(equipmentRepository.save(existing));
+        return certifiedEquipmentMapper.toDTO(certifiedEquipmentRepository.save(existing));
     }
 
     @Override
@@ -112,7 +111,6 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
 
     private void setEquipmentCertification(CertifiedEquipmentDTO dto, CertifiedEquipment equipment) {
         if (dto.getCertificationDate() != null) {
-            LocalDate now = LocalDate.now();
             LocalDate certificationDate = dto.getCertificationDate();
             int certificationPeriod = dto.getCertificationPeriod();
             LocalDate nextCertificationDate = certificationDate.plusMonths(certificationPeriod);
@@ -143,6 +141,6 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
         for (CertifiedEquipment equipment : all) {
             updateCertificationStatus(equipment);
         }
-        equipmentRepository.saveAll(all);
+        certifiedEquipmentRepository.saveAll(all);
     }
 }
