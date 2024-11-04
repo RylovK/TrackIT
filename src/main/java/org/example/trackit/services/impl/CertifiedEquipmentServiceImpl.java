@@ -3,6 +3,7 @@ package org.example.trackit.services.impl;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
 import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
@@ -13,6 +14,7 @@ import org.example.trackit.repository.CertifiedEquipmentRepository;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.repository.specifications.EquipmentSpecifications;
 import org.example.trackit.services.EquipmentService;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -36,6 +39,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     private final PartNumberMapper partNumberMapper;
 
     @Override
+    //@Cacheable("certifiedList")
     public List<CertifiedEquipmentDTO> findAll() {
         return certifiedEquipmentRepository.findAll().stream().map(certifiedEquipmentMapper::toDTO).toList();
     }
@@ -133,5 +137,6 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
             updateCertificationStatus(equipment);
         }
         certifiedEquipmentRepository.saveAll(all);
+        log.info("Scheduled update certification status");
     }
 }

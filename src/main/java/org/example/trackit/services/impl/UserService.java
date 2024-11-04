@@ -6,6 +6,7 @@ import org.example.trackit.dto.LoginDTO;
 import org.example.trackit.entity.User;
 import org.example.trackit.entity.properties.Role;
 import org.example.trackit.repository.UserRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> findUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
     }
 }

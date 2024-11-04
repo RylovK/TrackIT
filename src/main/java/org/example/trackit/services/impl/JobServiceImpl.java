@@ -10,6 +10,7 @@ import org.example.trackit.entity.properties.Job;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.services.JobService;
 import org.example.trackit.exceptions.JobNotFoundException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class JobServiceImpl implements JobService {
     private final EquipmentMapper equipmentMapper;
 
     @Override
+    //@Cacheable("jobList")
     public List<JobResponseDTO> findAllJobs() {
         return jobRepository.findAll().stream().map(jobMapper::toResponseDTO).toList();
     }

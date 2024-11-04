@@ -9,6 +9,8 @@ import org.example.trackit.entity.properties.PartNumber;
 import org.example.trackit.repository.PartNumberRepository;
 import org.example.trackit.services.PartNumberService;
 import org.example.trackit.exceptions.PartNumberNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ public class PartNumberServiceImpl implements PartNumberService {
     private final PartNumberMapper partNumberMapper;
 
     @Override
+    @Cacheable("partNumberCache")
     public List<PartNumberDTO> findAllPartNumbers() {
         return partNumberRepository.findAll().stream().map(partNumberMapper::toDTO).toList();
     }
@@ -51,6 +54,7 @@ public class PartNumberServiceImpl implements PartNumberService {
 
     @Override
     @Transactional(isolation = Isolation.SERIALIZABLE)
+    @CacheEvict(value = "partNumberCache", allEntries = true)
     public PartNumberDTO update(String existingPartNumber, PartNumberDTO dto) {
         PartNumber existing = partNumberRepository.findByNumber(existingPartNumber)
                 .orElseThrow(() -> new PartNumberNotFoundException("Part number not found: " + existingPartNumber));
