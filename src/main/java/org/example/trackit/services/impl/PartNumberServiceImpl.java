@@ -77,6 +77,7 @@ public class PartNumberServiceImpl implements PartNumberService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "partNumberCache", allEntries = true)
     public boolean deletePartNumber(String number) {
         Optional<PartNumber> founded = findPartNumberByNumber(number);
         if (founded.isPresent()) {
