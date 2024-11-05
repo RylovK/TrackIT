@@ -53,7 +53,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ValidationErrorException.class)
     public ResponseEntity<Map<String, String>> handleEquipmentValidation(ValidationErrorException ex) {
-        log.error("Validation error: {}", ex.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
+        String throwingClassName = ex.getStackTrace()[0].getClassName();
+        String methodName = ex.getStackTrace()[0].getMethodName();
+        log.error("Validation error in class {} , method {}: {}", throwingClassName, methodName, ex.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
         BindingResult bindingResult = ex.getBindingResult();
         Map<String, String> errors = new HashMap<>();
         bindingResult.getFieldErrors().forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
@@ -82,7 +84,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException ex) {
-        log.warn("Bad credentials: {}", ex.getMessage());
+        log.warn("Failed login attempt: {}", ex.getMessage());
         return new ResponseEntity<>("Incorrect password", HttpStatus.UNAUTHORIZED);
     }
 

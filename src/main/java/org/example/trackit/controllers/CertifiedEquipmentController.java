@@ -3,13 +3,13 @@ package org.example.trackit.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.CreateCertifiedEquipmentDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.EquipmentService;
-import org.example.trackit.services.impl.FileService;
+import org.example.trackit.services.FileService;
+import org.example.trackit.services.impl.FileServiceImpl;
 import org.example.trackit.validators.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,9 +66,7 @@ public class CertifiedEquipmentController {
     public ResponseEntity<CertifiedEquipmentDTO> updateEquipment(@PathVariable int id, @RequestBody @Valid CertifiedEquipmentDTO equipmentDTO, BindingResult bindingResult) {
         equipmentValidator.validateUpdate(id,equipmentDTO, bindingResult);
         equipmentValidator.validateCertification(id, equipmentDTO, bindingResult);
-        System.out.println("No validation errors");
         if (bindingResult.hasErrors()) {
-            System.out.println("Validation errors");
             throw new ValidationErrorException(bindingResult);
         }
         CertifiedEquipmentDTO updated = equipmentService.update(id, equipmentDTO);

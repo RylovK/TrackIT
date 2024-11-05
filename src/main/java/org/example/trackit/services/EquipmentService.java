@@ -8,6 +8,7 @@ import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,6 +39,7 @@ public interface EquipmentService<T extends EquipmentDTO> {
      * @param equipmentDTO the equipment to save
      * @return the saved equipment
      */
+    @Transactional
     T save(T equipmentDTO);
 
     /**
@@ -45,6 +47,7 @@ public interface EquipmentService<T extends EquipmentDTO> {
      * @param equipmentDTO DTO with updated fields
      * @return updated DTO
      */
+    @Transactional
     T update(int id, T equipmentDTO);
 
     /**
@@ -61,6 +64,7 @@ public interface EquipmentService<T extends EquipmentDTO> {
      * @param id the ID of the equipment to delete
      * @return true if the equipment was deleted, false otherwise
      */
+    @Transactional
     boolean deleteEquipmentById(int id);
 
     default void updateEquipmentFields(EquipmentDTO dto, Equipment existing, PartNumber partNumber, Logger logger) {

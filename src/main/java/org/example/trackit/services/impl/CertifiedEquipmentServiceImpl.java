@@ -37,10 +37,9 @@ import java.util.Optional;
 public class CertifiedEquipmentServiceImpl implements EquipmentService<CertifiedEquipmentDTO> {
 
     private final CertifiedEquipmentRepository certifiedEquipmentRepository;
+    private final PartNumberRepository partNumberRepository;
     private final JobRepository jobRepository;
     private final CertifiedEquipmentMapper certifiedEquipmentMapper;
-    private final PartNumberMapper partNumberMapper;
-    private final PartNumberRepository partNumberRepository;
     private final EquipmentLoggerFactory equipmentLoggerFactory;
 
     @Override
@@ -106,6 +105,7 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
             CertifiedEquipment founded = equipment.get();
             Logger logger = equipmentLoggerFactory.getLogger(founded.getPartNumber().getNumber(), founded.getSerialNumber());
             logger.info("Equipment {}: {} was successfully deleted", founded.getSerialNumber(), founded.getPartNumber().getNumber());
+            log.info("Equipment {}: {} was successfully deleted", founded.getSerialNumber(), founded.getPartNumber().getNumber());
             certifiedEquipmentRepository.delete(equipment.get());
             return true;
         }

@@ -10,7 +10,7 @@ import lombok.Setter;
 public class PartNumberDTO {
 
     @NotEmpty(message = "Part number must not be empty")
-    @Size(min = 4, max = 25, message = "The part number must be between 4 and 25 symbols")
+    @Size(min = 3, max = 25, message = "The part number must be between 3 and 25 symbols")
     private String number;
 
     @NotEmpty(message = "Description must not be empty")

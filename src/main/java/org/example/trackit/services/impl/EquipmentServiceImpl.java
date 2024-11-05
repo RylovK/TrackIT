@@ -67,8 +67,8 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         partNumber.getEquipmentList().add(equipment);
         Equipment saved = equipmentRepository.save(equipment);
         Logger logger = equipmentLoggerFactory.getLogger(partNumber.getNumber(), serialNumber);
-        logger.info("Created new equipment with partNumber: {} and serialNumber: {}", partNumber.getNumber(), serialNumber);
-        log.info("Created new equipment with partNumber: {} and serialNumber: {}", partNumber.getNumber(), serialNumber);
+        logger.info("Equipment {}: {} was successfully created", saved.getPartNumber().getNumber(), saved.getSerialNumber());
+        log.info("Equipment {}: {} was successfully created", saved.getPartNumber().getNumber(), saved.getSerialNumber());
         return equipmentMapper.toDTO(saved);
     }
 
@@ -105,7 +105,6 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         }
         return optional.map(equipmentMapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
-
     }
 
     @Override
@@ -113,6 +112,10 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     public boolean deleteEquipmentById(int id) {
         Optional<Equipment> equipment = equipmentRepository.findById(id);
         if (equipment.isPresent()) {
+            Equipment founded = equipment.get();
+            Logger logger = equipmentLoggerFactory.getLogger(founded.getPartNumber().getNumber(), founded.getSerialNumber());
+            logger.info("Equipment {}: {} was successfully deleted", founded.getSerialNumber(), founded.getPartNumber().getNumber());
+            log.info("Equipment {}: {} was successfully deleted", founded.getSerialNumber(), founded.getPartNumber().getNumber());
             equipmentRepository.delete(equipment.get());
             return true;
         }

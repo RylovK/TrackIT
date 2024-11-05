@@ -1,14 +1,13 @@
 package org.example.trackit.controllers;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.LoginDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.security.AuthResponse;
 import org.example.trackit.security.JWTTokenProvider;
-import org.example.trackit.services.impl.UserService;
+import org.example.trackit.services.UserService;
 import org.example.trackit.validators.UserValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,11 +47,12 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
         }
-        log.info("Getting authentication token");
+        log.info("Getting authentication token for {}", dto.getUsername());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String token = jwtTokenProvider.generateToken(authentication.getName());
+        log.info("Token acquired for {}", dto.getUsername());
         return new ResponseEntity<>(new AuthResponse(token), HttpStatus.OK);
     }
 }

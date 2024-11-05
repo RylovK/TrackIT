@@ -26,7 +26,6 @@ public class PartNumberValidator implements Validator {
 
     @Override
     public void validate(@NonNull Object target, @NonNull Errors errors) {
-        log.info("Validating part number");
         PartNumberDTO partNumberDTO = (PartNumberDTO) target;
         Optional<PartNumber> founded = partNumberService.findPartNumberByNumber(partNumberDTO.getNumber());
         if (founded.isPresent()) {

@@ -2,6 +2,7 @@ package org.example.trackit.services.impl;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.Equipment;
@@ -22,6 +23,7 @@ import java.util.Set;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class PartNumberServiceImpl implements PartNumberService {
 
     private final PartNumberRepository partNumberRepository;
@@ -50,6 +52,7 @@ public class PartNumberServiceImpl implements PartNumberService {
     @CacheEvict(value = "partNumberCache", allEntries = true)
     public PartNumberDTO save(PartNumberDTO partNumberDTO) {
         PartNumber save = partNumberRepository.save(partNumberMapper.toEntity(partNumberDTO));
+        log.info("Saved part number: {}", save.getNumber());
         return partNumberMapper.toDTO(save);
     }
 
@@ -61,17 +64,18 @@ public class PartNumberServiceImpl implements PartNumberService {
                 .orElseThrow(() -> new PartNumberNotFoundException("Part number not found: " + existingPartNumber));
         if (!existingPartNumber.equalsIgnoreCase(dto.getNumber())) {
             Set<Equipment> equipmentList = existing.getEquipmentList();
-
             PartNumber newPartNumber  = partNumberMapper.toEntity(dto);
             newPartNumber.setEquipmentList(equipmentList);
             newPartNumber.getEquipmentList().forEach(equipment -> equipment.setPartNumber(newPartNumber));
             partNumberRepository.save(newPartNumber);
+            log.warn("Part number {} updated to {}", existingPartNumber, newPartNumber.getNumber());
             partNumberRepository.delete(existing);
             return partNumberMapper.toDTO(newPartNumber);
         } else {
             existing.setDescription(dto.getDescription());
             existing.setPhoto(dto.getPhoto());
             PartNumber saved = partNumberRepository.save(existing);
+            log.info("Part number {} updated", saved.getNumber());
             return partNumberMapper.toDTO(saved);
         }
     }
@@ -82,6 +86,7 @@ public class PartNumberServiceImpl implements PartNumberService {
     public boolean deletePartNumber(String number) {
         Optional<PartNumber> founded = findPartNumberByNumber(number);
         if (founded.isPresent()) {
+            log.warn("Part number {} successfully deleted", number);
             partNumberRepository.delete(founded.get());
             return true;
         }

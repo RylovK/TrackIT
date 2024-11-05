@@ -2,6 +2,7 @@ package org.example.trackit.services;
 
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import java.util.Optional;
 /**
  * Service interface for managing part numbers.
  */
+@Transactional(readOnly = true)
 public interface PartNumberService {
 
     /**
@@ -42,6 +44,7 @@ public interface PartNumberService {
      * @param partNumberDTO the part number data to save
      * @return the saved part number
      */
+    @Transactional
     PartNumberDTO save(PartNumberDTO partNumberDTO);
 
     /**
@@ -50,6 +53,7 @@ public interface PartNumberService {
      * @param partNumberDTO DTO with updated fields
      * @return Updated DTO
      */
+    @Transactional
     PartNumberDTO update(String excitingPartNumber, PartNumberDTO partNumberDTO);
 
     /**
@@ -58,5 +62,6 @@ public interface PartNumberService {
      * @param number the part number to delete
      * @return true if the part number was deleted, false otherwise
      */
+    @Transactional
     boolean deletePartNumber(String number);
 }
