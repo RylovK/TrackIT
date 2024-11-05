@@ -1,12 +1,10 @@
 package org.example.trackit.services.impl;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.entity.User;
 import org.example.trackit.repository.UserRepository;
 import org.example.trackit.security.AppUserDetails;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

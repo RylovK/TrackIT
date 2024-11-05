@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("favicon.ico", c -> false);
+        configurer.addPathPrefix("favicon.ico", _ -> false);
     }
 
     @Override

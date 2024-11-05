@@ -24,7 +24,7 @@ public class Job {
     @Column(unique = true)
     private String jobName;
 
-    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     private Set<Equipment> equipment;
 
     public Job(String jobName) {

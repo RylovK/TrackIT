@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Logger;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.AllocationStatus;
+import org.example.trackit.entity.properties.HealthStatus;
 import org.example.trackit.entity.properties.Job;
 import org.example.trackit.entity.properties.PartNumber;
 import org.springframework.data.domain.Page;
@@ -83,6 +84,10 @@ public interface EquipmentService<T extends EquipmentDTO> {
             if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
                     && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
                 existing.setLastJob(dto.getJobName());
+            } else if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
+                    && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
+                dto.setHealthStatus(HealthStatus.RONG);
+                dto.setJobName(null);
             }
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDate.now());
@@ -95,7 +100,7 @@ public interface EquipmentService<T extends EquipmentDTO> {
             existing.setSerialNumber(dto.getSerialNumber());
         }
         if (!existing.getPartNumber().getNumber().equalsIgnoreCase(dto.getPartNumber())) {
-            logger.info("Partnumber updated from {} to {}", existing.getPartNumber().getNumber(), dto.getPartNumber());
+            logger.warn("Partnumber for {} updated from {} to {}", existing.getSerialNumber(), existing.getPartNumber().getNumber(), dto.getPartNumber());
             existing.setPartNumber(partNumber);
         }
     }

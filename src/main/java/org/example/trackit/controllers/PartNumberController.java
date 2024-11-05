@@ -8,7 +8,6 @@ import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.FileService;
 import org.example.trackit.services.PartNumberService;
-import org.example.trackit.services.impl.FileServiceImpl;
 import org.example.trackit.validators.PartNumberValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

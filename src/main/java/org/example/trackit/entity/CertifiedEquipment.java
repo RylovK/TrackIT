@@ -18,7 +18,7 @@ public class CertifiedEquipment extends Equipment {
 
     private LocalDate certificationDate;
 
-    private int certificationPeriod;//in month 6.12.24.36.48.60
+    private int certificationPeriod;
 
     private LocalDate nextCertificationDate;
 
@@ -39,16 +39,4 @@ public class CertifiedEquipment extends Equipment {
         certificationDate = LocalDate.of(1970, 1, 1);
         nextCertificationDate = certificationDate.plusMonths(certificationPeriod);
     }
-
-//    public CertificationStatus getCertificationStatus() {
-//        LocalDate now = LocalDate.now();
-//        if (certificationDate != null) {
-//            if (now.isBefore(certificationDate.plusMonths(certificationPeriod))) {
-//                return CertificationStatus.VALID;
-//            }
-//        }
-//        return CertificationStatus.EXPIRED;
-//    }
-
-
 }

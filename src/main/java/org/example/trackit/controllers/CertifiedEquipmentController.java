@@ -9,7 +9,6 @@ import org.example.trackit.dto.CreateCertifiedEquipmentDTO;
 import org.example.trackit.exceptions.ValidationErrorException;
 import org.example.trackit.services.EquipmentService;
 import org.example.trackit.services.FileService;
-import org.example.trackit.services.impl.FileServiceImpl;
 import org.example.trackit.validators.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

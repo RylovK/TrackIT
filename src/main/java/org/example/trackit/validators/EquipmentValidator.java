@@ -34,7 +34,7 @@ public class EquipmentValidator implements Validator {
     private final CertifiedEquipmentRepository certifiedEquipmentRepository;
 
     @Override
-    public boolean supports(Class<?> clazz) {
+    public boolean supports(@NonNull Class<?> clazz) {
         return EquipmentDTO.class.isAssignableFrom(clazz);
     }
 
@@ -67,16 +67,10 @@ public class EquipmentValidator implements Validator {
                     && dto.getAllocationStatus() != AllocationStatus.ON_BASE) {
                 errors.reject("statusChange", "Cannot change state while equipment ON_LOCATION");
             }
-
             if (dto.getAllocationStatus() == AllocationStatus.ON_LOCATION && dto.getJobName() == null) {
                 errors.reject("jobRequired", "Job must be assigned when setting status to ON_LOCATION");
             }
-
-            if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
-                    && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
-                dto.setHealthStatus(HealthStatus.RONG);
-                dto.setJobName(null);
-            } else if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
+            if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
                     && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION
                     && dto.getHealthStatus() != HealthStatus.RITE) {
                 errors.reject("equipmentCondition", "You can send to job only RITE equipment");
@@ -92,7 +86,5 @@ public class EquipmentValidator implements Validator {
             errors.rejectValue("certificationStatus", "expired", "You can't send to job expired equipment");
         }
     }
-
-
 }
 

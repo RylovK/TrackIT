@@ -20,7 +20,7 @@ public class PartNumberValidator implements Validator {
     private final PartNumberService partNumberService;
 
     @Override
-    public boolean supports(Class<?> clazz) {
+    public boolean supports(@NonNull Class<?> clazz) {
         return PartNumber.class.isAssignableFrom(clazz);
     }
 

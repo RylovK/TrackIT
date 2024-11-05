@@ -7,6 +7,9 @@ import org.example.trackit.Mapper.JobMapper;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.JobResponseDTO;
+import org.example.trackit.entity.Equipment;
+import org.example.trackit.entity.properties.AllocationStatus;
+import org.example.trackit.entity.properties.HealthStatus;
 import org.example.trackit.entity.properties.Job;
 import org.example.trackit.repository.JobRepository;
 import org.example.trackit.services.JobService;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -68,9 +72,15 @@ public class JobServiceImpl implements JobService {
     @Override
     @Transactional
     public boolean delete(int id) {
-        if (jobRepository.existsById(id)) {
-            jobRepository.deleteById(id);
-            log.info("Job deleted: {}", id);
+        Optional<Job> job = jobRepository.findById(id);
+        if (job.isPresent()) {
+            Job founded = job.get();
+            Set<Equipment> equipmentSet = founded.getEquipment();
+            equipmentSet.forEach(equipment -> equipment.setJob(null));
+            equipmentSet.forEach(equipment -> equipment.setAllocationStatus(AllocationStatus.ON_BASE));
+            equipmentSet.forEach(equipment -> equipment.setHealthStatus(HealthStatus.RONG));
+            log.info("Job deleted: {}", founded.getJobName());
+            jobRepository.delete(founded);
             return true;
         }
         return false;

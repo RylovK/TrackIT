@@ -6,7 +6,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.Mapper.CertifiedEquipmentMapper;
-import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.properties.*;
