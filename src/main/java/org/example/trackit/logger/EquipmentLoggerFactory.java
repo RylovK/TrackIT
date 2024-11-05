@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 @Component
 public class EquipmentLoggerFactory {
 
-    public Logger createLogger(String partNumber, String serialNumber) {
+    public Logger getLogger(String partNumber, String serialNumber) {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         PatternLayoutEncoder encoder = new PatternLayoutEncoder();

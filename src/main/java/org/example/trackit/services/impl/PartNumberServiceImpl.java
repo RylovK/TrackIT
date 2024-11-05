@@ -47,6 +47,7 @@ public class PartNumberServiceImpl implements PartNumberService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "partNumberCache", allEntries = true)
     public PartNumberDTO save(PartNumberDTO partNumberDTO) {
         PartNumber save = partNumberRepository.save(partNumberMapper.toEntity(partNumberDTO));
         return partNumberMapper.toDTO(save);

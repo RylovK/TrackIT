@@ -1,8 +1,11 @@
 package org.example.trackit.services;
 
+import ch.qos.logback.classic.Logger;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.AllocationStatus;
+import org.example.trackit.entity.properties.Job;
+import org.example.trackit.entity.properties.PartNumber;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -60,13 +63,43 @@ public interface EquipmentService<T extends EquipmentDTO> {
      */
     boolean deleteEquipmentById(int id);
 
-    default void maintainAllocationStatus(EquipmentDTO dto, Equipment existing) {
-        if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
-                && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
-            existing.setLastJob(dto.getJobName());
+    default void updateEquipmentFields(EquipmentDTO dto, Equipment existing, PartNumber partNumber, Logger logger) {
+        updateEquipmentStatus(dto, existing, logger);
+        updateSerialAndPartNumber(dto, existing, partNumber, logger);
+        existing.setComments(dto.getComments());
+    }
+
+    private void updateEquipmentStatus(EquipmentDTO dto, Equipment existing, Logger logger) {
+        if (existing.getHealthStatus() != dto.getHealthStatus()) {
+            logger.info("Health status updated from {} to {}", existing.getHealthStatus(), dto.getHealthStatus());
+            existing.setHealthStatus(dto.getHealthStatus());
         }
-        existing.setAllocationStatus(dto.getAllocationStatus());
-        existing.setAllocationStatusLastModified(LocalDate.now());
+        if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
+            logger.info("Allocation status updated from {} to {}", existing.getAllocationStatus(), dto.getAllocationStatus());
+            if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
+                    && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
+                existing.setLastJob(dto.getJobName());
+            }
+            existing.setAllocationStatus(dto.getAllocationStatus());
+            existing.setAllocationStatusLastModified(LocalDate.now());
+        }
+    }
+
+    private void updateSerialAndPartNumber(EquipmentDTO dto, Equipment existing, PartNumber partNumber, Logger logger) {
+        if (!existing.getSerialNumber().equalsIgnoreCase(dto.getSerialNumber())) {
+            logger.info("Serial number updated from {} to {}", existing.getSerialNumber(), dto.getSerialNumber());
+            existing.setSerialNumber(dto.getSerialNumber());
+        }
+        if (!existing.getPartNumber().getNumber().equalsIgnoreCase(dto.getPartNumber())) {
+            logger.info("Partnumber updated from {} to {}", existing.getPartNumber().getNumber(), dto.getPartNumber());
+            existing.setPartNumber(partNumber);
+        }
+    }
+
+    default void updateJob(Job job, Logger logger, Equipment existing) {
+        logger.info("Equipment was send to job: {}", job.getJobName());
+        existing.setJob(job);
+        job.getEquipment().add(existing);
     }
 }
 

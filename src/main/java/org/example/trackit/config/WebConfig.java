@@ -20,7 +20,6 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 @Configuration
-@EnableCaching
 public class WebConfig implements WebMvcConfigurer {
 
     @Override
@@ -44,15 +43,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
-    }
-
-    @Bean
-    public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager("userDetailsCache", "partNumberCache");
-        cacheManager.setCaffeine(Caffeine.newBuilder()
-                .maximumSize(100)
-                .expireAfterAccess(30, TimeUnit.MINUTES));
-        return cacheManager;
     }
 }
 

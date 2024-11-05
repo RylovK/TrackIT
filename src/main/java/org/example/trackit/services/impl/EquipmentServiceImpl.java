@@ -6,6 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.Mapper.EquipmentMapper;
+import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.Equipment;
@@ -18,7 +19,6 @@ import org.example.trackit.repository.JobRepository;
 import org.example.trackit.repository.PartNumberRepository;
 import org.example.trackit.repository.specifications.EquipmentSpecifications;
 import org.example.trackit.services.EquipmentService;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -39,11 +39,10 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     private final PartNumberRepository partNumberRepository;
     private final JobRepository jobRepository;
     private final EquipmentMapper equipmentMapper;
-    private final CertifiedEquipmentServiceImpl certifiedEquipmentServiceImpl;
+    private final EquipmentService<CertifiedEquipmentDTO> certifiedEquipmentServiceImpl;
     private final EquipmentLoggerFactory equipmentLoggerFactory;
 
     @Override
-    //@Cacheable("equipmentList")
     public List<EquipmentDTO> findAll() {
         return equipmentRepository.findAll().stream().map(equipmentMapper::toDTO).toList();
     }
@@ -67,7 +66,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         Equipment equipment = new Equipment(partNumber, serialNumber);
         partNumber.getEquipmentList().add(equipment);
         Equipment saved = equipmentRepository.save(equipment);
-        Logger logger = equipmentLoggerFactory.createLogger(partNumber.getNumber(), serialNumber);
+        Logger logger = equipmentLoggerFactory.getLogger(partNumber.getNumber(), serialNumber);
         logger.info("Created new equipment with partNumber: {} and serialNumber: {}", partNumber.getNumber(), serialNumber);
         log.info("Created new equipment with partNumber: {} and serialNumber: {}", partNumber.getNumber(), serialNumber);
         return equipmentMapper.toDTO(saved);
@@ -80,38 +79,21 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
                 .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
         PartNumber partNumber = partNumberRepository.findByNumber(dto.getPartNumber())
                 .orElseThrow(() -> new PartNumberNotFoundException("PartNumber not found"));
-        Logger logger = equipmentLoggerFactory.createLogger(partNumber.getNumber(), dto.getSerialNumber());
-        if (!existing.getSerialNumber().equalsIgnoreCase(dto.getSerialNumber())) {
-            logger.info("Serial number updated from {} to {}", existing.getSerialNumber(), dto.getSerialNumber());
-            existing.setSerialNumber(dto.getSerialNumber());
-        }
-        if (!existing.getPartNumber().getNumber().equalsIgnoreCase(dto.getPartNumber())) {
-            logger.info("Partnumber updated from {} to {}", existing.getPartNumber().getNumber(), dto.getPartNumber());
-            existing.setPartNumber(partNumber);
-        }
-        if (existing.getHealthStatus() != dto.getHealthStatus()) {
-            logger.info("Health status updated from {} to {}", existing.getHealthStatus(), dto.getHealthStatus());
-            existing.setHealthStatus(dto.getHealthStatus());
-        }
-        if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
-            logger.info("Allocation status updated from {} to {}", existing.getAllocationStatus(), dto.getAllocationStatus());
-            maintainAllocationStatus(dto, existing);
-        }
-        existing.setComments(dto.getComments());
+        Logger logger = equipmentLoggerFactory.getLogger(partNumber.getNumber(), dto.getSerialNumber());
+        updateEquipmentFields(dto, existing, partNumber, logger);
         if (dto.getJobName() != null && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
-            Optional<Job> optionalJob = jobRepository.findByJobName(dto.getJobName());
-            if (optionalJob.isPresent()) {
-                Job job = optionalJob.get();
-                logger.info("Equipment was send to job: {}", job.getJobName());
-                existing.setJob(job);
-                job.getEquipment().add(existing);
-            } else throw new JobNotFoundException("Job not found");
+            jobRepository.findByJobName(dto.getJobName())
+                    .ifPresentOrElse(job -> updateJob(job, logger, existing),
+                            () -> {
+                                throw new JobNotFoundException("Job not found");
+                            });
         } else existing.setJob(null);
         Equipment updated = equipmentRepository.save(existing);
         partNumber.getEquipmentList().add(updated);
-        log.info("Equipment {} : {} was successfully updated", dto.getPartNumber(), dto.getSerialNumber());
+        log.info("Equipment {}: {} was successfully updated", dto.getPartNumber(), dto.getSerialNumber());
         return equipmentMapper.toDTO(updated);
     }
+
 
     @Override
     public EquipmentDTO findEquipmentById(int id) {
