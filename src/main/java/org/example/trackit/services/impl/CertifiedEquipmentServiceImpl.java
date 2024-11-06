@@ -49,6 +49,8 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
     @Override
     public Page<CertifiedEquipmentDTO> findAllEquipment
             (Map<String, String> filters, Pageable pageable) {
+        if (filters.isEmpty())
+            return certifiedEquipmentRepository.findAll(pageable).map(certifiedEquipmentMapper::toDTO);
         Specification<CertifiedEquipment> spec = EquipmentSpecifications.filter(filters);
         Page<CertifiedEquipment> page = certifiedEquipmentRepository.findAll(spec, pageable);
         return page.map(certifiedEquipmentMapper::toDTO);
@@ -56,8 +58,8 @@ public class CertifiedEquipmentServiceImpl implements EquipmentService<Certified
 
     @Override
     public CertifiedEquipmentDTO findEquipmentById(int id) {
-        Optional<CertifiedEquipment> founded = certifiedEquipmentRepository.findCertifiedEquipmentById(id);
-        return founded.map(certifiedEquipmentMapper::toDTO).orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
+        return certifiedEquipmentRepository.findCertifiedEquipmentById(id)
+            .map(certifiedEquipmentMapper::toDTO).orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
     }
 
     @Override

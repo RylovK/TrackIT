@@ -69,28 +69,30 @@ public interface EquipmentService<T extends EquipmentDTO> {
     boolean deleteEquipmentById(int id);
 
     default void updateEquipmentFields(EquipmentDTO dto, Equipment existing, PartNumber partNumber, Logger logger) {
-        updateEquipmentStatus(dto, existing, logger);
         updateSerialAndPartNumber(dto, existing, partNumber, logger);
+        updateEquipmentStatus(dto, existing, logger);
         existing.setComments(dto.getComments());
     }
 
     private void updateEquipmentStatus(EquipmentDTO dto, Equipment existing, Logger logger) {
-        if (existing.getHealthStatus() != dto.getHealthStatus()) {
-            logger.info("Health status updated from {} to {}", existing.getHealthStatus(), dto.getHealthStatus());
-            existing.setHealthStatus(dto.getHealthStatus());
-        }
         if (existing.getAllocationStatus() != dto.getAllocationStatus()) {
-            logger.info("Allocation status updated from {} to {}", existing.getAllocationStatus(), dto.getAllocationStatus());
             if (existing.getAllocationStatus() == AllocationStatus.ON_BASE
                     && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
                 existing.setLastJob(dto.getJobName());
             } else if (existing.getAllocationStatus() == AllocationStatus.ON_LOCATION
                     && dto.getAllocationStatus() == AllocationStatus.ON_BASE) {
                 dto.setHealthStatus(HealthStatus.RONG);
-                dto.setJobName(null);
+                logger.info("Health status updated from {} to {}", existing.getHealthStatus(), dto.getHealthStatus());
+                existing.setHealthStatus(HealthStatus.RONG);
+                existing.setJob(null);
             }
+            logger.info("Allocation status updated from {} to {}", existing.getAllocationStatus(), dto.getAllocationStatus());
             existing.setAllocationStatus(dto.getAllocationStatus());
             existing.setAllocationStatusLastModified(LocalDate.now());
+        }
+        if (existing.getHealthStatus() != dto.getHealthStatus()) {
+            logger.info("Health status updated from {} to {}", existing.getHealthStatus(), dto.getHealthStatus());
+            existing.setHealthStatus(dto.getHealthStatus());
         }
     }
 
@@ -102,6 +104,7 @@ public interface EquipmentService<T extends EquipmentDTO> {
         if (!existing.getPartNumber().getNumber().equalsIgnoreCase(dto.getPartNumber())) {
             logger.warn("Partnumber for {} updated from {} to {}", existing.getSerialNumber(), existing.getPartNumber().getNumber(), dto.getPartNumber());
             existing.setPartNumber(partNumber);
+            partNumber.getEquipmentList().add(existing);
         }
     }
 

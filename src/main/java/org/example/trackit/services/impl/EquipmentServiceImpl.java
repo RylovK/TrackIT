@@ -58,6 +58,18 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
     }
 
     @Override
+    public EquipmentDTO findEquipmentById(int id) {
+        Optional<Equipment> optional = equipmentRepository.findById(id);
+        if (optional.isPresent()) {
+            if (optional.get() instanceof CertifiedEquipment) {
+                return certifiedEquipmentServiceImpl.findEquipmentById(id);
+            }
+        }
+        return optional.map(equipmentMapper::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
+    }
+
+    @Override
     @Transactional
     public EquipmentDTO save(EquipmentDTO equipmentDTO) {
         PartNumber partNumber = partNumberRepository.findByNumber(equipmentDTO.getPartNumber())
@@ -89,23 +101,11 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
                             });
         } else existing.setJob(null);
         Equipment updated = equipmentRepository.save(existing);
-        partNumber.getEquipmentList().add(updated);
+
         log.info("Equipment {}: {} was successfully updated", dto.getPartNumber(), dto.getSerialNumber());
         return equipmentMapper.toDTO(updated);
     }
 
-
-    @Override
-    public EquipmentDTO findEquipmentById(int id) {
-        Optional<Equipment> optional = equipmentRepository.findById(id);
-        if (optional.isPresent()) {
-            if (optional.get() instanceof CertifiedEquipment) {
-                return certifiedEquipmentServiceImpl.findEquipmentById(id);
-            }
-        }
-        return optional.map(equipmentMapper::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("Equipment not found"));
-    }
 
     @Override
     @Transactional
