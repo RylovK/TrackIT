@@ -66,5 +66,18 @@ public class Equipment {
         healthStatus = HealthStatus.RONG;
         allocationStatus = AllocationStatus.ON_BASE;
     }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Equipment equipment)) return false;
+
+        return getId() == equipment.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
 }
 

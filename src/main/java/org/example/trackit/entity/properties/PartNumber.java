@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.example.trackit.entity.Equipment;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+
 
 @Entity
 @Getter
@@ -16,6 +18,7 @@ public class PartNumber {
 
     @Id
     @NotEmpty
+
     private String number;
 
     @NotEmpty
@@ -28,5 +31,18 @@ public class PartNumber {
 
     public PartNumber() {
         equipmentList = new HashSet<>();
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PartNumber that)) return false;
+
+        return Objects.equals(getNumber(), that.getNumber());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getNumber());
     }
 }

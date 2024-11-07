@@ -1,7 +1,7 @@
 package org.example.trackit.validators;
 
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.dto.CreateEquipmentDTO;
@@ -17,15 +17,13 @@ import org.example.trackit.repository.EquipmentRepository;
 import org.example.trackit.repository.PartNumberRepository;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class EquipmentValidator implements Validator {
 
