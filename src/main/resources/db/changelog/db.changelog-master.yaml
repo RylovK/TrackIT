@@ -172,6 +172,11 @@ databaseChangeLog:
   - changeSet:
       id: 9
       author: Kirill
+      preConditions:
+        - onFail: CONTINUE
+          not:
+            tableExists:
+              tableName: equipment
       changes:
         - dropUniqueConstraint:
             tableName: equipment
