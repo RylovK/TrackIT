@@ -26,10 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -79,7 +76,7 @@ class EquipmentServiceImplTest {
         this.job = new Job();
         job.setId(id);
         job.setJobName("Job123");
-        job.setEquipment(new HashSet<>());
+        job.setEquipment(new ArrayList<>());
     }
 
     @Test
@@ -146,6 +143,7 @@ class EquipmentServiceImplTest {
         EquipmentDTO result = equipmentServiceImpl.update(id, equipmentDTO);
 
         assertNotNull(result);
+        assertEquals(equipmentDTO, result);
         assertEquals(job.getJobName(), equipment.getLastJob());
         assertEquals(job, equipment.getJob());
         assertEquals(HealthStatus.RITE, equipment.getHealthStatus());
@@ -183,6 +181,7 @@ class EquipmentServiceImplTest {
         EquipmentDTO result = equipmentServiceImpl.update(id, equipmentDTO);
 
         assertNotNull(result);
+        assertEquals(equipmentDTO, result);
         assertEquals(HealthStatus.RONG, equipment.getHealthStatus());
         assertEquals(HealthStatus.RONG, equipmentDTO.getHealthStatus());
         assertNull(equipment.getJob());

@@ -15,11 +15,6 @@ public interface PartNumberMapper {
     }
 
     default PartNumber map(String partNumber) {
-        if (partNumber == null) {
-            return null;
-        }
-        PartNumber result =  new PartNumber();
-        result.setNumber(partNumber);
-        return result;
+        return partNumber == null ? null : new PartNumber(partNumber);
     }
 }

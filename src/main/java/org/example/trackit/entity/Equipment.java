@@ -3,6 +3,7 @@ package org.example.trackit.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.example.trackit.entity.properties.AllocationStatus;
@@ -27,8 +28,7 @@ public class Equipment {
     private int id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "part_number_id")
-    @NotNull
+    @JoinColumn(name = "part_number_id", nullable = false, updatable = false)
     private PartNumber partNumber;
 
     @NotEmpty
@@ -78,6 +78,12 @@ public class Equipment {
     @Override
     public int hashCode() {
         return getId();
+    }
+
+    public void setPartNumber(PartNumber partNumber) {
+        if (this.partNumber != null)
+            throw new UnsupportedOperationException("Part number cannot be changed");
+        this.partNumber = partNumber;
     }
 }
 

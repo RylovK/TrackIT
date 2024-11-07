@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.example.trackit.entity.Equipment;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,8 +24,8 @@ public class Job {
     private String jobName;
 
     @OneToMany(mappedBy = "job", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @OrderBy("partNumber.number")
-    private Set<Equipment> equipment;
+    @OrderBy("partNumber")
+    private List<Equipment> equipment;
 
     public Job(String jobName) {
         this.jobName = jobName;

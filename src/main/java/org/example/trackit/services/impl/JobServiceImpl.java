@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,9 +41,9 @@ public class JobServiceImpl implements JobService {
         Job job = jobRepository.findById(id)
                 .orElseThrow(() -> new JobNotFoundException("Job not found: " + id));
         JobDTO jobDTO = jobMapper.toJobDTO(job);
-        Set<EquipmentDTO> equipment = job.getEquipment().stream()
+        List<EquipmentDTO> equipment = job.getEquipment().stream()
                 .map(equipmentMapper::toDTO)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
         jobDTO.setEquipment(equipment);
         return jobDTO;
     }
@@ -75,11 +74,11 @@ public class JobServiceImpl implements JobService {
         Optional<Job> job = jobRepository.findById(id);
         if (job.isPresent()) {
             Job founded = job.get();
-            Set<Equipment> equipmentSet = founded.getEquipment();
-            equipmentSet.forEach(equipment -> equipment.setJob(null));
-            equipmentSet.forEach(equipment -> equipment.setAllocationStatus(AllocationStatus.ON_BASE));
-            equipmentSet.forEach(equipment -> equipment.setHealthStatus(HealthStatus.RONG));
-            log.info("Job deleted: {}", founded.getJobName());
+            List<Equipment> equipmentList = founded.getEquipment();
+            equipmentList.forEach(equipment -> equipment.setJob(null));
+            equipmentList.forEach(equipment -> equipment.setAllocationStatus(AllocationStatus.ON_BASE));
+            equipmentList.forEach(equipment -> equipment.setHealthStatus(HealthStatus.RONG));
+            log.info("Job deleted: {}. All equipment returned to the base", founded.getJobName());
             jobRepository.delete(founded);
             return true;
         }

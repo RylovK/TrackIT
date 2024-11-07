@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,10 +20,10 @@ public class JobDTO {
     @Size(min = 4, max = 25, message = "The job name must be between 4 and 25 symbols")
     private String jobName;
 
-    private Set<EquipmentDTO> equipment;
+    private List<EquipmentDTO> equipment;
 
     public JobDTO(String jobName) {
         this.jobName = jobName;
-        equipment = new HashSet<>();
+        equipment = new ArrayList<>();
     }
 }

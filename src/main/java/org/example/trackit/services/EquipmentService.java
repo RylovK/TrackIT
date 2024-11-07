@@ -102,9 +102,7 @@ public interface EquipmentService<T extends EquipmentDTO> {
             existing.setSerialNumber(dto.getSerialNumber());
         }
         if (!existing.getPartNumber().getNumber().equalsIgnoreCase(dto.getPartNumber())) {
-            logger.warn("Partnumber for {} updated from {} to {}", existing.getSerialNumber(), existing.getPartNumber().getNumber(), dto.getPartNumber());
-            existing.setPartNumber(partNumber);
-            partNumber.getEquipmentList().add(existing);
+            throw new UnsupportedOperationException("Part number cannot be changed");
         }
     }
 

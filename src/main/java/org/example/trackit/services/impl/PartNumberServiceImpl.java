@@ -63,14 +63,7 @@ public class PartNumberServiceImpl implements PartNumberService {
         PartNumber existing = partNumberRepository.findByNumber(existingPartNumber)
                 .orElseThrow(() -> new PartNumberNotFoundException("Part number not found: " + existingPartNumber));
         if (!existingPartNumber.equalsIgnoreCase(dto.getNumber())) {
-            Set<Equipment> equipmentList = existing.getEquipmentList();
-            PartNumber newPartNumber  = partNumberMapper.toEntity(dto);
-            newPartNumber.setEquipmentList(equipmentList);
-            newPartNumber.getEquipmentList().forEach(equipment -> equipment.setPartNumber(newPartNumber));
-            partNumberRepository.save(newPartNumber);
-            log.warn("Part number {} updated to {}", existingPartNumber, newPartNumber.getNumber());
-            partNumberRepository.delete(existing);
-            return partNumberMapper.toDTO(newPartNumber);
+            throw new UnsupportedOperationException("Part number cannot be changed");
         } else {
             existing.setDescription(dto.getDescription());
             existing.setPhoto(dto.getPhoto());

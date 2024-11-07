@@ -18,7 +18,7 @@ public class PartNumber {
 
     @Id
     @NotEmpty
-
+    @Column(unique = true, nullable = false, updatable = false)
     private String number;
 
     @NotEmpty
@@ -29,7 +29,18 @@ public class PartNumber {
     @OneToMany(mappedBy = "partNumber", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Equipment> equipmentList;
 
+    public PartNumber(String number, String description) {
+        this.number = number;
+        this.description = description;
+        equipmentList = new HashSet<>();
+    }
+
     public PartNumber() {
+        equipmentList = new HashSet<>();
+    }
+
+    public PartNumber(String number) {
+        this.number = number;
         equipmentList = new HashSet<>();
     }
 

@@ -135,6 +135,7 @@ class CertifiedEquipmentServiceImplTest {
         CertifiedEquipmentDTO result = certifiedEquipmentServiceImpl.update(id, equipmentDTO);
 
         assertNotNull(result);
+        assertEquals(equipmentDTO, result);
 
         assertEquals(CertificationStatus.VALID, equipment.getCertificationStatus());
         assertEquals(LocalDate.now(), equipment.getCertificationDate());
