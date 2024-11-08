@@ -3,7 +3,6 @@ package org.example.trackit.Mapper;
 import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.JobResponseDTO;
 import org.example.trackit.entity.properties.Job;
-import org.example.trackit.entity.properties.PartNumber;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = PartNumberMapper.class)

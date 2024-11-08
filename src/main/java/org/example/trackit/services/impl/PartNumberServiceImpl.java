@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.trackit.Mapper.PartNumberMapper;
 import org.example.trackit.dto.PartNumberDTO;
-import org.example.trackit.entity.Equipment;
 import org.example.trackit.entity.properties.PartNumber;
 import org.example.trackit.repository.PartNumberRepository;
 import org.example.trackit.services.PartNumberService;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)

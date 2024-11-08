@@ -50,7 +50,7 @@ public class PartNumberController {
     }
 
     @GetMapping("/{partNumber}")
-    @Operation(summary = "Get info page about part number", description = "Get all information about part number")
+    @Operation(summary = "Get info about part number", description = "Get all information about part number")
     public ResponseEntity<PartNumberDTO> getPartNumber(@PathVariable String partNumber) {
         PartNumberDTO founded = partNumberService.getPartNumberDTOByPartNumber(partNumber);
         return ResponseEntity.ok(founded);
@@ -78,9 +78,9 @@ public class PartNumberController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping
+    @DeleteMapping("/{partNumber}")
     @Operation(summary = "Delete part number")
-    public ResponseEntity<Void> deletePartNumber(@RequestParam String partNumber) {
+    public ResponseEntity<Void> deletePartNumber(@PathVariable String partNumber) {
         boolean deleted = partNumberService.deletePartNumber(partNumber);
         if (!deleted) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

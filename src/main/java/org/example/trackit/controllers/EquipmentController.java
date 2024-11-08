@@ -71,7 +71,6 @@ public class EquipmentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEquipment(@PathVariable int id) {
-        System.out.println("Trying to delete " + id);
         boolean deleted = equipmentService.deleteEquipmentById(id);
         if (!deleted)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

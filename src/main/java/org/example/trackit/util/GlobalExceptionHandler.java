@@ -97,6 +97,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UnsupportedOperationException.class)
     public ResponseEntity<String> handleUnsupportedOperationException(UnsupportedOperationException ex) {
         log.warn("UnsupportedOperation: {}", ex.getMessage());
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

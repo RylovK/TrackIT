@@ -138,7 +138,7 @@ const PartNumberPage = () => {
 
     const handleDeleteClick = async () => {
         try {
-            const response = await api.delete(`/partNumber?partNumber=${partNumber}`);
+            const response = await api.delete(`/partNumber/${partNumber}`);
             if (response.status === 200) {
                 message.success('Part number deleted successfully');
                 navigate('/partnumber/all');

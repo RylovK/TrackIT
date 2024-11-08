@@ -96,9 +96,8 @@ class PartNumberServiceImplTest {
         PartNumberDTO dtoWithChangedNumber = partNumberDTO;
         dtoWithChangedNumber.setNumber("CHANGED NUMBER");
 
-        UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class, () -> {
-            partNumberService.update(existingNumber, dtoWithChangedNumber);
-        });
+        UnsupportedOperationException exception = assertThrows(UnsupportedOperationException.class,
+                () -> partNumberService.update(existingNumber, dtoWithChangedNumber));
         assertEquals("Part number cannot be changed", exception.getMessage());
         verify(partNumberRepository, times(1)).findByNumber("PN123");
     }

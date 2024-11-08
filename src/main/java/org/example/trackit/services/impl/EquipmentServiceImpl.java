@@ -92,7 +92,7 @@ public class EquipmentServiceImpl implements EquipmentService<EquipmentDTO> {
         PartNumber partNumber = partNumberRepository.findByNumber(dto.getPartNumber())
                 .orElseThrow(() -> new PartNumberNotFoundException("PartNumber not found"));
         Logger logger = equipmentLoggerFactory.getLogger(partNumber.getNumber(), dto.getSerialNumber());
-        updateEquipmentFields(dto, existing, partNumber, logger);
+        updateEquipmentFields(dto, existing, logger);
         if (dto.getJobName() != null && dto.getAllocationStatus() == AllocationStatus.ON_LOCATION) {
             jobRepository.findByJobName(dto.getJobName())
                     .ifPresentOrElse(job -> updateJob(job, logger, existing),

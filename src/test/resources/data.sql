@@ -1,17 +1,17 @@
 
--- INSERT INTO part_number (number, description, photo) VALUES
---                                                          ('PN1001', 'Description PN101', 'photo1.jpg'),
---                                                          ('PN1002', 'Description PN102', 'photo2.jpg');
+INSERT INTO part_number (number, description, photo) VALUES
+                                                         ('PN101', 'Description PN101', 'photo1.jpg'),
+                                                         ('PN102', 'Description PN102', 'photo2.jpg');
 
-INSERT INTO job (id, job_name) VALUES
-                                   (1, 'Job01'),
-                                   (2, 'Job02');
+INSERT INTO job (job_name) VALUES
+                                   ('Job01'),
+                                   ('Job02');
 
--- INSERT INTO equipment (id, part_number_id, serial_number, health_status, allocation_status, job_id, created_at,
---                        allocation_status_last_modified, last_job, comments) VALUES
---                             (1, 'PN101', 'SN001', 'RITE', 'ON_LOCATION', 1, CURRENT_TIMESTAMP, CURRENT_DATE, 'Job01', 'No comments'),
---                             (2, 'PN102', 'SN002', 'RONG', 'ON_BASE', NULL, CURRENT_TIMESTAMP, CURRENT_DATE, 'Job02', 'Comment');
---
+INSERT INTO equipment (part_number_id, serial_number, health_status, allocation_status, job_id, created_at,
+                       allocation_status_last_modified, last_job, comments) VALUES
+                            ('PN101', 'SN001', 'RITE', 'ON_LOCATION', 1, CURRENT_TIMESTAMP, CURRENT_DATE, 'Job01', 'No comments'),
+                            ('PN102', 'SN002', 'RONG', 'ON_BASE', NULL, CURRENT_TIMESTAMP, CURRENT_DATE, 'Job02', 'Comment');
+
 -- INSERT INTO certified_equipment (id, certification_date, certification_period, file_certificate, next_certification_date,
 --                                  certification_status) VALUES
 --                             (1, CURRENT_DATE, 12, 'certificate1.pdf', '2025-01-15', 'VALID'),

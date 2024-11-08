@@ -68,8 +68,8 @@ public interface EquipmentService<T extends EquipmentDTO> {
     @Transactional
     boolean deleteEquipmentById(int id);
 
-    default void updateEquipmentFields(EquipmentDTO dto, Equipment existing, PartNumber partNumber, Logger logger) {
-        updateSerialAndPartNumber(dto, existing, partNumber, logger);
+    default void updateEquipmentFields(EquipmentDTO dto, Equipment existing, Logger logger) {
+        updateSerialAndPartNumber(dto, existing, logger);
         updateEquipmentStatus(dto, existing, logger);
         existing.setComments(dto.getComments());
     }
@@ -96,7 +96,7 @@ public interface EquipmentService<T extends EquipmentDTO> {
         }
     }
 
-    private void updateSerialAndPartNumber(EquipmentDTO dto, Equipment existing, PartNumber partNumber, Logger logger) {
+    private void updateSerialAndPartNumber(EquipmentDTO dto, Equipment existing, Logger logger) {
         if (!existing.getSerialNumber().equalsIgnoreCase(dto.getSerialNumber())) {
             logger.info("Serial number updated from {} to {}", existing.getSerialNumber(), dto.getSerialNumber());
             existing.setSerialNumber(dto.getSerialNumber());

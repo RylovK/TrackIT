@@ -49,7 +49,7 @@ const JobEditPage = () => {
 
     const handleDelete = async () => {
         try {
-            await api.delete(`/job?id=${id}`); // Send delete request
+            await api.delete(`/job/${id}`); // Send delete request
             message.success('Job deleted successfully!');
             navigate('/job'); // Redirect to the job list page after deletion
         } catch (err) {

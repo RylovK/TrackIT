@@ -66,10 +66,10 @@ public class JobController {
     }
 
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @Operation(summary = "Delete job")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteJob(@RequestParam int id) {
+    public ResponseEntity<Void> deleteJob(@PathVariable int id) {
         if (jobService.delete(id)){
             return new ResponseEntity<>(HttpStatus.OK);
         }
