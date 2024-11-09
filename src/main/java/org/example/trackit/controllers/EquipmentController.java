@@ -13,6 +13,7 @@ import org.example.trackit.services.EquipmentService;
 import org.example.trackit.validators.EquipmentValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -34,7 +35,8 @@ public class EquipmentController {
     public ResponseEntity<Page<EquipmentDTO>> getAllEquipment(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "25") int size,
                                                               @RequestParam(required = false) Map<String, String> filters) {
-        Page<EquipmentDTO> dtoPage = equipmentService.findAllEquipment(filters, PageRequest.of(page, size));
+        Page<EquipmentDTO> dtoPage = equipmentService
+                .findAllEquipment(filters, PageRequest.of(page, size, Sort.by(Sort.DEFAULT_DIRECTION, "partNumber")));
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -60,7 +62,7 @@ public class EquipmentController {
     @PatchMapping("/{id}")
     public ResponseEntity<EquipmentDTO> updateEquipment(@PathVariable int id,
                                                         @RequestBody @Valid EquipmentDTO equipmentDTO,
-                                                        BindingResult bindingResult) {//TODO:обработать ошибки, добавить @Valid
+                                                        BindingResult bindingResult) {
         equipmentValidator.validateUpdate(id, equipmentDTO, bindingResult);
         if (bindingResult.hasErrors()) {
             throw new ValidationErrorException(bindingResult);
@@ -76,6 +78,4 @@ public class EquipmentController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }

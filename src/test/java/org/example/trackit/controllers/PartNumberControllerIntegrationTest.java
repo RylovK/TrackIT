@@ -171,7 +171,7 @@ class PartNumberControllerIntegrationTest {
 
     @Test
     void deletePartNumber_UserRole_ShouldReturnForbidden() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/partNumber/PN102")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/partNumber/NEW")
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", "Bearer " + token))
                 .andExpect(MockMvcResultMatchers.status().isForbidden());
@@ -179,7 +179,7 @@ class PartNumberControllerIntegrationTest {
 
     @Test
     void deletePartNumber_UserAdmin_ShouldBeDeleted() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/partNumber/PN102")
+        mockMvc.perform(MockMvcRequestBuilders.delete("/partNumber/NEW")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer " + adminToken))
                 .andExpect(MockMvcResultMatchers.status().isOk());
