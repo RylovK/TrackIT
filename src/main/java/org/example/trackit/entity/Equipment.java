@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(uniqueConstraints =
-        {@UniqueConstraint(columnNames = {"part_number_id", "serialNumber"})})
+        {@UniqueConstraint(columnNames = {"part_number_id", "serial_Number"})})
 public class Equipment {
 
     @Id
