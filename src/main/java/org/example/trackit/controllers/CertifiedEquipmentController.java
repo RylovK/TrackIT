@@ -33,7 +33,11 @@ public class CertifiedEquipmentController {
     private final FileService fileService;
 
     @GetMapping
-    @Operation(summary = "Find all certified equipment", description = "Get a list of all certified equipment with filtration and pagination")
+    @Operation(
+            summary = "Find all certified equipment",
+            description = "Get a list of all certified equipment with filtration and pagination." +
+                    "Supported filter fields: partNumber, serialNumber, healthStatus, allocationStatus," +
+                    "jobName, certificationStatus")
     public ResponseEntity<Page<CertifiedEquipmentDTO>> getAllCertifiedEquipment(@RequestParam(defaultValue = "0") int page,
                                                                                 @RequestParam(defaultValue = "25") int size,
                                                                                 @RequestParam(required = false) Map<String, String> filters,

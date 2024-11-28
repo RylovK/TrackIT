@@ -7,7 +7,6 @@ import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +25,7 @@ public class CacheConfig {
     @Bean
     public CaffeineCache partNumberCache() {
         return new CaffeineCache("partNumberCache", Caffeine.newBuilder()
-                .maximumSize(100)
+                .maximumSize(500)
                 .expireAfterAccess(3, TimeUnit.DAYS)
                 .build());
     }
