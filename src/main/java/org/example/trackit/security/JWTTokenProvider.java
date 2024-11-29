@@ -16,14 +16,13 @@ import java.util.Date;
 public class JWTTokenProvider {
 
     @Value("${jwt_secret}")
-    private String SECRET_KEY;// = System.getenv("jwt_secret");
-    private SecretKey key;// = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    private String SECRET_KEY;
+    private SecretKey key;
 
     public String generateToken(String user) {
         Date expiration = Date.from(ZonedDateTime.now().plusDays(1).toInstant());
         return Jwts.builder()
                 .claim("sub", user)
-//                .claim("role", user.getRole())
                 .issuedAt(Date.from(Instant.now()))
                 .expiration(expiration)
                 .signWith(key)

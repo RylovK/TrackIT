@@ -48,7 +48,6 @@ public class JobServiceImpl implements JobService {
         return jobDTO;
     }
 
-
     @Override
     @Transactional
     public JobDTO save(JobDTO jobDTO) {
@@ -84,5 +83,4 @@ public class JobServiceImpl implements JobService {
         }
         return false;
     }
-
 }
