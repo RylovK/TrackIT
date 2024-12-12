@@ -1,4 +1,4 @@
-package org.example.trackit.Mapper;
+package org.example.trackit.mapper;
 
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;

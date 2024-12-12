@@ -1,4 +1,4 @@
-package org.example.trackit.Mapper;
+package org.example.trackit.mapper;
 
 import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.JobResponseDTO;

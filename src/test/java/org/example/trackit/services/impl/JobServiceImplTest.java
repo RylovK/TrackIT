@@ -1,7 +1,7 @@
 package org.example.trackit.services.impl;
 
-import org.example.trackit.Mapper.EquipmentMapper;
-import org.example.trackit.Mapper.JobMapper;
+import org.example.trackit.mapper.EquipmentMapper;
+import org.example.trackit.mapper.JobMapper;
 import org.example.trackit.dto.EquipmentDTO;
 import org.example.trackit.dto.JobDTO;
 import org.example.trackit.dto.JobResponseDTO;

@@ -2,7 +2,7 @@ package org.example.trackit.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.trackit.Mapper.UserMapper;
+import org.example.trackit.mapper.UserMapper;
 import org.example.trackit.dto.LoginDTO;
 import org.example.trackit.entity.User;
 import org.example.trackit.entity.properties.Role;

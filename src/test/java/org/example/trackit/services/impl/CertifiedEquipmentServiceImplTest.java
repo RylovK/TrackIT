@@ -1,7 +1,7 @@
 package org.example.trackit.services.impl;
 
 import ch.qos.logback.classic.Logger;
-import org.example.trackit.Mapper.CertifiedEquipmentMapper;
+import org.example.trackit.mapper.CertifiedEquipmentMapper;
 import org.example.trackit.dto.CertifiedEquipmentDTO;
 import org.example.trackit.entity.CertifiedEquipment;
 import org.example.trackit.entity.properties.*;

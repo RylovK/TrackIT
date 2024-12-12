@@ -3,7 +3,7 @@ package org.example.trackit.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.trackit.Mapper.PartNumberMapper;
+import org.example.trackit.mapper.PartNumberMapper;
 import org.example.trackit.dto.PartNumberDTO;
 import org.example.trackit.entity.properties.PartNumber;
 import org.example.trackit.repository.PartNumberRepository;
