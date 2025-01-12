@@ -30,8 +30,11 @@
 <h3>Запустить бэкенд:</h3>
 <pre><code>./gradlew bootrun</code></pre>
 
-<h3>Перейти в папку с фронтендом:</h3>
+<h3>Запустить фронтэнд:</h3>
+Установить Node.js и npm
+
 <pre><code>cd trackit-frontend</code></pre>
+<pre><code>npm install</code></pre>
 <pre><code>npm start</code></pre>
 
 <h2>Функционал</h2>

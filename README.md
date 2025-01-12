@@ -34,6 +34,7 @@ To configure the project to connect to a database, update the `application.prope
 
 <h3>Run the frontend:</h3>
 Install Node.js and npm
+
 <pre><code>cd trackit-frontend</code></pre>
 <pre><code>npm install</code></pre>
 <pre><code>npm start</code></pre>
