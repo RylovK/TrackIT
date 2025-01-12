@@ -28,10 +28,14 @@
 <pre><code>cd trackit</code></pre>
 
 <h3>Run the backend:</h3>
+To configure the project to connect to a database, update the `application.properties` file located in the `src/main/resources` folder of the project.
+
 <pre><code>./gradlew bootrun</code></pre>
 
-<h3>Navigate to the frontend folder:</h3>
+<h3>Run the frontend:</h3>
+Install Node.js and npm
 <pre><code>cd trackit-frontend</code></pre>
+<pre><code>npm install</code></pre>
 <pre><code>npm start</code></pre>
 
 <h2>Features</h2>
