@@ -166,7 +166,7 @@ const AllEquipmentPage = () => {
                     <div style={{ width: '150px' }}>Allocation Status</div>
                     <div style={{ width: '150px' }}>Job Name</div>
                 </div>
-                <div style={{ display: 'flex', marginBottom: '20px' }}>
+                <div style={{ display: 'flex',  marginBottom: '20px' }}>
                     <Input
                         placeholder="Part Number"
                         name="partNumber"

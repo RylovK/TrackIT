@@ -16,7 +16,7 @@
 
 <h2>Technologies</h2>
 <ul>
-    <li><strong>Backend:</strong> Java, Spring Boot, Spring Data, Spring Security (JWT), Spring Web, Lombok, MapStruct, Swagger, Liquibase, Caffeine Cache, Apache POI.</li>
+    <li><strong>Backend:</strong> Java, Spring Boot, Spring Data, Spring Security (JWT), Spring Web, Lombok, MapStruct, Swagger, PostgreSQL, Liquibase, Caffeine Cache, Apache POI.</li>
     <li><strong>Testing:</strong> JUnit, H2.</li>
     <li><strong>Frontend:</strong> Node.js (frontend part developed with the help of ChatGPT).</li>
 </ul>
